@@ -2,6 +2,7 @@
 local M = {}
 
 ---@class Flash.Config
+---@field mode? string
 local defaults = {
   -- labels = "abcdefghijklmnopqrstuvwxyz",
   labels = "asdfghjklqwertyuiopzxcvbnm",
@@ -14,7 +15,7 @@ local defaults = {
     -- clear highlight after jump
     nohlsearch = true,
     -- jump when only one match is found
-    auto_jump = false,
+    auto_jump = true,
   },
   search = {
     -- search/jump in all windows
@@ -32,19 +33,33 @@ local defaults = {
     -- when `false`, find only matches in the given direction
     wrap = true,
   },
-  ui = {
+  highlight = {
     -- add a label for the first match in the current window.
     -- you can always jump to the first match with `<CR>`
     label_first = false,
     -- show a backdrop with hl FlashBackdrop
     backdrop = true,
-    -- When using flash during search, flash will additionally
-    -- highlight the matches the same way as the search highlight.
+    -- Will apply the same highlights as a regular search.
     -- This is useful to prevent flickring during search.
     -- Especially with plugins like noice.nvim.
-    always_highlight_search = true,
-    -- extmakr priority
+    matches = true,
+    -- extmark priority
     priority = 5000,
+  },
+  -- You can override the default options for a specific mode.
+  -- Use it with `require("flash").jump({mode = "forward"})`
+  ---@type table<string, Flash.Config>
+  modes = {
+    search = {
+      jump = { auto_jump = false },
+      highlight = { backdrop = false },
+    },
+    forward = {
+      search = { forward = true, wrap = false, multi_window = false },
+    },
+    backward = {
+      search = { forward = false, wrap = false, multi_window = false },
+    },
   },
 }
 
@@ -53,6 +68,8 @@ local options
 
 ---@param opts? Flash.Config
 function M.setup(opts)
+  opts = opts or {}
+  opts.mode = nil
   options = M.get(opts)
   require("flash.highlight").setup()
   require("flash.state").setup()
@@ -60,7 +77,14 @@ end
 
 ---@param opts? Flash.Config
 function M.get(opts)
-  return vim.tbl_deep_extend("force", {}, defaults, options or {}, opts or {})
+  return vim.tbl_deep_extend(
+    "force",
+    {},
+    defaults,
+    options or {},
+    opts and opts.mode and options.modes[opts.mode] or {},
+    opts or {}
+  )
 end
 
 return setmetatable(M, {

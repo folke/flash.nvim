@@ -53,6 +53,7 @@ function M.setup()
         M.state = M.new({
           op = vim.fn.mode() == "v",
           config = {
+            mode = "search",
             search = {
               forward = vim.fn.getcmdtype() == "/",
             },
@@ -99,7 +100,7 @@ end
 
 ---@param pattern string?
 function M:update(pattern)
-  pattern = pattern or self.pattern
+  pattern = pattern or self.pattern or ""
 
   if pattern:match(self.config.search.abort_pattern) then
     Highlight.clear()

@@ -36,7 +36,7 @@ function M.backdrop(state)
       end_row = to[1] - 1,
       end_col = to[2],
       hl_eol = true,
-      priority = state.config.ui.priority,
+      priority = state.config.highlight.priority,
       strict = false,
     })
   end
@@ -46,20 +46,20 @@ end
 function M.update(state)
   M.clear()
 
-  if state.config.ui.backdrop then
+  if state.config.highlight.backdrop then
     M.backdrop(state)
   end
 
   for _, match in ipairs(state.results) do
     local buf = vim.api.nvim_win_get_buf(match.win)
 
-    if not state.is_search() or state.config.ui.always_highlight_search then
+    if state.config.highlight.matches then
       vim.api.nvim_buf_set_extmark(buf, M.ns, match.from[1] - 1, match.from[2], {
         end_row = match.to[1] - 1,
         end_col = match.to[2] + 1,
         hl_group = match.first and match.win == state.win and "FlashCurrent" or "FlashMatch",
         strict = false,
-        priority = state.config.ui.priority + 1,
+        priority = state.config.highlight.priority + 1,
       })
     end
 
@@ -68,7 +68,7 @@ function M.update(state)
         virt_text = { { match.label, "FlashLabel" } },
         virt_text_pos = "overlay",
         strict = false,
-        priority = state.config.ui.priority + 2,
+        priority = state.config.highlight.priority + 2,
       })
     end
   end
