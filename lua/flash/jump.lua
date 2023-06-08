@@ -1,43 +1,25 @@
 local M = {}
 
 ---@param state Flash.State
-function M.labeler(state)
+function M.labels(state)
   local skip = {}
   for _, m in ipairs(state.results) do
     skip[m.next] = true
   end
 
-  local upper = {}
-  local lower = {}
-
-  for _, label in ipairs(vim.split(state.config.labels, "")) do
-    local l = label:lower()
+  local labels = {}
+  for _, l in ipairs(vim.split(state.config.labels .. state.config.labels:upper(), "")) do
     if not skip[l] then
-      lower[#lower + 1] = l
-    end
-    local u = label:upper()
-    if u ~= l and not skip[u] then
-      upper[#upper + 1] = u
+      labels[#labels + 1] = l
+      skip[l] = true
     end
   end
-
-  return {
-    ---@param uppercase? boolean
-    ---@return string?
-    next = function(uppercase)
-      if uppercase and #upper > 0 then
-        return table.remove(upper, 1)
-      end
-      if not uppercase and #lower > 0 then
-        return table.remove(lower, 1)
-      end
-      return table.remove(lower, 1) or table.remove(upper, 1) or nil
-    end,
-  }
+  return labels
 end
 
 ---@param state Flash.State
 function M.update(state)
+  -- sort by current win, other win, then by distance
   table.sort(state.results, function(a, b)
     if a.win ~= b.win then
       local aw = a.win == state.win and 0 or a.win
@@ -60,24 +42,12 @@ function M.update(state)
     return a.from[2] < b.from[2]
   end)
 
-  ---@param a number[]
-  ---@param b number[]
-  local function is_before(a, b)
-    if a[1] == b[1] then
-      return a[2] < b[2]
-    end
-    return a[1] < b[1]
-  end
-
-  local labeler = M.labeler(state)
+  local labels = M.labels(state)
   for _, m in ipairs(state.results) do
-    if m.visible and not (state.is_search() and m.first and m.win == state.win) then
-      -- if m.win == State.win then
-      --   local forward = is_before(State.pos, m.from)
-      --   m.label = labeler.next(forward ~= State.forward)
-      -- else
-      m.label = labeler.next()
-      -- end
+    -- only label visible matches
+    -- and don't label the first match in the current window
+    if m.visible and not (m.first and m.win == state.win) then
+      m.label = table.remove(labels, 1)
     end
   end
 end

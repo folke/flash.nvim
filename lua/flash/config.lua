@@ -39,7 +39,7 @@ local defaults = {
     -- Especially with plugins like noice.nvim.
     always_highlight_search = true,
     backdrop = true,
-    priority = 500,
+    priority = 5000,
   },
 }
 
