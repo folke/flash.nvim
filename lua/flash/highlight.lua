@@ -53,7 +53,7 @@ function M.update(state)
   for _, match in ipairs(state.results) do
     local buf = vim.api.nvim_win_get_buf(match.win)
 
-    if not state.is_search() then
+    if not state.is_search() or state.config.ui.always_highlight_search then
       vim.api.nvim_buf_set_extmark(buf, M.ns, match.from[1] - 1, match.from[2], {
         end_row = match.to[1] - 1,
         end_col = match.to[2] + 1,

@@ -27,9 +27,14 @@ local defaults = {
     -- to search with regular expressions
     abort_pattern = "[^a-zA-Z0-9_.()]",
     -- limit matches in a certain direction
-    direction = nil, ---@type "forward" | "backward" | nil
+    direction = "both", ---@type "forward" | "backward" | "both"
   },
   ui = {
+    -- When using flash during search, flash will additionally
+    -- highlight the matches the same way as the search highlight.
+    -- This is useful to prevent flickring during search.
+    -- Especially with plugins like noice.nvim.
+    always_highlight_search = true,
     backdrop = true,
     priority = 500,
   },

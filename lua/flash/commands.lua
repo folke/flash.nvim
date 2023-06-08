@@ -13,7 +13,6 @@ function M.jump(opts)
   local state = State.new({ config = opts })
 
   while true do
-    vim.cmd.redraw()
     local ok, n = pcall(vim.fn.getchar)
     if not ok then
       break
