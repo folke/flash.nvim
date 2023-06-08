@@ -26,8 +26,11 @@ local defaults = {
     -- flash will be aborted. This is needed to be able
     -- to search with regular expressions
     abort_pattern = "[^a-zA-Z0-9_.()]",
-    -- limit matches in a certain direction
-    direction = "both", ---@type "forward" | "backward" | "both"
+    -- search direction
+    -- NOTE: will be overriden in a regular search with `/` or `?`
+    forward = true,
+    -- when `false`, find only matches in the given direction
+    wrap = true,
   },
   ui = {
     -- When using flash during search, flash will additionally

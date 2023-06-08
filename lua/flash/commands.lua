@@ -1,7 +1,6 @@
 local State = require("flash.state")
 
 ---@class Flash.Commands
-
 local M = {}
 
 local function t(str)

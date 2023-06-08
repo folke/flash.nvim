@@ -11,7 +11,6 @@ local Search = require("flash.search")
 ---@field results Flash.Match[]
 ---@field pattern string
 ---@field config Flash.Config
----@field wrap boolean
 local M = {}
 
 ---@type Flash.State?
@@ -51,7 +50,14 @@ function M.setup()
     group = group,
     callback = function()
       if M.is_search() then
-        M.state = M.new({ op = vim.fn.mode() == "v" })
+        M.state = M.new({
+          op = vim.fn.mode() == "v",
+          config = {
+            search = {
+              forward = vim.fn.getcmdtype() == "/",
+            },
+          },
+        })
       end
     end,
   })
@@ -67,11 +73,11 @@ function M.setup()
   })
 end
 
----@param opts? {win:number, op:boolean, config:Flash.Config}
+---@param opts? {win:number, op:boolean, config:Flash.Config, wrap:boolean}
 function M.new(opts)
   opts = opts or {}
   local self = setmetatable({}, { __index = M })
-  self.config = opts.config and Config.get(opts.config) or Config
+  self.config = Config.get(opts.config)
   self.op = opts.op or false
   self.win = opts.win or vim.api.nvim_get_current_win()
   self.buf = vim.api.nvim_win_get_buf(self.win)

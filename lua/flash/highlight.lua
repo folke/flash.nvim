@@ -22,10 +22,10 @@ function M.backdrop(state)
     local buf = vim.api.nvim_win_get_buf(win)
     local from = { info.topline, 0 }
     local to = { info.botline + 1, 0 }
-    if state.win == win then
-      if state.config.search.direction == "forward" then
+    if state.win == win and not state.config.search.wrap then
+      if state.config.search.forward then
         from = { state.pos[1], state.pos[2] + 1 }
-      elseif state.config.search.direction == "backward" then
+      else
         to = state.pos
       end
     end

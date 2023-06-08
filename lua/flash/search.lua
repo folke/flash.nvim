@@ -32,10 +32,11 @@ function M._search(win, state)
   end
 
   local flags = ""
-  if state.config.search.direction == "forward" then
-    flags = "W"
-  elseif state.config.search.direction == "backward" then
-    flags = "bW"
+  if not state.config.search.wrap then
+    flags = flags .. "W"
+  end
+  if not state.config.search.forward then
+    flags = flags .. "b"
   end
 
   local first ---@type number[]
