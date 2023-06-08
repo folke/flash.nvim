@@ -29,6 +29,10 @@ local defaults = {
     -- limit matches in a certain direction
     direction = nil, ---@type "forward" | "backward" | nil
   },
+  ui = {
+    backdrop = true,
+    priority = 200,
+  },
 }
 
 ---@type Flash.Config
@@ -37,6 +41,7 @@ local options
 ---@param opts? Flash.Config
 function M.setup(opts)
   options = M.get(opts)
+  require("flash.highlight").setup()
   require("flash.state").setup()
 end
 

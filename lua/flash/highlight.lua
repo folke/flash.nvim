@@ -8,26 +8,65 @@ function M.clear()
   end
 end
 
+function M.setup()
+  vim.api.nvim_set_hl(0, "FlashBackdrop", { link = "Comment", default = true })
+  vim.api.nvim_set_hl(0, "FlashMatch", { link = "Search", default = true })
+  vim.api.nvim_set_hl(0, "FlashCurrent", { link = "IncSearch", default = true })
+  vim.api.nvim_set_hl(0, "FlashLabel", { link = "Substitute", default = true })
+end
+
+---@param state Flash.State
+function M.backdrop(state)
+  for _, win in ipairs(state.wins) do
+    local info = vim.fn.getwininfo(win)[1]
+    local buf = vim.api.nvim_win_get_buf(win)
+    local from = { info.topline, 0 }
+    local to = { info.botline + 1, 0 }
+    if state.win == win then
+      if state.config.search.direction == "forward" then
+        from = { state.pos[1], state.pos[2] + 1 }
+      elseif state.config.search.direction == "backward" then
+        to = state.pos
+      end
+    end
+    vim.api.nvim_buf_set_extmark(buf, M.ns, from[1] - 1, from[2], {
+      hl_group = "FlashBackdrop",
+      end_row = to[1] - 1,
+      end_col = to[2],
+      hl_eol = true,
+      priority = state.config.ui.priority,
+      strict = false,
+    })
+  end
+end
+
 ---@param state Flash.State
 function M.update(state)
   M.clear()
-  local State = require("flash.state")
+
+  if state.config.ui.backdrop then
+    M.backdrop(state)
+  end
+
   for _, match in ipairs(state.results) do
     local buf = vim.api.nvim_win_get_buf(match.win)
 
-    if not State.is_search() then
+    if not state.is_search() then
       vim.api.nvim_buf_set_extmark(buf, M.ns, match.from[1] - 1, match.from[2], {
         end_row = match.to[1] - 1,
         end_col = match.to[2] + 1,
-        hl_group = match.first and match.win == state.win and "CurSearch" or "Search",
+        hl_group = match.first and match.win == state.win and "FlashCurrent" or "FlashMatch",
+        strict = false,
+        priority = state.config.ui.priority + 1,
       })
     end
 
     if match.label then
-      local col = math.min(match.to[2], #match.line - 1)
-      vim.api.nvim_buf_set_extmark(buf, M.ns, match.to[1] - 1, col + 1, {
-        virt_text = { { match.label, "Foo" } },
+      vim.api.nvim_buf_set_extmark(buf, M.ns, match.to[1] - 1, match.to[2] + 1, {
+        virt_text = { { match.label, "FlashLabel" } },
         virt_text_pos = "overlay",
+        strict = false,
+        priority = state.config.ui.priority + 1,
       })
     end
   end

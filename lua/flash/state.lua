@@ -5,6 +5,7 @@ local Search = require("flash.search")
 ---@class Flash.State
 ---@field buf buffer
 ---@field win window
+---@field wins window[]
 ---@field pos number[]
 ---@field op boolean operator pending mode
 ---@field results Flash.Match[]
@@ -65,7 +66,9 @@ function M.new(opts)
   self.pos = vim.api.nvim_win_get_cursor(self.win)
   self.mode = opts.mode or vim.api.nvim_get_mode().mode
   self.results = {}
+  self.wins = {}
   self.pattern = ""
+  self:update("")
   return self
 end
 
@@ -101,14 +104,17 @@ function M:update(pattern)
     return win ~= self.win
   end, wins)
   table.insert(wins, 1, self.win)
+  self.wins = wins
 
-  for _, win in ipairs(wins) do
-    local results = Search.search(win, self)
-    -- max results reached, so stop searching
-    if not results then
-      break
+  if pattern ~= "" then
+    for _, win in ipairs(wins) do
+      local results = Search.search(win, self)
+      -- max results reached, so stop searching
+      if not results then
+        break
+      end
+      vim.list_extend(self.results, results)
     end
-    vim.list_extend(self.results, results)
   end
 
   if self.config.jump.auto_jump and #self.results == 1 then
