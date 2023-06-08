@@ -11,6 +11,7 @@ local Search = require("flash.search")
 ---@field results Flash.Match[]
 ---@field pattern string
 ---@field config Flash.Config
+---@field wrap boolean
 local M = {}
 
 ---@type Flash.State?
@@ -24,34 +25,45 @@ end
 function M.setup()
   local group = vim.api.nvim_create_augroup("flash", { clear = true })
 
+  local function wrap(fn)
+    return function(...)
+      if M.state then
+        return fn(...)
+      end
+    end
+  end
+
   vim.api.nvim_create_autocmd("CmdlineChanged", {
     group = group,
-    callback = function()
-      if M.is_search() then
-        M.state = M.state or M.new()
-        M.state:update(vim.fn.getcmdline())
-      end
-    end,
+    callback = wrap(function()
+      M.state:update(vim.fn.getcmdline())
+    end),
   })
 
   vim.api.nvim_create_autocmd("CmdlineLeave", {
     group = group,
-    callback = function()
-      Highlight.clear()
+    callback = wrap(function()
+      M.state:clear()
       M.state = nil
+    end),
+  })
+  vim.api.nvim_create_autocmd("CmdlineEnter", {
+    group = group,
+    callback = function()
+      if M.is_search() then
+        M.state = M.new({ op = vim.fn.mode() == "v" })
+      end
     end,
   })
 
   vim.api.nvim_create_autocmd("ModeChanged", {
-    pattern = "*:*",
+    pattern = "*:c",
     group = group,
-    callback = function()
-      if not M.is_search() then
-        return
-      end
-      M.state = M.state or M.new()
-      M.state.op = vim.v.event.old_mode:sub(1, 2) == "no" or vim.v.event.new_mode:sub(1, 1) == "v"
-    end,
+    callback = wrap(function()
+      local op = vim.v.event.old_mode:sub(1, 2) == "no" or vim.fn.mode() == "v"
+      M.state.op = op
+      M.state:update()
+    end),
   })
 end
 
@@ -79,8 +91,10 @@ function M:jump(label)
   end
 end
 
----@param pattern string
+---@param pattern string?
 function M:update(pattern)
+  pattern = pattern or self.pattern
+
   if pattern:match(self.config.search.abort_pattern) then
     Highlight.clear()
     self.results = {}
@@ -124,6 +138,7 @@ function M:update(pattern)
   local Jump = require("flash.jump")
   Jump.update(self)
   Highlight.update(self)
+  vim.cmd.redraw()
 end
 
 function M:clear()
