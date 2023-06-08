@@ -31,6 +31,8 @@ function M.backdrop(state)
     end
     vim.api.nvim_buf_set_extmark(buf, M.ns, from[1] - 1, from[2], {
       hl_group = "FlashBackdrop",
+      cursorline_hl_group = "FlashBackdrop",
+      line_hl_group = "FlashBackdrop",
       end_row = to[1] - 1,
       end_col = to[2],
       hl_eol = true,
@@ -66,7 +68,7 @@ function M.update(state)
         virt_text = { { match.label, "FlashLabel" } },
         virt_text_pos = "overlay",
         strict = false,
-        priority = state.config.ui.priority + 1,
+        priority = state.config.ui.priority + 2,
       })
     end
   end

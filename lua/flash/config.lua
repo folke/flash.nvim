@@ -31,7 +31,7 @@ local defaults = {
   },
   ui = {
     backdrop = true,
-    priority = 200,
+    priority = 500,
   },
 }
 
