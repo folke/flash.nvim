@@ -9,10 +9,11 @@ local function t(str)
 end
 
 ---@param opts? Flash.Config
-function M.flash(opts)
+function M.jump(opts)
   local state = State.new({ config = opts })
 
   while true do
+    vim.cmd.redraw()
     local ok, n = pcall(vim.fn.getchar)
     if not ok then
       break
@@ -44,8 +45,6 @@ function M.flash(opts)
     if #state.results == 0 then
       break
     end
-
-    vim.cmd.redraw()
   end
   state:clear()
 end
