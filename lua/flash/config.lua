@@ -33,12 +33,17 @@ local defaults = {
     wrap = true,
   },
   ui = {
+    -- add a label for the first match in the current window.
+    -- you can always jump to the first match with `<CR>`
+    label_first = false,
+    -- show a backdrop with hl FlashBackdrop
+    backdrop = true,
     -- When using flash during search, flash will additionally
     -- highlight the matches the same way as the search highlight.
     -- This is useful to prevent flickring during search.
     -- Especially with plugins like noice.nvim.
     always_highlight_search = true,
-    backdrop = true,
+    -- extmakr priority
     priority = 5000,
   },
 }

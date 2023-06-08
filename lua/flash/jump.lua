@@ -46,7 +46,7 @@ function M.update(state)
   for _, m in ipairs(state.results) do
     -- only label visible matches
     -- and don't label the first match in the current window
-    if m.visible and not (m.first and m.win == state.win) then
+    if m.visible and not (m.first and m.win == state.win and not state.config.ui.label_first) then
       m.label = table.remove(labels, 1)
     end
   end
