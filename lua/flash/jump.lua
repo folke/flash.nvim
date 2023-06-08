@@ -91,12 +91,12 @@ function M.jump(label, state)
 
       local is_search = require("flash.state").is_search()
 
-      local on_jump = vim.schedule_wrap(function()
+      local on_jump = function()
         M.on_jump(match, state, {
           search_reg = vim.fn.getreg("/"),
           jump = not is_search or not state.op,
         })
-      end)
+      end
 
       if is_search then
         -- For operator pending mode, set the search pattern to the
@@ -115,7 +115,7 @@ function M.jump(label, state)
         -- and perform the jump when not in operator pending mode
         vim.api.nvim_create_autocmd("CmdlineLeave", {
           once = true,
-          callback = on_jump,
+          callback = vim.schedule_wrap(on_jump),
         })
       else
         on_jump()
