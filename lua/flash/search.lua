@@ -42,11 +42,17 @@ function M._search(win, state)
   local first ---@type number[]
   local last ---@type number[]
 
+  local pattern = state.pattern
+
+  if not state.config.search.regex then
+    pattern = "\\V" .. pattern:gsub("\\", "\\\\")
+  end
+
   ---@type Flash.Match[]
   local matches = {}
   while true do
     -- beginning of match
-    local ok, ret = pcall(vim.fn.search, state.pattern, flags)
+    local ok, ret = pcall(vim.fn.search, pattern, flags)
     if not ok or ret == 0 then
       break
     end
@@ -69,7 +75,7 @@ function M._search(win, state)
     end
 
     -- end of match
-    if vim.fn.search(state.pattern, "ce") == 0 then
+    if vim.fn.search(pattern, "ce") == 0 then
       break
     end
     local to = vim.api.nvim_win_get_cursor(0)

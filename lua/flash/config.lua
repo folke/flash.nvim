@@ -25,15 +25,20 @@ local defaults = {
     -- when more than `max_matches` are found in a window,
     -- the search will be aborted for that window.
     max_matches = 2000,
-    -- when this pattern matches the search pattern,
-    -- flash will be aborted. This is needed to be able
-    -- to search with regular expressions
-    abort_pattern = "[^a-zA-Z0-9_.() ]",
     -- search direction
     -- NOTE: will be overriden in a regular search with `/` or `?`
     forward = true,
     -- when `false`, find only matches in the given direction
     wrap = true,
+    -- when false, search expressions with start with `\V`
+    -- and `\` will be interpreted as a literal `\`.
+    -- This option is always enabled when triggering flash
+    -- in a regular search.
+    regex = false,
+    -- when regex=true, and this pattern matches the search pattern,
+    -- flash will be abort. This is needed to be able
+    -- to search with regular expressions
+    abort_pattern = "[^a-zA-Z0-9_.() ]",
   },
   highlight = {
     -- add a label for the first match in the current window.
