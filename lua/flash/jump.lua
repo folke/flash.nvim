@@ -100,6 +100,9 @@ end
 ---@param opts {search_reg:string, jump:boolean}
 function M.on_jump(match, state, opts)
   if opts.jump then
+    if state.config.jump.jumplist then
+      vim.cmd("normal! m'")
+    end
     if match.win ~= vim.api.nvim_get_current_win() then
       vim.api.nvim_set_current_win(match.win)
     end

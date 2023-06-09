@@ -16,6 +16,8 @@ local defaults = {
     nohlsearch = true,
     -- jump when only one match is found
     auto_jump = true,
+    -- save location in the jumplist
+    jumplist = true,
   },
   search = {
     -- search/jump in all windows
