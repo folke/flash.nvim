@@ -66,12 +66,22 @@ function M.update(state)
     end
 
     if match.label then
-      vim.api.nvim_buf_set_extmark(buf, M.ns, match.to[1] - 1, match.to[2] + 1, {
-        virt_text = { { match.label, state.config.highlight.groups.label } },
-        virt_text_pos = "overlay",
-        strict = false,
-        priority = state.config.highlight.priority + 2,
-      })
+      if state.config.highlight.label_after then
+        vim.api.nvim_buf_set_extmark(buf, M.ns, match.to[1] - 1, match.to[2] + 1, {
+          virt_text = { { match.label, state.config.highlight.groups.label } },
+          virt_text_pos = "overlay",
+          strict = false,
+          priority = state.config.highlight.priority + 2,
+        })
+      end
+      if state.config.highlight.label_before then
+        vim.api.nvim_buf_set_extmark(buf, M.ns, match.from[1] - 1, match.from[2] - 1, {
+          virt_text = { { match.label, state.config.highlight.groups.label } },
+          virt_text_pos = "overlay",
+          strict = false,
+          priority = state.config.highlight.priority + 2,
+        })
+      end
     end
   end
 end

@@ -43,7 +43,11 @@ local defaults = {
   highlight = {
     -- add a label for the first match in the current window.
     -- you can always jump to the first match with `<CR>`
-    label_first = false,
+    label_current = false,
+    -- add the label after the match
+    label_after = true,
+    -- add the label before the match
+    label_before = false,
     -- show a backdrop with hl FlashBackdrop
     backdrop = true,
     -- Will apply the same highlights as a regular search.
@@ -86,6 +90,7 @@ function M.setup(opts)
   options = M.get(opts)
   require("flash.highlight").setup()
   require("flash.search").setup()
+  require("flash.charsearch").setup()
 end
 
 ---@param opts? Flash.Config

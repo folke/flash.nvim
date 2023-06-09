@@ -75,7 +75,7 @@ function M:filter()
   -- only label visible matches
   -- and don't label the first match in the current window
   for m, match in ipairs(self.state.results) do
-    if match.visible and not (self.state.current == m and not self.state.config.highlight.label_first) then
+    if match.visible and not (self.state.current == m and not self.state.config.highlight.label_current) then
       table.insert(ret, match)
     end
   end
