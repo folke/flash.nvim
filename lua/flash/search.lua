@@ -7,7 +7,7 @@ local M = {}
 ---@field next string next character
 ---@field label? string
 ---@field visible boolean
----@field first boolean
+---@field current boolean
 ---@field line string
 
 ---@param win window

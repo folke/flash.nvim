@@ -59,7 +59,7 @@ function M.update(state)
       vim.api.nvim_buf_set_extmark(buf, M.ns, match.from[1] - 1, match.from[2], {
         end_row = match.to[1] - 1,
         end_col = match.to[2] + 1,
-        hl_group = match.first and match.win == state.win and "FlashCurrent" or "FlashMatch",
+        hl_group = match.current and match.win == state.win and "FlashCurrent" or "FlashMatch",
         strict = false,
         priority = state.config.highlight.priority + 1,
       })

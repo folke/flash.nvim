@@ -57,7 +57,7 @@ end
 ---@return Flash.Match?
 function M.jump(label, state)
   for _, match in ipairs(state.results) do
-    if match.label == label or match.first == label then
+    if match.label == label or match.current == label then
       local pos = match.from
 
       local is_search = state.is_search()
