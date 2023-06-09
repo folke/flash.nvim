@@ -83,7 +83,11 @@ end
 function M:update(pattern)
   pattern = pattern or self.pattern or ""
 
-  if self.config.search.regex and pattern:match(self.config.search.abort_pattern) then
+  if
+    self.config.search.regex
+    and self.config.search.abort_pattern
+    and pattern:match(self.config.search.abort_pattern)
+  then
     Highlight.clear()
     self.results = {}
     return
