@@ -19,6 +19,7 @@ end
 
 ---@param state Flash.State
 function M.update(state)
+  ---@type Flash.Match[]
   local matches = {}
   vim.list_extend(matches, state.results)
   -- sort by current win, other win, then by distance
@@ -48,7 +49,7 @@ function M.update(state)
   for _, m in ipairs(matches) do
     -- only label visible matches
     -- and don't label the first match in the current window
-    if m.visible and not (m.first and m.win == state.win and not state.config.highlight.label_first) then
+    if m.visible and not (m.current and m.win == state.win and not state.config.highlight.label_first) then
       m.label = table.remove(labels, 1)
       if #labels == 0 then
         break

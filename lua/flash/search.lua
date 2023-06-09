@@ -83,7 +83,7 @@ function M._search(win, state)
       line = line,
       next = line:sub(to[2] + 2, to[2] + 2),
       visible = from[1] >= info.topline and from[1] <= info.botline,
-      first = vim.deep_equal(from, first),
+      current = vim.deep_equal(from, first),
     })
     if #matches > Config.search.max_matches then
       -- vim.notify("Too many matches", vim.log.levels.WARN, { title = "flash.nvim" })
