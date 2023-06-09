@@ -85,7 +85,7 @@ function M.setup(opts)
   opts.mode = nil
   options = M.get(opts)
   require("flash.highlight").setup()
-  require("flash.state").setup()
+  require("flash.search").setup()
 end
 
 ---@param opts? Flash.Config

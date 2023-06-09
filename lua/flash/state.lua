@@ -1,6 +1,6 @@
 local Config = require("flash.config")
 local Highlight = require("flash.highlight")
-local Search = require("flash.search")
+local Searcher = require("flash.searcher")
 
 ---@class Flash.State
 ---@field buf buffer
@@ -16,66 +16,9 @@ local Search = require("flash.search")
 ---@field labeler Flash.Labeler
 local M = {}
 
----@type Flash.State?
-M.state = nil
-
 function M.is_search()
   local t = vim.fn.getcmdtype()
   return t == "/" or t == "?"
-end
-
-function M.setup()
-  local group = vim.api.nvim_create_augroup("flash", { clear = true })
-
-  local function wrap(fn)
-    return function(...)
-      if M.state then
-        return fn(...)
-      end
-    end
-  end
-
-  vim.api.nvim_create_autocmd("CmdlineChanged", {
-    group = group,
-    callback = wrap(function()
-      M.state:update(vim.fn.getcmdline())
-    end),
-  })
-
-  vim.api.nvim_create_autocmd("CmdlineLeave", {
-    group = group,
-    callback = wrap(function()
-      M.state:clear()
-      M.state = nil
-    end),
-  })
-  vim.api.nvim_create_autocmd("CmdlineEnter", {
-    group = group,
-    callback = function()
-      if M.is_search() then
-        M.state = M.new({
-          op = vim.fn.mode() == "v",
-          config = {
-            mode = "search",
-            search = {
-              forward = vim.fn.getcmdtype() == "/",
-              regex = true,
-            },
-          },
-        })
-      end
-    end,
-  })
-
-  vim.api.nvim_create_autocmd("ModeChanged", {
-    pattern = "*:c",
-    group = group,
-    callback = wrap(function()
-      local op = vim.v.event.old_mode:sub(1, 2) == "no" or vim.fn.mode() == "v"
-      M.state.op = op
-      M.state:update()
-    end),
-  })
 end
 
 ---@param opts? {win:number, op:boolean, config:Flash.Config, wrap:boolean, labels:boolean}
@@ -96,6 +39,10 @@ function M.new(opts)
   self.labeler = require("flash.labeler").new(self)
   self:update("")
   return self
+end
+
+function M:is_current_buf()
+  return self.buf == vim.api.nvim_get_current_buf()
 end
 
 ---@param label? string
@@ -163,7 +110,7 @@ function M:update(pattern)
 
   if pattern ~= "" then
     for _, win in ipairs(wins) do
-      local results = Search.search(win, self)
+      local results = Searcher.search(win, self)
       -- max results reached, so stop searching
       if not results then
         break
