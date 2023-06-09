@@ -11,6 +11,8 @@ local Search = require("flash.search")
 ---@field results Flash.Match[]
 ---@field pattern string
 ---@field config Flash.Config
+---@field labels boolean
+---@field labeler Flash.Labeler
 local M = {}
 
 ---@type Flash.State?
@@ -74,11 +76,12 @@ function M.setup()
   })
 end
 
----@param opts? {win:number, op:boolean, config:Flash.Config, wrap:boolean}
+---@param opts? {win:number, op:boolean, config:Flash.Config, wrap:boolean, labels:boolean}
 function M.new(opts)
   opts = opts or {}
   local self = setmetatable({}, { __index = M })
   self.config = Config.get(opts.config)
+  self.labels = opts.labels == nil and true or opts.labels
   self.op = opts.op or false
   self.win = opts.win or vim.api.nvim_get_current_win()
   self.buf = vim.api.nvim_win_get_buf(self.win)
@@ -87,6 +90,7 @@ function M.new(opts)
   self.results = {}
   self.wins = {}
   self.pattern = ""
+  self.labeler = require("flash.labeler").new(self)
   self:update("")
   return self
 end
@@ -143,6 +147,9 @@ function M:update(pattern)
 
   local Jump = require("flash.jump")
   Jump.update(self)
+  if self.labels then
+    self.labeler:update()
+  end
   Highlight.update(self)
   vim.cmd.redraw()
 end
