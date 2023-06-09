@@ -54,12 +54,13 @@ end
 
 ---@param label string|boolean
 ---@param state Flash.State
+---@return Flash.Match?
 function M.jump(label, state)
   for _, match in ipairs(state.results) do
     if match.label == label or match.first == label then
       local pos = match.from
 
-      local is_search = require("flash.state").is_search()
+      local is_search = state.is_search()
 
       local on_jump = function()
         M.on_jump(match, state, {
@@ -90,7 +91,7 @@ function M.jump(label, state)
       else
         on_jump()
       end
-      return true
+      return match
     end
   end
 end

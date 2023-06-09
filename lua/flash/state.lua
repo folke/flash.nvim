@@ -91,11 +91,10 @@ function M.new(opts)
   return self
 end
 
+---@return Flash.Match?
 function M:jump(label)
   local Jump = require("flash.jump")
-  if Jump.jump(label, self) then
-    return true
-  end
+  return Jump.jump(label, self)
 end
 
 ---@param pattern string?
