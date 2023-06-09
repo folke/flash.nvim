@@ -2,12 +2,12 @@ local M = {}
 
 ---@param state Flash.State
 function M.labels(state)
-  local skip = {}
+  local skip = {} ---@type table<string, boolean>
   for _, m in ipairs(state.results) do
     skip[m.next] = true
   end
 
-  local labels = {}
+  local labels = {} ---@type string[]
   for _, l in ipairs(vim.split(state.config.labels .. state.config.labels:upper(), "")) do
     if not skip[l] then
       labels[#labels + 1] = l
@@ -19,8 +19,10 @@ end
 
 ---@param state Flash.State
 function M.update(state)
+  local matches = {}
+  vim.list_extend(matches, state.results)
   -- sort by current win, other win, then by distance
-  table.sort(state.results, function(a, b)
+  table.sort(matches, function(a, b)
     if a.win ~= b.win then
       local aw = a.win == state.win and 0 or a.win
       local bw = b.win == state.win and 0 or b.win
@@ -43,11 +45,14 @@ function M.update(state)
   end)
 
   local labels = M.labels(state)
-  for _, m in ipairs(state.results) do
+  for _, m in ipairs(matches) do
     -- only label visible matches
     -- and don't label the first match in the current window
     if m.visible and not (m.first and m.win == state.win and not state.config.highlight.label_first) then
       m.label = table.remove(labels, 1)
+      if #labels == 0 then
+        break
+      end
     end
   end
 end
