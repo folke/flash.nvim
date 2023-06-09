@@ -28,7 +28,7 @@ local defaults = {
     -- when this pattern matches the search pattern,
     -- flash will be aborted. This is needed to be able
     -- to search with regular expressions
-    abort_pattern = "[^a-zA-Z0-9_.()]",
+    abort_pattern = "[^a-zA-Z0-9_.() ]",
     -- search direction
     -- NOTE: will be overriden in a regular search with `/` or `?`
     forward = true,
