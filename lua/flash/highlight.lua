@@ -29,16 +29,18 @@ function M.backdrop(state)
         to = state.pos
       end
     end
-    vim.api.nvim_buf_set_extmark(buf, M.ns, from[1] - 1, from[2], {
-      hl_group = "FlashBackdrop",
-      cursorline_hl_group = "FlashBackdrop",
-      line_hl_group = "FlashBackdrop",
-      end_row = to[1] - 1,
-      end_col = to[2],
-      hl_eol = true,
-      priority = state.config.highlight.priority,
-      strict = false,
-    })
+    -- we need to create a backdrop for each line because of the way
+    -- extmarks priority rendering works
+    for line = from[1], to[1] do
+      vim.api.nvim_buf_set_extmark(buf, M.ns, line - 1, line == from[1] and from[2] or 0, {
+        hl_group = "FlashBackdrop",
+        end_row = line == to[1] and line - 1 or line,
+        hl_eol = line ~= to[1],
+        end_col = line == to[1] and to[2] or from[2],
+        priority = state.config.highlight.priority,
+        strict = false,
+      })
+    end
   end
 end
 
