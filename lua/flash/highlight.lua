@@ -33,7 +33,7 @@ function M.backdrop(state)
     -- extmarks priority rendering works
     for line = from[1], to[1] do
       vim.api.nvim_buf_set_extmark(buf, M.ns, line - 1, line == from[1] and from[2] or 0, {
-        hl_group = "FlashBackdrop",
+        hl_group = state.config.highlight.groups.backdrop,
         end_row = line == to[1] and line - 1 or line,
         hl_eol = line ~= to[1],
         end_col = line == to[1] and to[2] or from[2],
@@ -52,14 +52,14 @@ function M.update(state)
     M.backdrop(state)
   end
 
-  for _, match in ipairs(state.results) do
+  for m, match in ipairs(state.results) do
     local buf = vim.api.nvim_win_get_buf(match.win)
 
     if state.config.highlight.matches then
       vim.api.nvim_buf_set_extmark(buf, M.ns, match.from[1] - 1, match.from[2], {
         end_row = match.to[1] - 1,
         end_col = match.to[2] + 1,
-        hl_group = match.current and match.win == state.win and "FlashCurrent" or "FlashMatch",
+        hl_group = state.current == m and state.config.highlight.groups.current or state.config.highlight.groups.match,
         strict = false,
         priority = state.config.highlight.priority + 1,
       })
@@ -67,7 +67,7 @@ function M.update(state)
 
     if match.label then
       vim.api.nvim_buf_set_extmark(buf, M.ns, match.to[1] - 1, match.to[2] + 1, {
-        virt_text = { { match.label, "FlashLabel" } },
+        virt_text = { { match.label, state.config.highlight.groups.label } },
         virt_text_pos = "overlay",
         strict = false,
         priority = state.config.highlight.priority + 2,

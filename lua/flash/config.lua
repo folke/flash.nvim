@@ -47,6 +47,12 @@ local defaults = {
     matches = true,
     -- extmark priority
     priority = 5000,
+    groups = {
+      match = "FlashMatch",
+      current = "FlashCurrent",
+      backdrop = "FlashBackdrop",
+      label = "FlashLabel",
+    },
   },
   -- You can override the default options for a specific mode.
   -- Use it with `require("flash").jump({mode = "forward"})`
