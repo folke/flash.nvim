@@ -2,15 +2,9 @@ local State = require("flash.state")
 
 local M = {}
 
----@class CharSearch
----@field char string
----@field forward boolean
----@field before boolean
-
-M.timer = assert(vim.loop.new_timer(), "failed to create timer")
 M.last = {
-  ---@type string
-  key = nil,
+  ---@type "t" | "T" | "f" | "F" | nil
+  move = nil,
   ---@type string
   char = nil,
   ---@type Flash.Match?
@@ -55,11 +49,11 @@ function M.setup()
   })
 end
 
----@param move string
----@return Flash.State state, boolean is_new
-function M.get_state(move)
-  if M.state and M.last.key == move then
-    return M.state, false
+---@return boolean updated
+function M.get_state()
+  local move = M.last.move
+  if M.state and M.last.move == move then
+    return false
   end
 
   M.state = State.new({
@@ -85,26 +79,58 @@ function M.get_state(move)
     M.state.config.highlight.label_before = true
     M.state.config.highlight.label_after = false
   end
-  return M.state, true
+  return true
 end
 
-function M.jump(key)
+function M.parse(key)
   -- repeat last search when hitting the same key
-  if M.state and M.last.key == key then
+  if M.state and M.last.move == key then
     key = ";"
   end
 
-  local is_repeat = key == ";" or key == ","
+  local move = key
+  if key == ";" or key == "," then
+    move = M.last.move
+  end
+  M.last.move = move
+  return key
+end
 
-  if is_repeat and not M.last.key then
+function M.get_char()
+  vim.cmd.redraw()
+  local ok, c = pcall(vim.fn.getchar)
+  M.last.char = ok and type(c) == "number" and vim.fn.nr2char(c) or nil
+  return M.last.char
+end
+
+function M.search()
+  local char = M.last.char:gsub("\\", "\\\\")
+  local pattern
+  if M.last.move == "t" then
+    pattern = "\\m.\\ze\\V" .. char
+  elseif M.last.move == "T" then
+    pattern = "\\V" .. char .. "\\zs\\m."
+  else
+    pattern = "\\V" .. char
+  end
+
+  M.state:update(pattern)
+  if M.keys[M.last.move].before then
+    for _, m in ipairs(M.state.results) do
+      m.label = M.last.char
+    end
+  end
+end
+
+function M.jump(key)
+  key = M.parse(key)
+
+  if not M.last.move then
     return
   end
 
-  local move = is_repeat and M.last.key or key
+  local updated = M.get_state()
 
-  local _, needs_update = M.get_state(move)
-
-  M.last.key = move
   M.pending = true
 
   local count = vim.v.count == 0 and 1 or vim.v.count
@@ -113,33 +139,12 @@ function M.jump(key)
     count = count
   elseif key == "," then
     count = -count
-  else
-    vim.cmd.redraw()
-    local ok, c = pcall(vim.fn.getchar)
-    if ok and type(c) == "number" then
-      M.last.char = vim.fn.nr2char(c)
-    else
-      return M.clear()
-    end
+  elseif not M.get_char() then
+    return M.clear()
   end
 
-  if needs_update then
-    local char = M.last.char:gsub("\\", "\\\\")
-    local pattern
-    if move == "t" then
-      pattern = "\\m.\\ze\\V" .. char
-    elseif move == "T" then
-      pattern = "\\V" .. char .. "\\zs\\m."
-    else
-      pattern = "\\V" .. char
-    end
-
-    M.state:update(pattern)
-    if M.keys[move].before then
-      for _, m in ipairs(M.state.results) do
-        m.label = M.last.char
-      end
-    end
+  if updated then
+    M.search()
     count = count - 1
   end
 
