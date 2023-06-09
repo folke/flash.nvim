@@ -12,6 +12,7 @@ local Search = require("flash.search")
 ---@field pattern string
 ---@field config Flash.Config
 ---@field labels boolean
+---@field current number
 ---@field labeler Flash.Labeler
 local M = {}
 
@@ -90,11 +91,13 @@ function M.new(opts)
   self.results = {}
   self.wins = {}
   self.pattern = ""
+  self.current = 1
   self.labeler = require("flash.labeler").new(self)
   self:update("")
   return self
 end
 
+---@param label? string
 ---@return Flash.Match?
 function M:jump(label)
   local Jump = require("flash.jump")
@@ -142,16 +145,13 @@ function M:update(pattern)
   end
 
   if self.config.jump.auto_jump and #self.results == 1 then
-    return self:jump(true)
+    return self:jump()
   end
 
-  local Jump = require("flash.jump")
-  Jump.update(self)
   if self.labels then
     self.labeler:update()
   end
   Highlight.update(self)
-  vim.cmd.redraw()
 end
 
 function M:clear()
