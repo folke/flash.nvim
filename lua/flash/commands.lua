@@ -12,6 +12,7 @@ function M.jump(opts)
   local state = State.new({ config = opts })
 
   while true do
+    vim.cmd.redraw()
     local ok, n = pcall(vim.fn.getchar)
     if not ok then
       break
@@ -23,7 +24,7 @@ function M.jump(opts)
       break
     -- jump to first
     elseif c == t("<cr>") then
-      state:jump(true)
+      state:jump()
       break
     end
 

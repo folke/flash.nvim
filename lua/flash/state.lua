@@ -104,6 +104,33 @@ function M:jump(label)
   return Jump.jump(label, self)
 end
 
+-- Moves the results cursor by `amount` (default 1) and wraps around.
+-- When forward is `nil` it uses the current search direction.
+-- Otherwise it uses the given direction.
+---@param amount? number
+---@param forward? boolean
+function M:advance(amount, forward)
+  amount = amount or 1
+  if forward == nil then
+    forward = self.config.search.forward
+  end
+  self.current = self.current + (forward and amount or -amount)
+  -- wrap around
+  self.current = (self.current - 1) % #self.results + 1
+end
+
+-- Moves the results cursor by `amount` (default 1) and wraps around.
+-- Always moves forward, regardless of the search direction.
+function M:next(amount)
+  self:advance(math.abs(amount), true)
+end
+
+-- Moves the results cursor by `amount` (default 1) and wraps around.
+-- Always moves backward, regardless of the search direction.
+function M:prev(amount)
+  self:advance(-math.abs(amount), true)
+end
+
 ---@param pattern string?
 function M:update(pattern)
   pattern = pattern or self.pattern or ""
@@ -141,6 +168,22 @@ function M:update(pattern)
         break
       end
       vim.list_extend(self.results, results)
+    end
+    table.sort(self.results, function(a, b)
+      if a.win ~= b.win then
+        return a.win < b.win
+      end
+      if a.from[1] ~= b.from[1] then
+        return a.from[1] < b.from[1]
+      end
+      return a.from[2] < b.from[2]
+    end)
+
+    for m, match in ipairs(self.results) do
+      if match.first and match.win == self.win then
+        self.current = m
+        break
+      end
     end
   end
 
