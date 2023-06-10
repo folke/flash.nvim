@@ -18,6 +18,7 @@ local defaults = {
     auto_jump = true,
     -- save location in the jumplist
     jumplist = true,
+    pos = "start", -- "start" | "end" | "range"
   },
   search = {
     -- search/jump in all windows

@@ -91,13 +91,13 @@ end
 -- Moves the results cursor by `amount` (default 1) and wraps around.
 -- Always moves forward, regardless of the search direction.
 function M:next(amount)
-  self:advance(math.abs(amount), true)
+  self:advance(math.abs(amount or 1), true)
 end
 
 -- Moves the results cursor by `amount` (default 1) and wraps around.
 -- Always moves backward, regardless of the search direction.
 function M:prev(amount)
-  self:advance(-math.abs(amount), true)
+  self:advance(-math.abs(amount or 1), true)
 end
 
 ---@param pattern string
@@ -177,17 +177,21 @@ function M:search(pattern)
 end
 
 ---@param results Flash.Match[]
-function M:set(results)
+---@param opts? {sort:boolean}
+function M:set(results, opts)
+  opts = opts or {}
   self.results = results
-  table.sort(self.results, function(a, b)
-    if a.win ~= b.win then
-      return a.win < b.win
-    end
-    if a.from[1] ~= b.from[1] then
-      return a.from[1] < b.from[1]
-    end
-    return a.from[2] < b.from[2]
-  end)
+  if opts.sort then
+    table.sort(self.results, function(a, b)
+      if a.win ~= b.win then
+        return a.win < b.win
+      end
+      if a.from[1] ~= b.from[1] then
+        return a.from[1] < b.from[1]
+      end
+      return a.from[2] < b.from[2]
+    end)
+  end
   self.current = 1
   for m, match in ipairs(self.results) do
     if match.first and match.win == self.win then
