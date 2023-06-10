@@ -1,4 +1,5 @@
 local State = require("flash.state")
+local Repeat = require("flash.repeat")
 
 local M = {}
 
@@ -26,15 +27,20 @@ M.keys = {
 
 function M.setup()
   for key in pairs(M.keys) do
-    vim.keymap.set({ "n", "x", "o" }, key, function()
-      return M.jump(key)
-    end, {
-      silent = true,
-      noremap = true,
-    })
+    vim.keymap.set(
+      { "n", "x", "o" },
+      key,
+      Repeat.wrap(function(is_repeat)
+        M.jump(is_repeat and ";" or key)
+      end),
+      {
+        silent = true,
+        expr = true,
+      }
+    )
   end
 
-  vim.api.nvim_create_autocmd({ "BufLeave", "CursorMoved", "ModeChanged" }, {
+  vim.api.nvim_create_autocmd({ "BufLeave", "CursorMoved", "InsertEnter" }, {
     callback = function(event)
       local pos = vim.api.nvim_win_get_cursor(0)
 
@@ -42,7 +48,7 @@ function M.setup()
         return
       end
 
-      if not M.pending then
+      if not M.pending and M.state then
         M.clear()
       end
     end,
@@ -137,12 +143,12 @@ function M.jump(key)
 
   M.pending = true
 
-  local count = vim.v.count == 0 and 1 or vim.v.count
+  local count = vim.v.count1
 
   if key == ";" then
-    count = count
+    count = vim.v.count1
   elseif key == "," then
-    count = -count
+    count = -vim.v.count1
   elseif not M.get_char() then
     return M.clear()
   end
