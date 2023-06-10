@@ -30,7 +30,7 @@ local defaults = {
     forward = true,
     -- when `false`, find only matches in the given direction
     wrap = true,
-    -- when false, search expressions with start with `\V`
+    -- when false, search expressions will start with `\V`
     -- and `\` will be interpreted as a literal `\`.
     -- This option is always enabled when triggering flash
     -- in a regular search.
@@ -45,9 +45,9 @@ local defaults = {
       -- add a label for the first match in the current window.
       -- you can always jump to the first match with `<CR>`
       current = false,
-      -- add the label after the match
+      -- show the label after the match
       after = true, ---@type boolean|number[]
-      -- add the label before the match
+      -- show the label before the match
       before = false, ---@type boolean|number[]
       -- position of the label extmark
       style = "overlay", ---@type "eol" | "overlay" | "right_align" | "inline"
