@@ -53,6 +53,12 @@ function M.setup()
       end
     end,
   })
+
+  vim.on_key(function(key)
+    if M.state and key == Util.t("<esc>") and vim.fn.mode() == "n" then
+      M.clear()
+    end
+  end)
 end
 
 ---@return boolean updated
