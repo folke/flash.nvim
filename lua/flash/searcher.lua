@@ -8,7 +8,6 @@ local M = {}
 ---@field label? string
 ---@field visible boolean
 ---@field first boolean
----@field line string
 
 ---@param win window
 ---@param state Flash.State
@@ -86,7 +85,6 @@ function M._search(win, state)
       win = win,
       from = from,
       to = to,
-      line = line,
       next = line:sub(to[2] + 2, to[2] + 2),
       visible = from[1] >= info.topline and from[1] <= info.botline,
       first = vim.deep_equal(from, first),

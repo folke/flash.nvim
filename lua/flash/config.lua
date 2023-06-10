@@ -41,13 +41,17 @@ local defaults = {
     abort_pattern = "[^a-zA-Z0-9_.() ]",
   },
   highlight = {
-    -- add a label for the first match in the current window.
-    -- you can always jump to the first match with `<CR>`
-    label_current = false,
-    -- add the label after the match
-    label_after = true,
-    -- add the label before the match
-    label_before = false,
+    label = {
+      -- add a label for the first match in the current window.
+      -- you can always jump to the first match with `<CR>`
+      current = false,
+      -- add the label after the match
+      after = true, ---@type boolean|number[]
+      -- add the label before the match
+      before = false, ---@type boolean|number[]
+      -- position of the label extmark
+      style = "overlay", ---@type "eol" | "overlay" | "right_align" | "inline"
+    },
     -- show a backdrop with hl FlashBackdrop
     backdrop = true,
     -- Will apply the same highlights as a regular search.

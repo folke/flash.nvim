@@ -52,6 +52,35 @@ function M.update(state)
     M.backdrop(state)
   end
 
+  local style = state.config.highlight.label.style
+  if style == "inline" and not vim.fn.has("nvim-0.10.0") then
+    style = "overlay"
+  end
+
+  local after = state.config.highlight.label.after
+  after = after == true and { 0, 1 } or after
+  local before = state.config.highlight.label.before
+  before = before == true and { 0, -1 } or before
+
+  if style == "inline" and before then
+    before[2] = before[2] + 1
+  end
+
+  ---@param match Flash.Match
+  ---@param pos number[]
+  ---@param offset number[]
+  local function label(match, pos, offset)
+    local buf = vim.api.nvim_win_get_buf(match.win)
+    local row = pos[1] - 1 + offset[1]
+    local col = pos[2] + offset[2]
+    vim.api.nvim_buf_set_extmark(buf, M.ns, row, col, {
+      virt_text = { { match.label, state.config.highlight.groups.label } },
+      virt_text_pos = style,
+      strict = false,
+      priority = state.config.highlight.priority + 2,
+    })
+  end
+
   for m, match in ipairs(state.results) do
     local buf = vim.api.nvim_win_get_buf(match.win)
 
@@ -66,21 +95,11 @@ function M.update(state)
     end
 
     if match.label then
-      if state.config.highlight.label_after then
-        vim.api.nvim_buf_set_extmark(buf, M.ns, match.to[1] - 1, match.to[2] + 1, {
-          virt_text = { { match.label, state.config.highlight.groups.label } },
-          virt_text_pos = "overlay",
-          strict = false,
-          priority = state.config.highlight.priority + 2,
-        })
+      if after then
+        label(match, match.to, after)
       end
-      if state.config.highlight.label_before then
-        vim.api.nvim_buf_set_extmark(buf, M.ns, match.from[1] - 1, match.from[2] - 1, {
-          virt_text = { { match.label, state.config.highlight.groups.label } },
-          virt_text_pos = "overlay",
-          strict = false,
-          priority = state.config.highlight.priority + 2,
-        })
+      if before then
+        label(match, match.from, before)
       end
     end
   end
