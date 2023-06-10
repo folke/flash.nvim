@@ -166,12 +166,10 @@ function M:search(pattern)
   local results = {}
   if pattern ~= "" then
     for _, win in ipairs(self.wins) do
-      local r = Searcher.search(win, self)
-      -- max results reached, so stop searching
-      if not r then
+      vim.list_extend(results, Searcher.search(win, self))
+      if #results >= self.config.search.max_matches then
         break
       end
-      vim.list_extend(results, r)
     end
   end
   self:set(results)
