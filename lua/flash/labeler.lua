@@ -29,7 +29,9 @@ end
 function M:labeler()
   local skip = {} ---@type table<string, boolean>
   for _, m in ipairs(self.state.results) do
-    skip[m.next] = true
+    if m.next then
+      skip[m.next] = true
+    end
   end
 
   ---@type table<string, boolean>
@@ -75,7 +77,7 @@ function M:filter()
   -- only label visible matches
   -- and don't label the first match in the current window
   for m, match in ipairs(self.state.results) do
-    if match.visible and not (self.state.current == m and not self.state.config.highlight.label.current) then
+    if match.visible ~= false and not (self.state.current == m and not self.state.config.highlight.label.current) then
       table.insert(ret, match)
     end
   end

@@ -4,9 +4,9 @@ local M = {}
 ---@field win window
 ---@field from number[]
 ---@field to number[]
----@field next string next character
+---@field next? string next character
 ---@field label? string
----@field visible boolean
+---@field visible? boolean
 ---@field first boolean
 
 ---@param win window
