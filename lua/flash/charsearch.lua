@@ -153,6 +153,10 @@ function M.jump(key)
   end
 
   M.state:advance(count)
+
+  if vim.fn.mode(true):sub(1, 2) == "no" then
+    vim.cmd("normal! v")
+  end
   M.last.match = M.state:jump()
   M.state:highlight()
   M.pending = false
