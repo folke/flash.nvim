@@ -26,7 +26,7 @@ function M.jump(opts)
     end
 
     -- break if we jumped
-    if state:update(pattern) then
+    if state:update({ search = pattern }) then
       break
     end
 

@@ -11,7 +11,6 @@ local Searcher = require("flash.searcher")
 ---@field results Flash.Match[]
 ---@field pattern string
 ---@field config Flash.Config
----@field labels boolean
 ---@field current number
 ---@field labeler Flash.Labeler
 local M = {}
@@ -21,23 +20,22 @@ function M.is_search()
   return t == "/" or t == "?"
 end
 
----@param opts? {win:number, op:boolean, config:Flash.Config, wrap:boolean, labels:boolean}
+---@param opts? {win:number, op:boolean, config:Flash.Config, wrap:boolean}
 function M.new(opts)
   opts = opts or {}
   local self = setmetatable({}, { __index = M })
   self.config = Config.get(opts.config)
-  self.labels = opts.labels == nil and true or opts.labels
   self.op = opts.op or false
   self.win = opts.win or vim.api.nvim_get_current_win()
   self.buf = vim.api.nvim_win_get_buf(self.win)
   self.pos = vim.api.nvim_win_get_cursor(self.win)
   self.mode = opts.mode or vim.api.nvim_get_mode().mode
   self.results = {}
-  self.wins = {}
+  self.wins = { self.win }
   self.pattern = ""
   self.current = 1
   self.labeler = require("flash.labeler").new(self)
-  self:update("")
+  self:update()
   return self
 end
 
@@ -49,7 +47,25 @@ end
 ---@return Flash.Match?
 function M:jump(label)
   local Jump = require("flash.jump")
-  return Jump.jump(label, self)
+  local match = self:get(label)
+  if match then
+    Jump.jump(match, self)
+    return match
+  end
+end
+
+-- Returns the current match or the match with the given label.
+---@param label? string
+---@return Flash.Match?
+function M:get(label)
+  if not label then
+    return self.results[self.current]
+  end
+  for _, m in ipairs(self.results) do
+    if m.label == label then
+      return m
+    end
+  end
 end
 
 -- Moves the results cursor by `amount` (default 1) and wraps around.
@@ -79,74 +95,101 @@ function M:prev(amount)
   self:advance(-math.abs(amount), true)
 end
 
----@param pattern string?
-function M:update(pattern)
-  pattern = pattern or self.pattern or ""
-
+---@param pattern string
+function M:validate(pattern)
   if
     self.config.search.regex
     and self.config.search.abort_pattern
     and pattern:match(self.config.search.abort_pattern)
   then
-    Highlight.clear()
+    self:clear()
     self.results = {}
-    return
+    return false
   end
+  return true
+end
 
+-- Checks if the given pattern is a jump label and jumps to it.
+---@param pattern string
+function M:check_jump(pattern)
   if pattern:find(self.pattern, 1, true) == 1 and #pattern == #self.pattern + 1 then
     local label = pattern:sub(-1)
     if self:jump(label) then
       return true
     end
   end
+end
 
-  self.pattern = pattern
-  self.results = {}
+---@param opts? {search:string, labels:boolean, results?:Flash.Match[]}
+---@return boolean? abort `true` if the search was aborted
+function M:update(opts)
+  opts = opts or {}
 
   -- prioritize current window
   ---@type window[]
   local wins = (self.op or not self.config.search.multi_window) and {} or vim.api.nvim_tabpage_list_wins(0)
+  ---@param win window
   wins = vim.tbl_filter(function(win)
     return win ~= self.win
   end, wins)
   table.insert(wins, 1, self.win)
   self.wins = wins
 
-  if pattern ~= "" then
-    for _, win in ipairs(wins) do
-      local results = Searcher.search(win, self)
-      -- max results reached, so stop searching
-      if not results then
-        break
-      end
-      vim.list_extend(self.results, results)
+  if opts.results then
+    self:set(opts.results)
+  elseif opts.search then
+    -- abort if pattern is invalid or a jump label
+    if not self:validate(opts.search) or self:check_jump(opts.search) then
+      return true
     end
-    table.sort(self.results, function(a, b)
-      if a.win ~= b.win then
-        return a.win < b.win
-      end
-      if a.from[1] ~= b.from[1] then
-        return a.from[1] < b.from[1]
-      end
-      return a.from[2] < b.from[2]
-    end)
-
-    for m, match in ipairs(self.results) do
-      if match.first and match.win == self.win then
-        self.current = m
-        break
-      end
-    end
+    self:search(opts.search)
   end
 
   if self.config.jump.auto_jump and #self.results == 1 then
     return self:jump()
   end
 
-  if self.labels then
+  if opts.labels ~= false then
     self.labeler:update()
   end
   self:highlight()
+end
+
+function M:search(pattern)
+  self.pattern = pattern
+  local results = {}
+  if pattern ~= "" then
+    for _, win in ipairs(self.wins) do
+      local r = Searcher.search(win, self)
+      -- max results reached, so stop searching
+      if not r then
+        break
+      end
+      vim.list_extend(results, r)
+    end
+  end
+  self:set(results)
+end
+
+---@param results Flash.Match[]
+function M:set(results)
+  self.results = results
+  table.sort(self.results, function(a, b)
+    if a.win ~= b.win then
+      return a.win < b.win
+    end
+    if a.from[1] ~= b.from[1] then
+      return a.from[1] < b.from[1]
+    end
+    return a.from[2] < b.from[2]
+  end)
+  self.current = 1
+  for m, match in ipairs(self.results) do
+    if match.first and match.win == self.win then
+      self.current = m
+      break
+    end
+  end
 end
 
 function M:highlight()

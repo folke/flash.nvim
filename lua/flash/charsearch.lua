@@ -70,7 +70,6 @@ function M.get_state()
 
   local move = M.last.move
   M.state = State.new({
-    labels = M.keys[move].before,
     config = {
       jump = { auto_jump = false },
       search = {
@@ -126,7 +125,7 @@ function M.search()
     pattern = "\\V" .. char
   end
 
-  M.state:update(pattern)
+  M.state:search(pattern)
   for _, m in ipairs(M.state.results) do
     m.label = M.last.char
   end
@@ -150,6 +149,7 @@ function M.jump(key)
   elseif key == "," then
     count = -vim.v.count1
   else
+    count = count - 1
     M.last.char = Util.get_char()
     if not M.last.char then
       return M.clear()
@@ -158,7 +158,6 @@ function M.jump(key)
 
   if updated then
     M.search()
-    count = count - 1
   end
 
   M.state:advance(count)
@@ -167,7 +166,7 @@ function M.jump(key)
     vim.cmd("normal! v")
   end
   M.last.match = M.state:jump()
-  M.state:highlight()
+  M.state:update()
   M.pending = false
 end
 

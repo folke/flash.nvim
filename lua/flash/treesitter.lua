@@ -65,10 +65,8 @@ function M.jump()
     },
   })
 
-  M.state.results = M.get_nodes()
+  M.state:update({ results = M.get_nodes() })
 
-  M.state.labeler:update()
-  M.state:highlight()
   local char = Util.get_char()
   if char then
     if vim.fn.mode() == "v" then
