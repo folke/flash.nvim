@@ -1,9 +1,13 @@
+local require = require("flash.require")
+
+local Jump = require("flash.jump")
 local State = require("flash.state")
 
 local M = {}
 
 ---@type Flash.State?
 M.state = nil
+M.op = false
 
 function M.setup()
   local group = vim.api.nvim_create_augroup("flash", { clear = true })
@@ -35,7 +39,6 @@ function M.setup()
     callback = function()
       if State.is_search() then
         M.state = State.new({
-          op = vim.fn.mode() == "v",
           config = {
             mode = "search",
             search = {
@@ -44,6 +47,8 @@ function M.setup()
             },
           },
         })
+        M.state.on_jump = M.on_jump
+        M.set_op(vim.fn.mode() == "v")
       end
     end,
   })
@@ -52,9 +57,51 @@ function M.setup()
     pattern = "*:c",
     group = group,
     callback = wrap(function()
-      local op = vim.v.event.old_mode:sub(1, 2) == "no" or vim.fn.mode() == "v"
-      M.state.op = op
+      M.set_op(vim.v.event.old_mode:sub(1, 2) == "no" or vim.fn.mode() == "v")
       M.state:update()
+    end),
+  })
+end
+
+function M.set_op(op)
+  M.op = op
+  if M.op and M.state then
+    M.state.config.search.multi_window = false
+  end
+end
+
+---@param self Flash.State
+---@param match Flash.Match
+function M:on_jump(match)
+  local pos = match.from
+  local search_reg = vim.fn.getreg("/")
+
+  -- For operator pending mode, set the search pattern to the
+  -- first character on the match position
+  if M.op then
+    local pos_pattern = ("\\%%%dl\\%%%dc."):format(pos[1], pos[2] + 1)
+    vim.fn.setcmdline(pos_pattern)
+  end
+
+  -- schedule a <cr> input to trigger the search
+  vim.schedule(function()
+    vim.api.nvim_input(M.op and "<cr>" or "<esc>")
+  end)
+
+  -- restore the real search pattern after the search
+  -- and perform the jump when not in operator pending mode
+  vim.api.nvim_create_autocmd("CmdlineLeave", {
+    once = true,
+    callback = vim.schedule_wrap(function()
+      if M.op then
+        -- delete the special search pattern from the history
+        vim.fn.histdel("search", -1)
+        -- restore original search pattern
+        vim.fn.setreg("/", search_reg)
+      else
+        Jump.jump(match, self)
+      end
+      Jump.on_jump(self)
     end),
   })
 end

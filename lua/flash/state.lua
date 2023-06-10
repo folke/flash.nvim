@@ -1,13 +1,15 @@
+local require = require("flash.require")
+
 local Config = require("flash.config")
 local Highlight = require("flash.highlight")
 local Searcher = require("flash.searcher")
+local Jump = require("flash.jump")
 
 ---@class Flash.State
 ---@field buf buffer
 ---@field win window
 ---@field wins window[]
 ---@field pos number[]
----@field op boolean operator pending mode
 ---@field results Flash.Match[]
 ---@field pattern string
 ---@field config Flash.Config
@@ -20,16 +22,14 @@ function M.is_search()
   return t == "/" or t == "?"
 end
 
----@param opts? {win:number, op:boolean, config:Flash.Config, wrap:boolean}
+---@param opts? {win:number, config:Flash.Config, wrap:boolean}
 function M.new(opts)
   opts = opts or {}
   local self = setmetatable({}, { __index = M })
   self.config = Config.get(opts.config)
-  self.op = opts.op or false
   self.win = opts.win or vim.api.nvim_get_current_win()
   self.buf = vim.api.nvim_win_get_buf(self.win)
   self.pos = vim.api.nvim_win_get_cursor(self.win)
-  self.mode = opts.mode or vim.api.nvim_get_mode().mode
   self.results = {}
   self.wins = { self.win }
   self.pattern = ""
@@ -39,6 +39,12 @@ function M.new(opts)
   return self
 end
 
+---@param match Flash.Match
+function M:on_jump(match)
+  Jump.jump(match, self)
+  Jump.on_jump(self)
+end
+
 function M:is_current_buf()
   return self.buf == vim.api.nvim_get_current_buf()
 end
@@ -46,10 +52,9 @@ end
 ---@param label? string
 ---@return Flash.Match?
 function M:jump(label)
-  local Jump = require("flash.jump")
   local match = self:get(label)
   if match then
-    Jump.jump(match, self)
+    self:on_jump(match)
     return match
   end
 end
@@ -127,7 +132,7 @@ function M:update(opts)
 
   -- prioritize current window
   ---@type window[]
-  local wins = (self.op or not self.config.search.multi_window) and {} or vim.api.nvim_tabpage_list_wins(0)
+  local wins = self.config.search.multi_window and vim.api.nvim_tabpage_list_wins(0) or {}
   ---@param win window
   wins = vim.tbl_filter(function(win)
     return win ~= self.win

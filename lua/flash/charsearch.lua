@@ -56,7 +56,7 @@ function M.setup()
   })
 
   vim.on_key(function(key)
-    if M.state and key == Util.t("<esc>") and vim.fn.mode() == "n" then
+    if M.state and key == Util.ESC and vim.fn.mode() == "n" then
       M.clear()
     end
   end)
