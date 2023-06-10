@@ -51,11 +51,11 @@ end
 
 ---@return boolean updated
 function M.get_state()
-  local move = M.last.move
-  if M.state and M.last.move == move then
+  if M.state then
     return false
   end
 
+  local move = M.last.move
   M.state = State.new({
     labels = M.keys[move].before,
     config = {
@@ -68,16 +68,17 @@ function M.get_state()
         regex = true,
       },
       highlight = {
-        groups = {
-          match = not M.keys[move].before and "FlashLabel" or nil,
-        },
         backdrop = false,
       },
     },
   })
   if move == "T" then
-    M.state.config.highlight.label_before = true
-    M.state.config.highlight.label_after = false
+    -- set the label before the jump position
+    M.state.config.highlight.label.before = true
+    M.state.config.highlight.label.after = false
+  elseif move == "f" or move == "F" then
+    -- set the label at the jump position
+    M.state.config.highlight.label.after = { 0, 0 }
   end
   return true
 end
@@ -92,6 +93,11 @@ function M.parse(key)
   if key == ";" or key == "," then
     move = M.last.move
   end
+
+  if M.last.move ~= move then
+    M.clear()
+  end
+
   M.last.move = move
   return key
 end
@@ -105,7 +111,7 @@ end
 
 function M.search()
   local char = M.last.char:gsub("\\", "\\\\")
-  local pattern
+  local pattern ---@type string
   if M.last.move == "t" then
     pattern = "\\m.\\ze\\V" .. char
   elseif M.last.move == "T" then
@@ -115,10 +121,8 @@ function M.search()
   end
 
   M.state:update(pattern)
-  if M.keys[M.last.move].before then
-    for _, m in ipairs(M.state.results) do
-      m.label = M.last.char
-    end
+  for _, m in ipairs(M.state.results) do
+    m.label = M.last.char
   end
 end
 
@@ -150,7 +154,7 @@ function M.jump(key)
 
   M.state:advance(count)
   M.last.match = M.state:jump()
-  require("flash.highlight").update(M.state)
+  M.state:highlight()
   M.pending = false
 end
 
