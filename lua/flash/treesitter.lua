@@ -3,22 +3,44 @@ local State = require("flash.state")
 local M = {}
 
 function M.get_nodes()
-  local ret = {} ---@type TSNode[]
+  local win = vim.api.nvim_get_current_win()
+  local buf = vim.api.nvim_win_get_buf(win)
+  local line_count = vim.api.nvim_buf_line_count(buf)
+
+  -- get all ranges of the current node and its parents
+  local ranges = {} ---@type TSNode[]
   local node = vim.treesitter.get_node()
   while node do
     local range = { node:range() }
-    if not vim.deep_equal(range, ret[#ret]) then
-      table.insert(ret, range)
+    if not vim.deep_equal(range, ranges[#ranges]) then
+      table.insert(ranges, range)
     end
     node = node:parent()
+  end
+
+  -- convert ranges to matches
+  ---@type Flash.Match[]
+  local ret = {}
+  for _, range in ipairs(ranges) do
+    ---@type Flash.Match
+    local match = {
+      win = win,
+      from = { range[1] + 1, range[2] },
+      to = { range[3] + 1, range[4] - 1 },
+    }
+    -- If them match is at the end of the buffer,
+    -- then move it to the last character of the last line.
+    if match.to[1] > line_count then
+      match.to[1] = line_count
+      match.to[2] = #vim.api.nvim_buf_get_lines(buf, match.to[1] - 1, match.to[1], false)[1]
+    end
+    ret[#ret + 1] = match
   end
   return ret
 end
 
 M.state = nil
 function M.jump()
-  local nodes = M.get_nodes()
-
   if M.state then
     M.state:clear()
     M.state = nil
@@ -32,6 +54,7 @@ function M.jump()
       highlight = {
         backdrop = true,
         label = {
+          current = true,
           before = true,
           after = true,
           style = "inline",
@@ -41,15 +64,7 @@ function M.jump()
     },
   })
 
-  for _, range in ipairs(nodes) do
-    table.insert(M.state.results, {
-      win = M.state.win,
-      from = { range[1] + 1, range[2] },
-      to = { range[3] + 1, range[4] - 1 },
-      visible = true,
-      next = "",
-    })
-  end
+  M.state.results = M.get_nodes()
 
   M.state.labeler:update()
   M.state:highlight()
