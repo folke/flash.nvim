@@ -154,7 +154,8 @@ function M:update(opts)
     return self:jump()
   end
 
-  if opts.labels ~= false then
+  -- only label if we have results and the max matches is not reached
+  if opts.labels ~= false and #self.results < self.config.search.max_matches then
     self.labeler:update()
   end
   self:highlight()

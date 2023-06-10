@@ -91,7 +91,7 @@ function M._search(win, state)
     })
     if #matches > Config.search.max_matches then
       -- vim.notify("Too many matches", vim.log.levels.WARN, { title = "flash.nvim" })
-      return
+      break
     end
   end
   vim.fn.winrestview(view)

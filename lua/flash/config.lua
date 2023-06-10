@@ -24,8 +24,8 @@ local defaults = {
     -- search/jump in all windows
     multi_window = true,
     -- when more than `max_matches` are found in a window,
-    -- the search will be aborted for that window.
-    max_matches = 2000,
+    -- labels will not be shown. Only results.
+    max_matches = 500,
     -- search direction
     -- NOTE: will be overriden in a regular search with `/` or `?`
     forward = true,
