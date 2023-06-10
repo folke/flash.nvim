@@ -146,6 +146,10 @@ function M:update(pattern)
   if self.labels then
     self.labeler:update()
   end
+  self:highlight()
+end
+
+function M:highlight()
   Highlight.update(self)
 end
 
