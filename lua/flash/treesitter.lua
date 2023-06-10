@@ -29,7 +29,7 @@ function M.get_nodes()
       from = { range[1] + 1, range[2] },
       to = { range[3] + 1, range[4] - 1 },
     }
-    -- If them match is at the end of the buffer,
+    -- If the match is at the end of the buffer,
     -- then move it to the last character of the last line.
     if match.to[1] > line_count then
       match.to[1] = line_count
@@ -51,9 +51,9 @@ function M.jump()
     config = {
       labels = "abcdefghijklmnopqrstuvwxyz",
       search = { multi_window = false },
-      jump = { auto_jump = false },
+      jump = { auto_jump = false, pos = "range" },
       highlight = {
-        backdrop = true,
+        backdrop = false,
         label = {
           current = true,
           before = true,
@@ -65,20 +65,33 @@ function M.jump()
     },
   })
 
-  M.state:update({ results = M.get_nodes() })
+  M.state:set(M.get_nodes(), { sort = false })
+  local pos = vim.api.nvim_win_get_cursor(0)
+  M.state:jump()
 
-  local char = Util.get_char()
-  if char then
-    if vim.fn.mode() == "v" then
-      vim.cmd("normal! v")
-    end
-    local match = M.state:jump(char)
-    if match then
-      vim.cmd("normal! v")
-      vim.api.nvim_win_set_cursor(M.state.win, match.to)
+  M.state:update()
+
+  while true do
+    local char = Util.get_char()
+    if not char then
+      vim.cmd([[normal! v]])
+      vim.api.nvim_win_set_cursor(0, pos)
+      break
+    elseif char == ";" then
+      M.state:next()
+    elseif char == "," then
+      M.state:prev()
+    elseif char == Util.CR then
+      M.state:jump()
+      break
     else
-      vim.api.nvim_input(char)
+      if not M.state:jump(char) then
+        vim.api.nvim_input(char)
+      end
+      break
     end
+    M.state:jump()
+    M.state:highlight()
   end
   M.state:clear()
 end
