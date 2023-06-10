@@ -1,4 +1,5 @@
 local State = require("flash.state")
+local Util = require("flash.util")
 
 local M = {}
 
@@ -68,9 +69,7 @@ function M.jump()
 
   M.state.labeler:update()
   M.state:highlight()
-  vim.cmd.redraw()
-  local ok, c = pcall(vim.fn.getchar)
-  local char = ok and type(c) == "number" and vim.fn.nr2char(c) or nil
+  local char = Util.get_char()
   if char then
     if vim.fn.mode() == "v" then
       vim.cmd("normal! v")

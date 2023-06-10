@@ -1,4 +1,5 @@
 local State = require("flash.state")
+local Util = require("flash.util")
 local Repeat = require("flash.repeat")
 
 local M = {}
@@ -114,13 +115,6 @@ function M.parse(key)
   return key
 end
 
-function M.get_char()
-  vim.cmd.redraw()
-  local ok, c = pcall(vim.fn.getchar)
-  M.last.char = ok and type(c) == "number" and vim.fn.nr2char(c) or nil
-  return M.last.char
-end
-
 function M.search()
   local char = M.last.char:gsub("\\", "\\\\")
   local pattern ---@type string
@@ -155,8 +149,11 @@ function M.jump(key)
     count = vim.v.count1
   elseif key == "," then
     count = -vim.v.count1
-  elseif not M.get_char() then
-    return M.clear()
+  else
+    M.last.char = Util.get_char()
+    if not M.last.char then
+      return M.clear()
+    end
   end
 
   if updated then

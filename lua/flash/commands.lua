@@ -1,35 +1,25 @@
 local State = require("flash.state")
+local Util = require("flash.util")
 
 ---@class Flash.Commands
 local M = {}
-
-local function t(str)
-  return vim.api.nvim_replace_termcodes(str, true, true, true)
-end
 
 ---@param opts? Flash.Config
 function M.jump(opts)
   local state = State.new({ config = opts })
 
   while true do
-    vim.cmd.redraw()
-    local ok, n = pcall(vim.fn.getchar)
-    if not ok then
-      break
-    end
-
-    local c = (type(n) == "number" and vim.fn.nr2char(n) or n)
-    -- cancel
-    if c == t("<esc>") then
+    local c = Util.get_char()
+    if c == nil then
       break
     -- jump to first
-    elseif c == t("<cr>") then
+    elseif c == Util.CR then
       state:jump()
       break
     end
 
     local pattern = state.pattern
-    if c == t("<bs>") then
+    if c == Util.BS then
       pattern = state.pattern:sub(1, -2)
     else
       pattern = state.pattern .. c
