@@ -45,7 +45,11 @@ function M.setup()
     callback = function(event)
       local pos = vim.api.nvim_win_get_cursor(0)
 
-      if M.last.match and event.event == "CursorMoved" and vim.deep_equal(pos, M.last.match.from) then
+      if
+        M.last.match
+        and event.event == "CursorMoved"
+        and vim.deep_equal(pos, M.last.match.from)
+      then
         return
       end
 
@@ -77,7 +81,7 @@ function M.get_state()
         wrap = false,
         multi_window = false,
         abort_pattern = false,
-        regex = true,
+        mode = "search",
       },
       highlight = {
         backdrop = false,
