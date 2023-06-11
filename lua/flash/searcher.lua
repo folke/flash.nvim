@@ -72,53 +72,36 @@ function M.get_matches(pattern, flags, k)
   ---@type Flash.Match[]
   local matches = {}
 
-  ---@param extra_flags? string
-  local function next(extra_flags, skip)
-    local ok, ret = pcall(vim.fn.searchpos, pattern, flags .. (extra_flags or ""), nil, nil, skip)
-    if ok and ret[1] ~= 0 then
-      return { ret[1], ret[2] - 1 }
-    end
-  end
-
-  ---@type Flash.Match?, Flash.Match?
-  local first, last
-
   while true do
-    -- beginning of match
-    local from = next("n")
-
-    -- check if we need to continue
-    if not from or vim.deep_equal(from, first) or vim.deep_equal(from, last) then
+    local from = vim.fn.searchpos(pattern, flags)
+    if from[1] == 0 then
       break
     end
-
-    local to = next("e", function()
-      local pos = vim.api.nvim_win_get_cursor(0)
-      -- skip if the same as the previous end
-      if #matches > 0 and vim.deep_equal(matches[#matches].to, pos) then
-        return true
-      end
-      -- skip if the position is before the start
-      return pos[1] < from[1] or (pos[1] == from[1] and pos[2] < from[2])
-    end)
-    if not to then
+    from = { from[1], from[2] - 1 } or nil
+    if not from or vim.deep_equal(from, matches[1] and matches[1].from) then
       break
     end
+    local line = vim.api.nvim_buf_get_lines(0, from[1] - 1, from[1], false)[1]
+    local to = vim.fn.matchstrpos(line, pattern, from[2])
+    if to[2] == -1 or to[2] ~= from[2] then
+      vim.notify("matchstrpos failed:\n" .. vim.inspect({
+        line = line,
+        from = from,
+        to = to,
+      }), vim.log.levels.ERROR, { title = "flash.nvim" })
+    else
+      table.insert(matches, {
+        from = from,
+        to = { from[1], math.max(to[3] - 1, 0) },
+        first = #matches == 0,
+      })
+    end
 
-    vim.api.nvim_win_set_cursor(0, from)
-
-    first = first or from
-    last = from
-
-    table.insert(matches, {
-      from = from,
-      to = to,
-      first = from == first,
-    })
     if k and #matches >= k then
       break
     end
   end
+
   vim.fn.winrestview(view)
   return matches
 end
