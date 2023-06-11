@@ -88,7 +88,8 @@ function M.update(state)
       vim.api.nvim_buf_set_extmark(buf, M.ns, match.from[1] - 1, match.from[2], {
         end_row = match.to[1] - 1,
         end_col = match.to[2] + 1,
-        hl_group = state.current == m and state.config.highlight.groups.current or state.config.highlight.groups.match,
+        hl_group = state.current == m and state.config.highlight.groups.current
+          or state.config.highlight.groups.match,
         strict = false,
         priority = state.config.highlight.priority + 1,
       })
