@@ -98,4 +98,25 @@ function M._search(win, state)
   return matches
 end
 
+---@param opts? {ignorecase: boolean, smartcase: boolean, whitespace:boolean}
+function M.fuzzy(pattern, opts)
+  opts = vim.tbl_deep_extend("force", {
+    ignorecase = vim.go.ignorecase,
+    smartcase = vim.go.smartcase,
+    whitespace = false,
+  }, opts or {})
+
+  if opts.ignorecase and opts.smartcase and pattern:find("[A-Z]") then
+    opts.ignorecase = false
+  end
+
+  local sep = opts.whitespace and ".\\{-}" or "\\[^\\ ]\\{-}"
+
+  local chars = vim.tbl_map(function(c)
+    return c == "\\" and "\\\\" or c
+  end, vim.split(pattern, ""))
+
+  return "\\V" .. table.concat(chars, sep) .. (opts.ignorecase and "\\c" or "\\C")
+end
+
 return M
