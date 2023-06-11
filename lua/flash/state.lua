@@ -165,11 +165,12 @@ end
 ---@param opts? {sort:boolean}
 function M:set(results, opts)
   opts = opts or {}
-  self.results = results
-  if opts.sort then
-    table.sort(self.results, function(a, b)
+  if opts.sort ~= false then
+    table.sort(results, function(a, b)
       if a.win ~= b.win then
-        return a.win < b.win
+        local aw = a.win == self.win and 0 or a.win
+        local bw = b.win == self.win and 0 or b.win
+        return aw < bw
       end
       if a.from[1] ~= b.from[1] then
         return a.from[1] < b.from[1]
@@ -177,6 +178,17 @@ function M:set(results, opts)
       return a.from[2] < b.from[2]
     end)
   end
+  self.results = {}
+  local done = {}
+
+  for _, match in ipairs(results) do
+    local key = match.win .. ":" .. match.from[1] .. ":" .. match.from[2]
+    if not done[key] then
+      done[key] = true
+      table.insert(self.results, match)
+    end
+  end
+
   self.current = 1
   for m, match in ipairs(self.results) do
     if match.first and match.win == self.win then
