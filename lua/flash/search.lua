@@ -43,7 +43,7 @@ function M.setup()
             mode = "search",
             search = {
               forward = vim.fn.getcmdtype() == "/",
-              regex = true,
+              mode = "search",
             },
           },
         })

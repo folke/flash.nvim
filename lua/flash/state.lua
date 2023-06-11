@@ -100,20 +100,6 @@ function M:prev(amount)
   self:advance(-math.abs(amount or 1), true)
 end
 
----@param pattern string
-function M:validate(pattern)
-  if
-    self.config.search.regex
-    and self.config.search.abort_pattern
-    and pattern:match(self.config.search.abort_pattern)
-  then
-    self:clear()
-    self.results = {}
-    return false
-  end
-  return true
-end
-
 -- Checks if the given pattern is a jump label and jumps to it.
 ---@param pattern string
 function M:check_jump(pattern)
@@ -143,8 +129,8 @@ function M:update(opts)
   if opts.results then
     self:set(opts.results)
   elseif opts.search then
-    -- abort if pattern is invalid or a jump label
-    if not self:validate(opts.search) or self:check_jump(opts.search) then
+    -- abort if pattern is a jump label
+    if self:check_jump(opts.search) then
       return true
     end
     self:search(opts.search)
@@ -154,14 +140,14 @@ function M:update(opts)
     return self:jump()
   end
 
-  -- only label if we have results and the max matches is not reached
-  if opts.labels ~= false and #self.results < self.config.search.max_matches then
+  if opts.labels ~= false then
     self.labeler:update()
   end
   self:highlight()
 end
 
 function M:search(pattern)
+  self.labeler:reset()
   self.pattern = pattern
   local results = {}
   if pattern ~= "" then

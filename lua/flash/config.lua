@@ -31,15 +31,14 @@ local defaults = {
     forward = true,
     -- when `false`, find only matches in the given direction
     wrap = true,
-    -- when false, search expressions will start with `\V`
-    -- and `\` will be interpreted as a literal `\`.
-    -- This option is always enabled when triggering flash
+    ---@type "exact" | "search" | "fuzzy"
+    -- Each mode will take ignorecase and smartcase into account.
+    -- * exact: exact match
+    -- * search: regular search
+    -- * fuzzy: fuzzy search
+    -- NOTE: Mode is always set to `search` when triggering flash
     -- in a regular search.
-    regex = false,
-    -- when regex=true, and this pattern matches the search pattern,
-    -- flash will be abort. This is needed to be able
-    -- to search with regular expressions
-    abort_pattern = "[^a-zA-Z0-9_.() ]",
+    mode = "exact",
   },
   highlight = {
     label = {
