@@ -146,7 +146,7 @@ function M.get_valid_labels(pattern, labels)
   end
 
   while #labels > 0 do
-    local p = pattern .. "\\m\\zs[" .. table.concat(labels, "") .. "]\\C"
+    local p = pattern .. "\\m\\zs[" .. table.concat(labels, "") .. "]"
     local ok, pos = pcall(vim.fn.searchpos, p, "cnw")
 
     -- skip all labels on an invalid pattern
@@ -167,6 +167,11 @@ function M.get_valid_labels(pattern, labels)
     end
 
     labels = vim.tbl_filter(function(c)
+      -- when ignorecase is set, we need to skip
+      -- both the upper and lower case labels
+      if vim.go.ignorecase then
+        return c:lower() ~= char:lower()
+      end
       return c ~= char
     end, labels)
   end
