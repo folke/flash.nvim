@@ -30,7 +30,7 @@ end
 function M:reset()
   local skip = {} ---@type table<string, boolean>
   self.labels = {}
-  for _, l in ipairs(vim.split(self.state.config.labels .. self.state.config.labels:upper(), "")) do
+  for _, l in ipairs(vim.split(self.state.opts.labels .. self.state.opts.labels:upper(), "")) do
     if not skip[l] then
       self.labels[#self.labels + 1] = l
       skip[l] = true
@@ -85,7 +85,7 @@ function M:filter()
       match.visible ~= false
       and not (
         self.state.current == m
-        and not self.state.config.highlight.label.current
+        and not self.state.opts.highlight.label.current
         and match.win == self.state.win
       )
     then

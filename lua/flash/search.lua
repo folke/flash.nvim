@@ -64,7 +64,7 @@ end
 function M.set_op(op)
   M.op = op
   if M.op and M.state then
-    M.state.config.search.multi_window = false
+    M.state.opts.search.multi_window = false
   end
 end
 

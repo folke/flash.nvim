@@ -28,18 +28,18 @@ function M._search(win, state)
   end
 
   local flags = ""
-  if not state.config.search.wrap then
+  if not state.opts.search.wrap then
     flags = flags .. "W"
   end
-  if not state.config.search.forward then
+  if not state.opts.search.forward then
     flags = flags .. "b"
   end
 
   local pattern = state.pattern
 
-  if state.config.search.mode == "exact" then
+  if state.opts.search.mode == "exact" then
     pattern = "\\V" .. pattern:gsub("\\", "\\\\")
-  elseif state.config.search.mode == "fuzzy" then
+  elseif state.opts.search.mode == "fuzzy" then
     pattern = M.fuzzy(pattern)
   end
 

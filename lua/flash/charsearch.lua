@@ -88,11 +88,11 @@ function M.get_state()
   })
   if move == "T" then
     -- set the label before the jump position
-    M.state.config.highlight.label.before = true
-    M.state.config.highlight.label.after = false
+    M.state.opts.highlight.label.before = true
+    M.state.opts.highlight.label.after = false
   elseif move == "f" or move == "F" then
     -- set the label at the jump position
-    M.state.config.highlight.label.after = { 0, 0 }
+    M.state.opts.highlight.label.after = { 0, 0 }
   end
   return true
 end

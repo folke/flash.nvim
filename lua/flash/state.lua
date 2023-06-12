@@ -12,7 +12,7 @@ local Jump = require("flash.jump")
 ---@field pos number[]
 ---@field results Flash.Match[]
 ---@field pattern string
----@field config Flash.Config
+---@field opts Flash.Config
 ---@field current number
 ---@field labeler Flash.Labeler
 ---@field changedtick number
@@ -26,7 +26,7 @@ end
 ---@param opts? Flash.Config
 function M.new(opts)
   local self = setmetatable({}, { __index = M })
-  self.config = Config.get(opts)
+  self.opts = Config.get(opts)
   self.win = vim.api.nvim_get_current_win()
   self.buf = vim.api.nvim_win_get_buf(self.win)
   self.pos = vim.api.nvim_win_get_cursor(self.win)
@@ -77,7 +77,7 @@ end
 function M:advance(amount, forward)
   amount = amount or 1
   if forward == nil then
-    forward = self.config.search.forward
+    forward = self.opts.search.forward
   end
   self.current = self.current + (forward and amount or -amount)
   -- wrap around
@@ -114,7 +114,7 @@ function M:update(opts)
 
   -- prioritize current window
   ---@type window[]
-  local wins = self.config.search.multi_window and vim.api.nvim_tabpage_list_wins(0) or {}
+  local wins = self.opts.search.multi_window and vim.api.nvim_tabpage_list_wins(0) or {}
   ---@param win window
   wins = vim.tbl_filter(function(win)
     return win ~= self.win
@@ -132,7 +132,7 @@ function M:update(opts)
     self:search(opts.search)
   end
 
-  if self.config.jump.auto_jump and #self.results == 1 then
+  if self.opts.jump.auto_jump and #self.results == 1 then
     return self:jump()
   end
 
@@ -149,7 +149,7 @@ function M:search(pattern)
   if pattern ~= "" then
     for _, win in ipairs(self.wins) do
       vim.list_extend(results, Searcher.search(win, self))
-      if #results >= self.config.search.max_matches then
+      if #results >= self.opts.search.max_matches then
         break
       end
     end
