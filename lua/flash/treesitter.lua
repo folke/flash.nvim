@@ -48,20 +48,18 @@ function M.jump()
   end
 
   M.state = State.new({
-    config = {
-      labels = "abcdefghijklmnopqrstuvwxyz",
-      search = { multi_window = false },
-      jump = { auto_jump = false, pos = "range" },
-      highlight = {
-        backdrop = false,
-        label = {
-          current = true,
-          before = true,
-          after = true,
-          style = "inline",
-        },
-        matches = false,
+    labels = "abcdefghijklmnopqrstuvwxyz",
+    search = { multi_window = false },
+    jump = { auto_jump = false, pos = "range" },
+    highlight = {
+      backdrop = false,
+      label = {
+        current = true,
+        before = true,
+        after = true,
+        style = "inline",
       },
+      matches = false,
     },
   })
 

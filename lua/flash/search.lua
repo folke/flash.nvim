@@ -39,12 +39,10 @@ function M.setup()
     callback = function()
       if State.is_search() then
         M.state = State.new({
-          config = {
+          mode = "search",
+          search = {
+            forward = vim.fn.getcmdtype() == "/",
             mode = "search",
-            search = {
-              forward = vim.fn.getcmdtype() == "/",
-              mode = "search",
-            },
           },
         })
         M.state.on_jump = M.on_jump

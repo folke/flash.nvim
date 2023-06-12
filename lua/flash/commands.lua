@@ -6,7 +6,7 @@ local M = {}
 
 ---@param opts? Flash.Config
 function M.jump(opts)
-  local state = State.new({ config = opts })
+  M.state = State.new(opts)
 
   while true do
     local c = Util.get_char()

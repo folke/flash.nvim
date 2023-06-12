@@ -74,18 +74,16 @@ function M.get_state()
 
   local move = M.last.move
   M.state = State.new({
-    config = {
-      jump = { auto_jump = false },
-      search = {
-        forward = M.keys[move].forward,
-        wrap = false,
-        multi_window = false,
-        abort_pattern = false,
-        mode = "search",
-      },
-      highlight = {
-        backdrop = false,
-      },
+    jump = { auto_jump = false },
+    search = {
+      forward = M.keys[move].forward,
+      wrap = false,
+      multi_window = false,
+      abort_pattern = false,
+      mode = "search",
+    },
+    highlight = {
+      backdrop = false,
     },
   })
   if move == "T" then

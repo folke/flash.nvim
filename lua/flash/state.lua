@@ -15,6 +15,7 @@ local Jump = require("flash.jump")
 ---@field config Flash.Config
 ---@field current number
 ---@field labeler Flash.Labeler
+---@field changedtick number
 local M = {}
 
 function M.is_search()
@@ -22,12 +23,11 @@ function M.is_search()
   return t == "/" or t == "?"
 end
 
----@param opts? {win:number, config:Flash.Config, wrap:boolean}
+---@param opts? Flash.Config
 function M.new(opts)
-  opts = opts or {}
   local self = setmetatable({}, { __index = M })
-  self.config = Config.get(opts.config)
-  self.win = opts.win or vim.api.nvim_get_current_win()
+  self.config = Config.get(opts)
+  self.win = vim.api.nvim_get_current_win()
   self.buf = vim.api.nvim_win_get_buf(self.win)
   self.pos = vim.api.nvim_win_get_cursor(self.win)
   self.results = {}
@@ -43,10 +43,6 @@ end
 function M:on_jump(match)
   Jump.jump(match, self)
   Jump.on_jump(self)
-end
-
-function M:is_current_buf()
-  return self.buf == vim.api.nvim_get_current_buf()
 end
 
 ---@param label? string
