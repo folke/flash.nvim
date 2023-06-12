@@ -3,11 +3,18 @@ local require = require("flash.require")
 local Jump = require("flash.jump")
 local State = require("flash.state")
 
-local M = {}
+---@class Flash.SearchState : Flash.State
+local M = setmetatable({}, { __index = State })
 
 ---@type Flash.State?
 M.state = nil
 M.op = false
+
+---@param opts? Flash.Config
+function M.new(opts)
+  local self = State.new(opts)
+  return setmetatable(self, { __index = M })
+end
 
 function M.setup()
   local group = vim.api.nvim_create_augroup("flash", { clear = true })
@@ -38,14 +45,13 @@ function M.setup()
     group = group,
     callback = function()
       if State.is_search() then
-        M.state = State.new({
+        M.state = M.new({
           mode = "search",
           search = {
             forward = vim.fn.getcmdtype() == "/",
             mode = "search",
           },
         })
-        M.state.on_jump = M.on_jump
         M.set_op(vim.fn.mode() == "v")
       end
     end,
@@ -70,7 +76,7 @@ end
 
 ---@param self Flash.State
 ---@param match Flash.Match
-function M:on_jump(match)
+function M:_jump(match)
   local pos = match.from
   local search_reg = vim.fn.getreg("/")
 
