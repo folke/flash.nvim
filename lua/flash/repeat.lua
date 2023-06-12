@@ -22,11 +22,13 @@ function M._execute(id)
   if state then
     state.fn(state.is_repeat)
     state.is_repeat = true
+  else
+    error("Invalid repeat id: " .. id)
   end
 end
 
 -- Wraps a function as a keymap expression so that it can be dot repeated.
----@param fn fun(repeat:boolean)|number
+---@param fn fun(repeat:boolean)
 function M.wrap(fn)
   local state = { fn = fn, is_repeat = false }
   table.insert(M._funcs, state)
