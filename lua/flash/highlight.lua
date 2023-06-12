@@ -44,7 +44,7 @@ end
 
 ---@param state Flash.State
 function M.update(state)
-  M.clear()
+  M.clear(state.ns)
 
   if state.opts.highlight.backdrop then
     M.backdrop(state)

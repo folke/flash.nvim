@@ -35,7 +35,7 @@ function M.jump(opts)
       break
     end
   end
-  state:clear()
+  state:hide()
 end
 
 return M

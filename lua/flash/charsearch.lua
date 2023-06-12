@@ -54,21 +54,21 @@ function M.setup()
       end
 
       if not M.pending and M.state then
-        M.clear()
+        M.state:hide()
       end
     end,
   })
 
   vim.on_key(function(key)
     if M.state and key == Util.ESC and vim.fn.mode() == "n" then
-      M.clear()
+      M.state:hide()
     end
   end)
 end
 
 ---@return boolean updated
 function M.get_state()
-  if M.state then
+  if M.state and M.state.visible then
     return false
   end
 
@@ -99,7 +99,7 @@ end
 
 function M.parse(key)
   -- repeat last search when hitting the same key
-  if M.state and M.last.move == key then
+  if M.state and M.last.move == key and M.state.visible then
     key = ";"
   end
 
@@ -108,8 +108,8 @@ function M.parse(key)
     move = M.last.move
   end
 
-  if M.last.move ~= move then
-    M.clear()
+  if M.last.move ~= move and M.state then
+    M.state:hide()
   end
 
   M.last.move = move
@@ -141,6 +141,7 @@ function M.jump(key)
   end
 
   local updated = M.get_state()
+  M.state:show()
 
   M.pending = true
 
@@ -154,7 +155,7 @@ function M.jump(key)
     count = count - 1
     M.last.char = Util.get_char()
     if not M.last.char then
-      return M.clear()
+      return M.state:hide()
     end
   end
 
@@ -164,17 +165,15 @@ function M.jump(key)
 
   M.state:advance(count)
 
-  if vim.fn.mode(true):sub(1, 2) == "no" then
-    vim.cmd("normal! v")
-  end
   M.last.match = M.state:jump()
   M.state:update()
   M.pending = false
+  return M.state
 end
 
 function M.clear()
   if M.state then
-    M.state:clear()
+    M.state:hide()
     M.state = nil
   end
 end

@@ -16,6 +16,7 @@ local Jump = require("flash.jump")
 ---@field current number
 ---@field labeler Flash.Labeler
 ---@field changedtick number
+---@field visible boolean
 ---@field ns number
 local M = {}
 
@@ -32,6 +33,7 @@ function M.new(opts)
   self.wins = {}
   self.pattern = ""
   self.current = 1
+  self.visible = true
   self.labeler = require("flash.labeler").new(self)
   self.ns = vim.api.nvim_create_namespace(self.opts.ns or "flash")
   self:update()
@@ -152,14 +154,26 @@ function M:update(opts)
     self:search(self.pattern)
   end
 
-  if self.opts.jump.auto_jump and #self.results == 1 then
+  if self.visible and self.opts.jump.auto_jump and #self.results == 1 then
     return self:jump()
   end
 
   if opts.labels ~= false then
     self.labeler:update()
   end
-  if opts.highlight ~= false then
+  self:highlight()
+end
+
+function M:hide()
+  if self.visible then
+    self.visible = false
+    self:highlight()
+  end
+end
+
+function M:show()
+  if not self.visible then
+    self.visible = true
     self:highlight()
   end
 end
@@ -217,11 +231,11 @@ function M:set(results, opts)
 end
 
 function M:highlight()
-  Highlight.update(self)
-end
-
-function M:clear()
+  if self.visible then
+    Highlight.update(self)
+  else
     Highlight.clear(self.ns)
+  end
 end
 
 return M

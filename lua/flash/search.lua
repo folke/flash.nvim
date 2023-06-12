@@ -37,7 +37,7 @@ function M.setup()
   vim.api.nvim_create_autocmd("CmdlineLeave", {
     group = group,
     callback = wrap(function()
-      M.state:clear()
+      M.state:hide()
       M.state = nil
     end),
   })

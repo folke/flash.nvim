@@ -43,7 +43,7 @@ end
 M.state = nil
 function M.jump()
   if M.state then
-    M.state:clear()
+    M.state:hide()
     M.state = nil
   end
 
@@ -89,9 +89,9 @@ function M.jump()
       break
     end
     M.state:jump()
-    M.state:highlight()
+    M.state:show()
   end
-  M.state:clear()
+  M.state:hide()
 end
 
 return M
