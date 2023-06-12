@@ -1,10 +1,8 @@
 local M = {}
 
-M.ns = vim.api.nvim_create_namespace("flash")
-
-function M.clear()
+function M.clear(ns)
   for _, buf in ipairs(vim.api.nvim_list_bufs()) do
-    vim.api.nvim_buf_clear_namespace(buf, M.ns, 0, -1)
+    vim.api.nvim_buf_clear_namespace(buf, ns, 0, -1)
   end
 end
 
@@ -32,7 +30,7 @@ function M.backdrop(state)
     -- we need to create a backdrop for each line because of the way
     -- extmarks priority rendering works
     for line = from[1], to[1] do
-      vim.api.nvim_buf_set_extmark(buf, M.ns, line - 1, line == from[1] and from[2] or 0, {
+      vim.api.nvim_buf_set_extmark(buf, state.ns, line - 1, line == from[1] and from[2] or 0, {
         hl_group = state.opts.highlight.groups.backdrop,
         end_row = line == to[1] and line - 1 or line,
         hl_eol = line ~= to[1],
@@ -73,7 +71,7 @@ function M.update(state)
     local buf = vim.api.nvim_win_get_buf(match.win)
     local row = pos[1] - 1 + offset[1]
     local col = pos[2] + offset[2]
-    vim.api.nvim_buf_set_extmark(buf, M.ns, row, col, {
+    vim.api.nvim_buf_set_extmark(buf, state.ns, row, col, {
       virt_text = { { match.label, state.opts.highlight.groups.label } },
       virt_text_pos = style,
       strict = false,
@@ -85,7 +83,7 @@ function M.update(state)
     local buf = vim.api.nvim_win_get_buf(match.win)
 
     if state.opts.highlight.matches then
-      vim.api.nvim_buf_set_extmark(buf, M.ns, match.from[1] - 1, match.from[2], {
+      vim.api.nvim_buf_set_extmark(buf, state.ns, match.from[1] - 1, match.from[2], {
         end_row = match.to[1] - 1,
         end_col = match.to[2] + 1,
         hl_group = state.current == m and state.opts.highlight.groups.current

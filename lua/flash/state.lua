@@ -16,6 +16,7 @@ local Jump = require("flash.jump")
 ---@field current number
 ---@field labeler Flash.Labeler
 ---@field changedtick number
+---@field ns number
 local M = {}
 
 function M.is_search()
@@ -32,6 +33,7 @@ function M.new(opts)
   self.pattern = ""
   self.current = 1
   self.labeler = require("flash.labeler").new(self)
+  self.ns = vim.api.nvim_create_namespace(self.opts.ns or "flash")
   self:update()
   return self
 end
@@ -219,7 +221,7 @@ function M:highlight()
 end
 
 function M:clear()
-  Highlight.clear()
+    Highlight.clear(self.ns)
 end
 
 return M

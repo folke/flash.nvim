@@ -3,6 +3,7 @@ local M = {}
 
 ---@class Flash.Config
 ---@field mode? string
+---@field ns? string
 local defaults = {
   -- labels = "abcdefghijklmnopqrstuvwxyz",
   labels = "asdfghjklqwertyuiopzxcvbnm",
