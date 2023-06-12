@@ -53,7 +53,7 @@ function M.update(state)
   end
 
   local style = state.config.highlight.label.style
-  if style == "inline" and not vim.fn.has("nvim-0.10.0") then
+  if style == "inline" and vim.fn.has("nvim-0.10.0") == 0 then
     style = "overlay"
   end
 
