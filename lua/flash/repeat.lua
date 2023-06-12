@@ -20,8 +20,9 @@ end
 function M._execute(id)
   local state = M._funcs[id]
   if state then
-    state.fn(state.is_repeat)
+    local is_repeat = state.is_repeat
     state.is_repeat = true
+    state.fn(is_repeat)
   else
     error("Invalid repeat id: " .. id)
   end
@@ -36,6 +37,15 @@ function M.wrap(fn)
 
   return function()
     state.is_repeat = false
+    vim.schedule(function()
+      if not state.is_repeat then
+        vim.notify(
+          "Did you forget to map with `expr=true`?",
+          vim.log.levels.WARN,
+          { title = "flash.nvim" }
+        )
+      end
+    end)
     return ("<cmd>lua require'flash.repeat'._execute(%d)<cr>"):format(id)
   end
 end
