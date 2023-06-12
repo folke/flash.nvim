@@ -27,11 +27,8 @@ end
 function M.new(opts)
   local self = setmetatable({}, { __index = M })
   self.opts = Config.get(opts)
-  self.win = vim.api.nvim_get_current_win()
-  self.buf = vim.api.nvim_win_get_buf(self.win)
-  self.pos = vim.api.nvim_win_get_cursor(self.win)
   self.results = {}
-  self.wins = { self.win }
+  self.wins = {}
   self.pattern = ""
   self.current = 1
   self.labeler = require("flash.labeler").new(self)
@@ -40,7 +37,8 @@ function M.new(opts)
 end
 
 ---@param match Flash.Match
-function M:on_jump(match)
+---@protected
+function M:_jump(match)
   Jump.jump(match, self)
   Jump.on_jump(self)
 end
@@ -50,7 +48,7 @@ end
 function M:jump(label)
   local match = self:get(label)
   if match then
-    self:on_jump(match)
+    self:_jump(match)
     return match
   end
 end
@@ -107,10 +105,28 @@ function M:check_jump(pattern)
   end
 end
 
----@param opts? {search:string, labels:boolean, results?:Flash.Match[]}
+function M:is_dirty()
+  if self.buf ~= vim.api.nvim_get_current_buf() then
+    return true
+  end
+  if self.changedtick ~= vim.b[self.buf].changedtick then
+    return true
+  end
+end
+
+---@param opts? {search:string, labels:boolean, results?:Flash.Match[], highlight:boolean}
 ---@return boolean? abort `true` if the search was aborted
 function M:update(opts)
   opts = opts or {}
+
+  local dirty = self:is_dirty()
+
+  if dirty then
+    self.win = vim.api.nvim_get_current_win()
+    self.buf = vim.api.nvim_win_get_buf(self.win)
+    self.pos = vim.api.nvim_win_get_cursor(self.win)
+    self.changedtick = vim.b[self.buf].changedtick
+  end
 
   -- prioritize current window
   ---@type window[]
@@ -130,6 +146,8 @@ function M:update(opts)
       return true
     end
     self:search(opts.search)
+  elseif dirty then
+    self:search(self.pattern)
   end
 
   if self.opts.jump.auto_jump and #self.results == 1 then
@@ -139,7 +157,9 @@ function M:update(opts)
   if opts.labels ~= false then
     self.labeler:update()
   end
-  self:highlight()
+  if opts.highlight ~= false then
+    self:highlight()
+  end
 end
 
 function M:search(pattern)
