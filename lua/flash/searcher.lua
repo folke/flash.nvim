@@ -67,39 +67,47 @@ end
 function M.get_matches(pattern, flags, k)
   local view = vim.fn.winsaveview()
 
-  flags = (flags or "") .. ""
+  flags = flags or ""
 
   ---@type Flash.Match[]
   local matches = {}
 
-  while true do
-    local from = vim.fn.searchpos(pattern, flags)
-    if from[1] == 0 then
+  local ok, re = pcall(vim.regex, pattern .. (vim.go.ignorecase and "\\c" or ""))
+  if not ok then
+    return {} -- invalid pattern, bail out
+  end
+
+  local buf = vim.api.nvim_get_current_buf()
+  local count = vim.fn.searchcount({ pattern = pattern, recompute = true, maxcount = k }).total or 0
+
+  local function next(f)
+    local from = vim.fn.searchpos(pattern, f)
+    return from[1] ~= 0 and { from[1], from[2] - 1 } or nil
+  end
+
+  while #matches < count do
+    local from = next(flags)
+    if not from then
       break
     end
-    from = { from[1], from[2] - 1 } or nil
-    if not from or vim.deep_equal(from, matches[1] and matches[1].from) then
-      break
-    end
-    local line = vim.api.nvim_buf_get_lines(0, from[1] - 1, from[1], false)[1]
-    local to = vim.fn.matchstrpos(line, pattern, from[2])
-    if to[2] == -1 or to[2] ~= from[2] then
-      vim.notify("matchstrpos failed:\n" .. vim.inspect({
-        line = line,
-        from = from,
-        to = to,
-      }), vim.log.levels.ERROR, { title = "flash.nvim" })
-    else
-      table.insert(matches, {
-        from = from,
-        to = { from[1], math.max(to[3] - 1, 0) },
-        first = #matches == 0,
-      })
+    local col_start, col_end = re:match_line(buf, from[1] - 1, from[2])
+    local to = col_start and { from[1], math.max(col_end + from[2] - 1, 0) }
+
+    -- `s` will be `nil` or non-zero for multi-line matches,
+    -- Since this is a non-zero-width match, we can use `searchpos`
+    -- to find the end instead
+    if not to then
+      to = next("cen")
+      if not to then
+        break
+      end
     end
 
-    if k and #matches >= k then
-      break
-    end
+    table.insert(matches, {
+      from = from,
+      to = to,
+      first = #matches == 0,
+    })
   end
 
   vim.fn.winrestview(view)
