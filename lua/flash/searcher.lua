@@ -131,6 +131,12 @@ end
 ---@param labels string[]
 ---@return string[]
 function M.get_valid_labels(pattern, labels)
+  -- skip all labels if the pattern ends with a backslash
+  -- except if it's escaped
+  if pattern:find("\\$") and not pattern:find("\\\\$") then
+    return {}
+  end
+
   while #labels > 0 do
     local p = pattern .. "\\m\\zs[" .. table.concat(labels, "") .. "]\\C"
     local ok, pos = pcall(vim.fn.searchpos, p, "cnw")
