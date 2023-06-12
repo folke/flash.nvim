@@ -19,6 +19,7 @@ local Jump = require("flash.jump")
 ---@field visible boolean
 ---@field ns number
 local M = {}
+M.__index = M
 
 function M.is_search()
   local t = vim.fn.getcmdtype()
@@ -27,7 +28,7 @@ end
 
 ---@param opts? Flash.Config
 function M.new(opts)
-  local self = setmetatable({}, { __index = M })
+  local self = setmetatable({}, M)
   self.opts = Config.get(opts)
   self.results = {}
   self.wins = {}
@@ -57,6 +58,12 @@ function M:jump(label)
   end
 end
 
+function M:at_current()
+  local pos = vim.api.nvim_win_get_cursor(0)
+  local current = self:get()
+  return vim.deep_equal(pos, current and current.from)
+end
+
 -- Returns the current match or the match with the given label.
 ---@param label? string
 ---@return Flash.Match?
@@ -75,27 +82,33 @@ end
 -- When forward is `nil` it uses the current search direction.
 -- Otherwise it uses the given direction.
 ---@param amount? number
----@param forward? boolean
-function M:advance(amount, forward)
+---@param opts? {forward?:boolean, wrap?:boolean}
+function M:advance(amount, opts)
   amount = amount or 1
-  if forward == nil then
-    forward = self.opts.search.forward
+  opts = opts or {}
+  if opts.forward == nil then
+    opts.forward = self.opts.search.forward
   end
-  self.current = self.current + (forward and amount or -amount)
-  -- wrap around
-  self.current = (self.current - 1) % #self.results + 1
+  self.current = self.current + (opts.forward and amount or -amount)
+
+  if opts.wrap == false then
+    self.current = math.max(1, math.min(self.current, #self.results))
+  else
+    -- wrap around
+    self.current = (self.current - 1) % #self.results + 1
+  end
 end
 
 -- Moves the results cursor by `amount` (default 1) and wraps around.
 -- Always moves forward, regardless of the search direction.
 function M:next(amount)
-  self:advance(math.abs(amount or 1), true)
+  self:advance(math.abs(amount or 1), { forward = true })
 end
 
 -- Moves the results cursor by `amount` (default 1) and wraps around.
 -- Always moves backward, regardless of the search direction.
 function M:prev(amount)
-  self:advance(-math.abs(amount or 1), true)
+  self:advance(-math.abs(amount or 1), { forward = true })
 end
 
 -- Checks if the given pattern is a jump label and jumps to it.
