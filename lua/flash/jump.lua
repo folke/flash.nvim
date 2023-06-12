@@ -4,21 +4,31 @@ local M = {}
 ---@param state Flash.State
 ---@return Flash.Match?
 function M.jump(match, state)
+  -- fix inclusive/exclusive
+  if vim.fn.mode(true):sub(1, 2) == "no" and state.opts.jump.pos ~= "range" then
+    vim.cmd("normal! v")
+  end
+
+  -- add to jump list
   if state.opts.jump.jumplist then
     vim.cmd("normal! m'")
   end
+
+  -- change window if needed
   if match.win ~= vim.api.nvim_get_current_win() then
     vim.api.nvim_set_current_win(match.win)
   end
 
+  -- jump to start
   if state.opts.jump.pos == "start" then
-    -- jump to start
     vim.api.nvim_win_set_cursor(match.win, match.from)
+
+  -- jump to end
   elseif state.opts.jump.pos == "end" then
-    -- jump to end
     vim.api.nvim_win_set_cursor(match.win, match.to)
+
+  -- select range
   else
-    -- select
     if vim.fn.mode() == "v" then
       vim.cmd("normal! v")
     end
