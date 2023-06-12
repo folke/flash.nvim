@@ -2,6 +2,8 @@ local Searcher = require("flash.searcher")
 
 describe("searcher", function()
   before_each(function()
+    vim.opt.ignorecase = true
+    vim.opt.smartcase = true
     vim.api.nvim_buf_set_lines(1, 0, -1, false, {})
   end)
 
@@ -25,6 +27,48 @@ describe("searcher", function()
     assert.same({
       { first = true, from = { 2, 0 }, to = { 2, 3 } },
       { first = false, from = { 3, 0 }, to = { 3, 3 } },
+    }, matches)
+  end)
+
+  it("finds multi matches on same line", function()
+    set([[
+      foobar foobar
+      line1
+      lineFoo
+    ]])
+
+    local matches = Searcher.get_matches("foo")
+    assert.same({
+      { first = true, from = { 1, 7 }, to = { 1, 9 } },
+      { first = false, from = { 3, 4 }, to = { 3, 6 } },
+      { first = false, from = { 1, 0 }, to = { 1, 2 } },
+    }, matches)
+  end)
+
+  it("deals with case", function()
+    set([[
+      foobar
+      Line1
+      line2
+    ]])
+
+    local matches = Searcher.get_matches("line")
+    assert.same({
+      { first = true, from = { 2, 0 }, to = { 2, 3 } },
+      { first = false, from = { 3, 0 }, to = { 3, 3 } },
+    }, matches)
+  end)
+
+  it("deals with smartcase", function()
+    set([[
+      foobar
+      Line1
+      line2
+    ]])
+
+    local matches = Searcher.get_matches("Line")
+    assert.same({
+      { first = true, from = { 2, 0 }, to = { 2, 3 } },
     }, matches)
   end)
 
