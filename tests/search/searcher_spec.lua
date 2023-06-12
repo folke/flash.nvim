@@ -87,6 +87,36 @@ describe("searcher", function()
     }, matches)
   end)
 
+  it("handles '\\Vi\\zs\\.'", function()
+    set([[
+      line1
+      line2
+      line3
+    ]])
+
+    local matches = Searcher.get_matches([[\Vi\zs\m.]])
+    assert.same({
+      { first = true, from = { 1, 2 }, to = { 1, 2 } },
+      { first = false, from = { 2, 2 }, to = { 2, 2 } },
+      { first = false, from = { 3, 2 }, to = { 3, 2 } },
+    }, matches)
+  end)
+
+  it("handles ^", function()
+    set([[
+      foobar
+      line1
+      line2
+    ]])
+
+    local matches = Searcher.get_matches("^")
+    assert.same({
+      { first = true, from = { 2, 0 }, to = { 2, 0 } },
+      { first = false, from = { 3, 0 }, to = { 3, 0 } },
+      { first = false, from = { 1, 0 }, to = { 1, 0 } },
+    }, matches)
+  end)
+
   it("handles ^", function()
     set([[
       foobar
