@@ -1,6 +1,6 @@
-# flash.nvim
+# ⚡flash.nvim
 
-## Alternatives
+## 📦 Alternatives
 
 - [leap.nvim](https://github.com/ggandor/leap.nvim)
 - [lightspeed.nvim](https://github.com/ggandor/lightspeed.nvim)

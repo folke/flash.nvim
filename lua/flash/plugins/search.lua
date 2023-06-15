@@ -3,14 +3,14 @@ local require = require("flash.require")
 local Jump = require("flash.jump")
 local State = require("flash.state")
 
----@class Flash.SearchState : Flash.State
+---@class Flash.State.Search : Flash.State
 local M = setmetatable({}, { __index = State })
 
 ---@type Flash.State?
 M.state = nil
 M.op = false
 
----@param opts? Flash.Config
+---@param opts? Flash.State.Config
 function M.new(opts)
   local self = State.new(opts)
   return setmetatable(self, { __index = M })
@@ -50,6 +50,7 @@ function M.setup()
           search = {
             forward = vim.fn.getcmdtype() == "/",
             mode = "search",
+            incremental = vim.go.incsearch,
           },
         })
         M.set_op(vim.fn.mode() == "v")
@@ -62,7 +63,6 @@ function M.setup()
     group = group,
     callback = wrap(function()
       M.set_op(vim.v.event.old_mode:sub(1, 2) == "no" or vim.fn.mode() == "v")
-      M.state:update()
     end),
   })
 end
@@ -77,7 +77,7 @@ end
 ---@param self Flash.State
 ---@param match Flash.Match
 function M:_jump(match)
-  local pos = match.from
+  local pos = match.pos
   local search_reg = vim.fn.getreg("/")
 
   -- For operator pending mode, set the search pattern to the

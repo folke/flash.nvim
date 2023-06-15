@@ -1,5 +1,6 @@
 local State = require("flash.state")
 local Util = require("flash.util")
+local Repeat = require("flash.repeat")
 
 ---@class Flash.Commands
 local M = {}
@@ -37,5 +38,7 @@ function M.jump(opts)
   end
   state:hide()
 end
+
+-- M.jump = Repeat.wrap(M.jump)
 
 return M

@@ -19,13 +19,15 @@ M.keys = {
   [","] = { forward = false, before = false },
 }
 
----@class Flash.CharSearchState : Flash.State
-local S = setmetatable({}, State)
-S.__index = S
-
-function S.new()
-  local self = State.new({
-    jump = { auto_jump = false },
+function M.new()
+  local self
+  self = State.new({
+    labeler = function(state)
+      -- set to empty label, so that the character will just be highlighted
+      for _, m in ipairs(state.results) do
+        m.label = ""
+      end
+    end,
     search = {
       forward = M.keys[M.motion].forward,
       wrap = false,
@@ -36,8 +38,10 @@ function S.new()
     highlight = {
       backdrop = true,
     },
+    jump = {
+      register = false,
+    },
   })
-  setmetatable(self, S)
 
   if M.motion == "T" then
     -- set the label before the jump position
@@ -50,11 +54,8 @@ function S.new()
   return self
 end
 
--- Override search to set the correct pattern,
--- and set the label for each match to the character.
----@param char string
-function S:search(char)
-  local c = char:gsub("\\", "\\\\")
+function M.pattern()
+  local c = M.char:gsub("\\", "\\\\")
   local pattern ---@type string
   if M.motion == "t" then
     pattern = "\\m.\\ze\\V" .. c
@@ -63,10 +64,7 @@ function S:search(char)
   else
     pattern = "\\V" .. c
   end
-  State.search(self, pattern)
-  for _, m in ipairs(self.results) do
-    m.label = char
-  end
+  return pattern
 end
 
 function M.visible()
@@ -80,14 +78,10 @@ function M.setup()
       key,
       Repeat.wrap(function(is_repeat)
         if is_repeat and M.state then
-          -- update the state and jump to the next match
-          M.state:update()
-          M.state:advance(vim.v.count1 - 1)
+          M.jumping = true
           M.state:jump()
           vim.schedule(function()
-            -- update the state and show it
-            M.state:update()
-            M.state:show()
+            M.jumping = false
           end)
           return
         end
@@ -140,44 +134,41 @@ function M.jump(key)
   end
 
   -- always re-calculate when not visible
-  M.state = M.visible() and M.state or S.new()
+  M.state = M.visible() and M.state or M.new()
 
   M.jumping = true
 
   -- get a new target
   if key:find("[ftFT]") or not M.char then
-    M.char = Util.get_char()
-    if not M.char then
+    local char = Util.get_char()
+    if char then
+      M.char = char
+    else
       return M.state:hide()
     end
   end
 
   -- update the state when needed
   if M.state.pattern == "" then
-    M.state:update({ search = M.char })
+    M.state:update({ search = M.pattern() })
   end
 
   local count = vim.v.count1
+  local forward = M.keys[M.motion].forward
   if key == "," then
-    count = -count
-    -- if we're at the first match, we show all matches
-    -- in the buffer and wrap around
-    if M.state:get().first then
-      local at_current = M.state:at_current()
-      M.state = S.new()
-      M.state.opts.search.wrap = true
-      M.state:update({ search = M.char })
-      if at_current then
-        count = count - 1
+    forward = not forward
+
+    -- check if we should enable wrapping.
+    if not M.state.opts.search.wrap then
+      local before = M.state:find({ count = 1, forward = forward })
+      if before and (before.pos < M.state.pos) == M.state.opts.search.forward then
+        M.state.opts.search.wrap = true
+        M.state:update({ force = true })
       end
     end
-  -- if we're not on the current match, we need to advance one
-  elseif not M.state:at_current() then
-    count = count - 1
   end
 
-  M.state:advance(count, { wrap = false })
-  M.state:jump()
+  M.state:jump({ count = count, forward = forward })
 
   vim.schedule(function()
     M.jumping = false

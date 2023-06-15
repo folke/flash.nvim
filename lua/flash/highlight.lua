@@ -64,6 +64,8 @@ function M.update(state)
     before[2] = before[2] + 1
   end
 
+  local target = state.target
+
   ---@param match Flash.Match
   ---@param pos number[]
   ---@param offset number[]
@@ -71,22 +73,33 @@ function M.update(state)
     local buf = vim.api.nvim_win_get_buf(match.win)
     local row = pos[1] - 1 + offset[1]
     local col = pos[2] + offset[2]
-    vim.api.nvim_buf_set_extmark(buf, state.ns, row, col, {
-      virt_text = { { match.label, state.opts.highlight.groups.label } },
-      virt_text_pos = style,
-      strict = false,
-      priority = state.opts.highlight.priority + 2,
-    })
+    local extmark = match.label == ""
+        -- when empty label, highlight the position
+        and {
+          hl_group = state.opts.highlight.groups.label,
+          end_row = row,
+          end_col = col + 1,
+          strict = false,
+          priority = state.opts.highlight.priority + 2,
+        }
+      -- else highlight the label
+      or {
+        virt_text = { { match.label, state.opts.highlight.groups.label } },
+        virt_text_pos = style,
+        strict = false,
+        priority = state.opts.highlight.priority + 2,
+      }
+    vim.api.nvim_buf_set_extmark(buf, state.ns, row, col, extmark)
   end
 
-  for m, match in ipairs(state.results) do
+  for _, match in ipairs(state.results) do
     local buf = vim.api.nvim_win_get_buf(match.win)
 
     if state.opts.highlight.matches then
-      vim.api.nvim_buf_set_extmark(buf, state.ns, match.from[1] - 1, match.from[2], {
-        end_row = match.to[1] - 1,
-        end_col = match.to[2] + 1,
-        hl_group = state.current == m and state.opts.highlight.groups.current
+      vim.api.nvim_buf_set_extmark(buf, state.ns, match.pos[1] - 1, match.pos[2], {
+        end_row = match.end_pos[1] - 1,
+        end_col = match.end_pos[2] + 1,
+        hl_group = target and match.pos == target.pos and state.opts.highlight.groups.current
           or state.opts.highlight.groups.match,
         strict = false,
         priority = state.opts.highlight.priority + 1,
@@ -95,10 +108,10 @@ function M.update(state)
 
     if match.label then
       if after then
-        label(match, match.to, after)
+        label(match, match.end_pos, after)
       end
       if before then
-        label(match, match.from, before)
+        label(match, match.pos, before)
       end
     end
   end

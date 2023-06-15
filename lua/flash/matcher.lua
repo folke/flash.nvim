@@ -1,0 +1,162 @@
+local Pos = require("flash.search.pos")
+
+---@class Flash.Match
+---@field win window
+---@field pos Pos
+---@field end_pos Pos
+---@field label? string
+
+---@alias Flash.Match.Find {forward?:boolean, wrap?:boolean, count?:number, pos?: Pos, match?:Flash.Match}
+
+---@class Flash.Matcher
+---@field win window
+---@field get fun(self, opts?: {from?:Pos, to?:Pos}): Flash.Match[]
+---@field find fun(self, opts?: Flash.Match.Find): Flash.Match
+---@field skip fun(self, labels: string[]): string[] | nil
+---@field update? fun(self)
+
+---@class Flash.Matcher.Custom: Flash.Matcher
+---@field matches Flash.Match[]
+local M = {}
+M.__index = M
+
+function M.new(win)
+  local self = setmetatable({}, M)
+  self.matches = {}
+  self.win = win
+  return self
+end
+
+---@param fn fun(win: window, state:Flash.State): Flash.Match[]
+function M.from(fn)
+  return function(win, state)
+    local ret = M.new(win)
+    ret:set(fn(win, state))
+    return ret
+  end
+end
+
+---@param ...? Flash.Match.Find
+---@return Flash.Match.Find
+function M.defaults(...)
+  local other = vim.tbl_filter(function(k)
+    return k ~= nil
+  end, { ... })
+
+  local opts = vim.tbl_extend("force", {
+    pos = vim.api.nvim_win_get_cursor(0),
+    forward = true,
+    wrap = true,
+    count = 1,
+  }, {}, unpack(other))
+  opts.pos = Pos(opts.pos)
+  return opts
+end
+
+---@param opts? Flash.Match.Find
+function M:find(opts)
+  opts = M.defaults(opts)
+
+  if opts.count == 0 then
+    for _, match in ipairs(self.matches) do
+      if match.pos == opts.pos then
+        return match
+      end
+    end
+    return
+  end
+
+  ---@type number?
+  local idx
+
+  if opts.match then
+    for m, match in ipairs(self.matches) do
+      if match == opts.match then
+        idx = m + (opts.forward and 1 or -1)
+        break
+      end
+    end
+  elseif opts.forward then
+    for i = 1, #self.matches, 1 do
+      if self.matches[i].pos > opts.pos then
+        idx = i
+        break
+      end
+    end
+  else
+    for i = #self.matches, 1, -1 do
+      if self.matches[i].pos < opts.pos then
+        idx = i
+        break
+      end
+    end
+  end
+
+  if not idx then
+    if not opts.wrap then
+      return
+    end
+    idx = opts.forward and 1 or #self.matches
+  end
+
+  if opts.forward then
+    idx = idx + opts.count - 1
+  else
+    idx = idx - opts.count + 1
+  end
+
+  if opts.wrap then
+    idx = (idx - 1) % #self.matches + 1
+  end
+  return self.matches[idx]
+end
+
+---@param labels string[]
+function M:skip(labels)
+  return labels
+end
+
+---@param opts {from?:Pos, to?:Pos}
+function M:get(opts)
+  return M.filter(self.matches, opts)
+end
+
+---@param matches Flash.Match[]
+---@param opts? {from?:Pos, to?:Pos}
+function M.filter(matches, opts)
+  opts = opts or {}
+  opts.from = opts.from and Pos(opts.from)
+  opts.to = opts.to and Pos(opts.to)
+  ---@param match Flash.Match
+  return vim.tbl_filter(function(match)
+    if opts.from and match.end_pos < opts.from then
+      return false
+    end
+    if opts.to and match.pos > opts.to then
+      return false
+    end
+    return true
+  end, matches)
+end
+
+---@param matches Flash.Match[]
+function M:set(matches)
+  for _, match in ipairs(matches) do
+    match.pos = Pos(match.pos)
+    match.end_pos = Pos(match.end_pos)
+    match.win = match.win or self.win
+  end
+
+  table.sort(matches, function(a, b)
+    if a.win ~= b.win then
+      return a.win < b.win
+    end
+    if a.pos ~= b.pos then
+      return a.pos < b.pos
+    end
+    return a.end_pos > b.end_pos
+  end)
+  self.matches = matches
+end
+
+return M

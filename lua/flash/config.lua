@@ -15,8 +15,6 @@ local defaults = {
     register = true,
     -- clear highlight after jump
     nohlsearch = true,
-    -- jump when only one match is found
-    auto_jump = true,
     -- save location in the jumplist
     jumplist = true,
     pos = "start", -- "start" | "end" | "range"
@@ -40,6 +38,10 @@ local defaults = {
     -- NOTE: Mode is always set to `search` when triggering flash
     -- in a regular search.
     mode = "exact",
+    -- behave like `incsearch`. Enabled for regular search,
+    -- when `incsearch` is enabled.
+    incremental = false,
+    filetype_exclude = { "notify", "noice" },
   },
   highlight = {
     label = {
@@ -73,7 +75,6 @@ local defaults = {
   ---@type table<string, Flash.Config>
   modes = {
     search = {
-      jump = { auto_jump = false },
       highlight = { backdrop = false },
     },
     forward = {
@@ -94,8 +95,9 @@ function M.setup(opts)
   opts.mode = nil
   options = M.get(opts)
   require("flash.highlight").setup()
-  require("flash.search").setup()
-  require("flash.charsearch").setup()
+  require("flash.state").setup()
+  require("flash.plugins.search").setup()
+  require("flash.plugins.charsearch").setup()
 end
 
 ---@param opts? Flash.Config

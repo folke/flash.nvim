@@ -6,14 +6,22 @@ local M = {}
 M.__index = M
 
 function M.new(state)
-  local self = setmetatable({}, M)
+  local self
+  self = setmetatable({}, M)
   self.state = state
   self.used = {}
   self:reset()
   return self
 end
 
+function M:labeler()
+  return function()
+    return self:update()
+  end
+end
+
 function M:update()
+  self:reset()
   local matches = self:filter()
   for _, match in ipairs(matches) do
     if not self:label(match, true) then
@@ -35,6 +43,12 @@ function M:reset()
       self.labels[#self.labels + 1] = l
       skip[l] = true
     end
+  end
+  for _, matcher in pairs(self.state.matchers) do
+    self.labels = matcher:skip(self.labels) or {}
+  end
+  for _, m in ipairs(self.state.results) do
+    m.label = nil
   end
 end
 
@@ -59,7 +73,7 @@ function M:label(m, used)
   if m.label then
     return true
   end
-  local pos = table.concat(m.from, ":")
+  local pos = m.pos:id(m.win) .. ":" .. m.end_pos:id(m.win)
   local label ---@type string?
   if used then
     label = self.used[pos]
@@ -78,13 +92,19 @@ function M:filter()
   ---@type Flash.Match[]
   local ret = {}
 
+  local target = self.state.target
+  local info = self.state.view:get(self.state.win)
+
+  -- TODO: incremental search
+
+  local from = vim.api.nvim_win_get_cursor(self.state.win)
+
   -- only label visible matches
   -- and don't label the first match in the current window
-  for m, match in ipairs(self.state.results) do
+  for _, match in ipairs(self.state.results) do
     if
-      match.visible ~= false
-      and not (
-        self.state.current == m
+      not (
+        (target and match.pos == target.pos)
         and not self.state.opts.highlight.label.current
         and match.win == self.state.win
       )
@@ -100,20 +120,20 @@ function M:filter()
       local bw = b.win == self.state.win and 0 or b.win
       return aw < bw
     end
-    if a.from[1] ~= b.from[1] then
+    if a.pos[1] ~= b.pos[1] then
       if a.win == self.state.win then
-        local da = math.abs(a.from[1] - self.state.pos[1])
-        local db = math.abs(b.from[1] - self.state.pos[1])
+        local da = math.abs(a.pos[1] - from[1])
+        local db = math.abs(b.pos[1] - from[1])
         return da < db
       end
-      return a.from[1] < b.from[1]
+      return a.pos[1] < b.pos[1]
     end
     if a.win == self.state.win then
-      local da = math.abs(a.from[2] - self.state.pos[2])
-      local db = math.abs(b.from[2] - self.state.pos[2])
+      local da = math.abs(a.pos[2] - from[2])
+      local db = math.abs(b.pos[2] - from[2])
       return da < db
     end
-    return a.from[2] < b.from[2]
+    return a.pos[2] < b.pos[2]
   end)
   return ret
 end

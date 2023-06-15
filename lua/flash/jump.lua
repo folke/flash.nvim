@@ -21,20 +21,20 @@ function M.jump(match, state)
 
   -- jump to start
   if state.opts.jump.pos == "start" then
-    vim.api.nvim_win_set_cursor(match.win, match.from)
+    vim.api.nvim_win_set_cursor(match.win, match.pos)
 
   -- jump to end
   elseif state.opts.jump.pos == "end" then
-    vim.api.nvim_win_set_cursor(match.win, match.to)
+    vim.api.nvim_win_set_cursor(match.win, match.end_pos)
 
   -- select range
   else
     if vim.fn.mode() == "v" then
       vim.cmd("normal! v")
     end
-    vim.api.nvim_win_set_cursor(match.win, match.from)
+    vim.api.nvim_win_set_cursor(match.win, match.pos)
     vim.cmd("normal! v")
-    vim.api.nvim_win_set_cursor(match.win, match.to)
+    vim.api.nvim_win_set_cursor(match.win, match.end_pos)
   end
 end
 
