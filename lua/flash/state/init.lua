@@ -197,22 +197,10 @@ function M:_update()
   ---@type Flash.Matcher[]
   local matchers = {}
   for _, win in ipairs(self.wins) do
-    local info = vim.fn.getwininfo(win)[1]
-    local from = Pos({ info.topline, 0 })
-    local to = Pos({ info.botline + 1, 0 })
-
-    if not self.opts.search.wrap and win == self.win then
-      if self.opts.search.forward then
-        from = self.pos
-      else
-        to = self.pos
-      end
-    end
-
     local buf = vim.api.nvim_win_get_buf(win)
     matchers[win] = self:get_matcher(win)
-
-    for _, m in ipairs(matchers[win]:get({ from = from, to = to })) do
+    local state = self.view:get_state(win)
+    for _, m in ipairs(state and state.matches or {}) do
       local id = m.pos:id(buf) .. m.end_pos:id(buf)
       if not done[id] then
         done[id] = true

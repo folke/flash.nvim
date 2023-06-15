@@ -93,9 +93,6 @@ function M:filter()
   local ret = {}
 
   local target = self.state.target
-  local info = self.state.view:get(self.state.win)
-
-  -- TODO: incremental search
 
   local from = vim.api.nvim_win_get_cursor(self.state.win)
 

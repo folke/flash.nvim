@@ -4,7 +4,6 @@ local Pattern = require("flash.search.pattern")
 local Matcher = require("flash.matcher")
 
 ---@class Flash.Search: Flash.Matcher
----@field view Flash.Search.View
 ---@field state Flash.State
 ---@field win window
 ---@field pattern Flash.Pattern
@@ -66,6 +65,10 @@ end
 function M:get(opts)
   self:_validate()
 
+  if self.pattern.search == "" then
+    return {}
+  end
+
   opts = opts or {}
   opts.from = opts.from and Pos(opts.from) or nil
   opts.to = opts.to and Pos(opts.to) or nil
@@ -89,6 +92,10 @@ end
 ---@param opts? Flash.Match.Find
 function M:find(opts)
   self:_validate()
+
+  if self.pattern.search == "" then
+    return
+  end
 
   opts = Matcher.defaults(opts)
   local flags = (opts.forward and "" or "b")
