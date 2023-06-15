@@ -104,13 +104,7 @@ end
 
 ---@param opts? Flash.Match.Find | {label?:string, pos?: Pos}
 function M:find(opts)
-  opts = Matcher.defaults({
-    forward = self.opts.search.forward,
-    wrap = self.opts.search.wrap,
-  }, opts)
-
-  ---@cast opts Flash.Match.Find | {label?:string, pos?: Pos}
-  if opts.label then
+  if opts and opts.label then
     for _, m in ipairs(self.results) do
       if m.label == opts.label then
         return m
@@ -119,20 +113,20 @@ function M:find(opts)
     return
   end
 
-  ---@cast opts Flash.Match.Find
+  opts = Matcher.defaults({
+    forward = self.opts.search.forward,
+    wrap = self.opts.search.wrap,
+  }, opts)
+
   local matcher = self:get_matcher(self.win)
   local ret = matcher:find(opts)
 
-  local info = vim.fn.getwininfo(self.win)[1]
-
-  local function is_visible()
-    return ret and ret.pos[1] >= info.topline and ret.pos[1] <= info.botline
-  end
-
-  if not self.opts.search.incremental and not is_visible() then
-    opts.forward = not opts.forward
-    ret = matcher:find(opts)
-    return is_visible() and ret or nil
+  if ret then
+    for _, m in ipairs(self.results) do
+      if m.pos == ret.pos and m.end_pos == ret.end_pos then
+        return m
+      end
+    end
   end
   return ret
 end
@@ -209,7 +203,22 @@ function M:_update()
     end
   end
   self.matchers = matchers
+
+  -- set target to next match.
+  -- When not using incremental search,
+  -- we need to set the target to the previous match
   self.target = self:find({ count = vim.v.count1 })
+  local info = vim.fn.getwininfo(self.win)[1]
+  local function is_visible()
+    return self.target and self.target.pos[1] >= info.topline and self.target.pos[1] <= info.botline
+  end
+  if not self.opts.search.incremental and not is_visible() then
+    self.target = self:find({ count = vim.v.count1, forward = not self.opts.search.forward })
+    if not is_visible() then
+      self.target = nil
+    end
+  end
+
   self.labeler(self)
 
   if M.is_search() then
