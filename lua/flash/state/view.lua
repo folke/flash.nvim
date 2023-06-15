@@ -64,8 +64,6 @@ function M:get_state(win)
     return M.cache[window]
   end
 
-  dd("update" .. window.win)
-
   local from = Pos({ window.topline, 0 })
   local to = Pos({ window.botline + 1, 0 })
 
@@ -123,7 +121,6 @@ function M:_dirty(win)
     changedtick = vim.b[buf].changedtick,
   }
   if not vim.deep_equal(state, self.wins[win]) then
-    dd("dirty", win)
     self.wins[win] = state
     return true
   end

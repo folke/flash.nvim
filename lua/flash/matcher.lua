@@ -116,7 +116,7 @@ function M:skip(labels)
   return labels
 end
 
----@param opts {from?:Pos, to?:Pos}
+---@param opts? {from?:Pos, to?:Pos}
 function M:get(opts)
   return M.filter(self.matches, opts)
 end

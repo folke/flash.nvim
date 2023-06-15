@@ -1,4 +1,5 @@
-local Search = require("flash.search.view")
+local Search = require("flash.search")
+local State = require("flash.state")
 
 describe("search.view", function()
   before_each(function()
@@ -8,9 +9,12 @@ describe("search.view", function()
   end)
 
   local function get_matches(pattern)
+    local state = State.new({ pattern = pattern, search = {
+      mode = "search",
+    } })
     local win = vim.api.nvim_get_current_win()
-    local search = Search.new(win, pattern)
-    return search:get(0, -1)
+    local search = Search.new(win, state)
+    return search:get()
   end
 
   local function set(text, pos)
