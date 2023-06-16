@@ -31,19 +31,21 @@ local Pos = require("flash.search.pos")
 local M = {}
 M.__index = M
 
----@type Flash.State[]
-M._states = setmetatable({}, { __mode = "v" })
+---@type table<Flash.State, boolean>
+M._states = setmetatable({}, { __mode = "k" })
 
 function M.setup()
   local ns = vim.api.nvim_create_namespace("flash")
   vim.api.nvim_set_decoration_provider(ns, {
     on_start = function()
-      for _, state in ipairs(M._states) do
-        local ok, err = pcall(state.update, state)
-        if not ok then
-          vim.schedule(function()
-            vim.notify(err)
-          end)
+      for state in pairs(M._states) do
+        if state.visible then
+          local ok, err = pcall(state.update, state)
+          if not ok then
+            vim.schedule(function()
+              vim.notify(err)
+            end)
+          end
         end
       end
     end,
@@ -68,7 +70,7 @@ function M.new(opts)
   self.view = View.new(self)
   self.labeler = self.opts.labeler or require("flash.labeler").new(self):labeler()
   self.ns = vim.api.nvim_create_namespace(self.opts.ns or "flash")
-  table.insert(M._states, self)
+  M._states[self] = true
   self:update()
   return self
 end
