@@ -26,11 +26,10 @@ function M:update()
 
   if self.state.opts.highlight.label.stable then
     for _, match in ipairs(matches) do
-      if not self:label(match, true) then
-        break
-      end
+      self:label(match, true)
     end
   end
+
   for _, match in ipairs(matches) do
     if not self:label(match) then
       break
@@ -55,11 +54,6 @@ function M:reset()
   end
 end
 
----@param fn fun(labels: string[]): string[]
-function M:validate(fn)
-  self.labels = fn(self.labels)
-end
-
 function M:valid(label)
   return vim.tbl_contains(self.labels, label)
 end
@@ -76,7 +70,7 @@ function M:label(m, used)
   if m.label then
     return true
   end
-  local pos = m.pos:id(m.win) .. ":" .. m.end_pos:id(m.win)
+  local pos = m.pos:id(m.win)
   local label ---@type string?
   if used then
     label = self.used[pos]
