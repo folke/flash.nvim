@@ -126,6 +126,12 @@ function M:skip(labels)
     return
   end
 
+  -- skip all labels if the pattern is invalid
+  local ok = pcall(vim.regex, pattern)
+  if not ok then
+    return
+  end
+
   vim.api.nvim_win_call(self.win, function()
     -- skip all labels if the pattern ends with a backslash
     -- except if it's escaped
