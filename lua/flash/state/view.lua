@@ -76,6 +76,9 @@ function M:get_state(win)
   end
 
   local matcher = self.state:get_matcher(win)
+  if matcher.update then
+    matcher:update()
+  end
 
   M.cache[window] = {
     matches = matcher:get({ from = from, to = to }),

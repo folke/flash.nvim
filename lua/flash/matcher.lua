@@ -31,7 +31,10 @@ end
 function M.from(fn)
   return function(win, state)
     local ret = M.new(win)
-    ret:set(fn(win, state))
+    ret.update = function(self)
+      self:set(fn(win, state))
+    end
+    ret:update()
     return ret
   end
 end
