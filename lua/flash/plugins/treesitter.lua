@@ -3,13 +3,20 @@ local Util = require("flash.util")
 
 local M = {}
 
-function M.matcher(win)
+---@param win window
+---@param state Flash.State
+function M.matcher(win, state)
   local buf = vim.api.nvim_win_get_buf(win)
   local line_count = vim.api.nvim_buf_line_count(buf)
 
   -- get all ranges of the current node and its parents
   local ranges = {} ---@type TSNode[]
-  local node = vim.treesitter.get_node()
+
+  local pos = win == state.win and state.pos or nil
+  local node = vim.treesitter.get_node({
+    bufnr = buf,
+    pos = pos and { pos[1] - 1, pos[2] } or nil,
+  })
 
   while node do
     local range = { node:range() }
