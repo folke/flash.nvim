@@ -4,24 +4,22 @@ local Repeat = require("flash.repeat")
 
 local M = {}
 
-M.motion = nil ---@type "t" | "T" | "f" | "F" | nil
+---@alias Flash.CharSearch.Motion "'f'" | "'F'" | "'t'" | "'T'"
+M.motion = nil ---@type Flash.CharSearch.Motion?
 M.char = nil ---@type string?
 M.jumping = false
 M.state = nil ---@type Flash.State?
 
----@type table<string, {forward:boolean, before:boolean}>
-M.keys = {
-  f = { forward = true, before = false },
-  t = { forward = true, before = true },
-  F = { forward = false, before = false },
-  T = { forward = false, before = true },
-  [";"] = { forward = true, before = false },
-  [","] = { forward = false, before = false },
+---@type table<Flash.CharSearch.Motion, Flash.State.Config>
+M.motions = {
+  f = { highlight = { label = { after = { 0, 0 } } } },
+  t = {},
+  F = { search = { forward = false }, highlight = { label = { after = { 0, 0 } } } },
+  T = { search = { forward = false }, highlight = { label = { before = true, after = false } } },
 }
 
 function M.new()
-  local self
-  self = State.new({
+  local opts = {
     labeler = function(state)
       -- set to empty label, so that the character will just be highlighted
       for _, m in ipairs(state.results) do
@@ -29,7 +27,6 @@ function M.new()
       end
     end,
     search = {
-      forward = M.keys[M.motion].forward,
       wrap = false,
       multi_window = false,
       abort_pattern = false,
@@ -41,17 +38,8 @@ function M.new()
     jump = {
       register = false,
     },
-  })
-
-  if M.motion == "T" then
-    -- set the label before the jump position
-    self.opts.highlight.label.before = true
-    self.opts.highlight.label.after = false
-  elseif M.motion == "f" or M.motion == "F" then
-    -- set the label at the jump position
-    self.opts.highlight.label.after = { 0, 0 }
-  end
-  return self
+  }
+  return State.new(vim.tbl_deep_extend("force", opts, M.motions[M.motion] or {}))
 end
 
 function M.pattern()
@@ -72,7 +60,7 @@ function M.visible()
 end
 
 function M.setup()
-  for key in pairs(M.keys) do
+  for _, key in ipairs({ "f", "F", "t", "T", ";", "," }) do
     vim.keymap.set({ "n", "x", "o" }, key, function()
       if Repeat.is_repeat then
         M.jumping = true
@@ -109,32 +97,28 @@ function M.parse(key)
   if M.visible() and M.motion == key then
     key = ";"
   end
-
   -- different motion, clear the state
-  if key:find("[ftFT]") and M.motion ~= key then
+  if M.motions[key] and M.motion ~= key then
     if M.state then
       M.state:hide()
     end
     M.motion = key
   end
-
   return key
 end
 
 function M.jump(key)
   key = M.parse(key)
-
   if not M.motion then
     return
   end
 
   -- always re-calculate when not visible
   M.state = M.visible() and M.state or M.new()
-
   M.jumping = true
 
   -- get a new target
-  if key:find("[ftFT]") or not M.char then
+  if M.motions[key] or not M.char then
     local char = Util.get_char()
     if char then
       M.char = char
@@ -148,11 +132,9 @@ function M.jump(key)
     M.state:update({ search = M.pattern() })
   end
 
-  local count = vim.v.count1
-  local forward = M.keys[M.motion].forward
+  local forward = M.state.opts.search.forward
   if key == "," then
     forward = not forward
-
     -- check if we should enable wrapping.
     if not M.state.opts.search.wrap then
       local before = M.state:find({ count = 1, forward = forward })
@@ -163,7 +145,7 @@ function M.jump(key)
     end
   end
 
-  M.state:jump({ count = count, forward = forward })
+  M.state:jump({ count = vim.v.count1, forward = forward })
 
   vim.schedule(function()
     M.jumping = false
