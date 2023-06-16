@@ -1,3 +1,5 @@
+local State = require("flash.state")
+
 local M = {}
 
 ---@type {is_repeat:boolean, fn:fun()}[]
@@ -16,38 +18,31 @@ function M.set(fn)
   vim.go.operatorfunc = [[v:lua.require'flash.repeat'._repeat]]
 end
 
----@private
-function M._execute(id)
-  local state = M._funcs[id]
-  if state then
-    local is_repeat = state.is_repeat
-    state.is_repeat = true
-    state.fn(is_repeat)
-  else
-    error("Invalid repeat id: " .. id)
-  end
+M.is_repeat = false
+function M.setup()
+  vim.on_key(function(key)
+    if key == "." then
+      M.is_repeat = true
+      vim.schedule(function()
+        M.is_repeat = false
+      end)
+    end
+  end)
 end
 
--- Wraps a function as a keymap expression so that it can be dot repeated.
----@param fn fun(repeat:boolean)
-function M.wrap(fn)
-  local state = { fn = fn, is_repeat = false }
-  table.insert(M._funcs, state)
-  local id = #M._funcs
+---@type table<string, Flash.State>
+M._states = {}
 
-  return function()
-    state.is_repeat = false
-    vim.schedule(function()
-      if not state.is_repeat then
-        vim.notify(
-          "Did you forget to map with `expr=true`?",
-          vim.log.levels.WARN,
-          { title = "flash.nvim" }
-        )
-      end
-    end)
-    return ("<cmd>lua require'flash.repeat'._execute(%d)<cr>"):format(id)
+---@param mode string
+---@param opts? Flash.State.Config
+function M.get_state(mode, opts)
+  local last = M._states[mode]
+  if M.is_repeat and last then
+    last:show()
+    return last
   end
+  M._states[mode] = State.new(opts)
+  return M._states[mode]
 end
 
 return M

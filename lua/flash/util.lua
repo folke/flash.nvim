@@ -7,6 +7,8 @@ end
 M.CR = M.t("<cr>")
 M.ESC = M.t("<esc>")
 M.BS = M.t("<bs>")
+M.LUA_CALLBACK = "\x80\253g"
+M.CMD = "\x80\253h"
 
 function M.get_char()
   vim.cmd.redraw()
