@@ -174,7 +174,7 @@ end
 function M:show()
   if not self.visible then
     self.visible = true
-    self:update()
+    self:update({ force = true })
   end
 end
 
