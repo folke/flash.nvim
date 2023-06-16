@@ -59,6 +59,7 @@ function M.jump()
         before = true,
         after = true,
         style = "inline",
+        stable = false,
       },
       matches = false,
     },

@@ -54,6 +54,8 @@ local defaults = {
       before = false, ---@type boolean|number[]
       -- position of the label extmark
       style = "overlay", ---@type "eol" | "overlay" | "right_align" | "inline"
+      -- when `true`, labels will be re-used when possible for the same position
+      stable = true,
     },
     -- show a backdrop with hl FlashBackdrop
     backdrop = true,
@@ -96,6 +98,7 @@ function M.setup(opts)
   options = M.get(opts)
   require("flash.highlight").setup()
   require("flash.state").setup()
+  require("flash.repeat").setup()
   require("flash.plugins.search").setup()
   require("flash.plugins.charsearch").setup()
 end

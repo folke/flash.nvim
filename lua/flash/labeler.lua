@@ -23,9 +23,12 @@ end
 function M:update()
   self:reset()
   local matches = self:filter()
-  for _, match in ipairs(matches) do
-    if not self:label(match, true) then
-      break
+
+  if self.state.opts.highlight.label.stable then
+    for _, match in ipairs(matches) do
+      if not self:label(match, true) then
+        break
+      end
     end
   end
   for _, match in ipairs(matches) do
