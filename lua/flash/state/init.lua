@@ -7,7 +7,6 @@ local Matcher = require("flash.matcher")
 local Search = require("flash.search")
 local View = require("flash.state.view")
 local Hacks = require("flash.hacks")
-local Pos = require("flash.search.pos")
 
 ---@class Flash.State.Config: Flash.Config
 ---@field matcher? fun(win: window, state:Flash.State): Flash.Match[]
@@ -206,21 +205,7 @@ function M:_update()
   end
   self.matchers = matchers
 
-  -- set target to next match.
-  -- When not using incremental search,
-  -- we need to set the target to the previous match
-  self.target = self:find({ count = vim.v.count1 })
-  local info = vim.fn.getwininfo(self.win)[1]
-  local function is_visible()
-    return self.target and self.target.pos[1] >= info.topline and self.target.pos[1] <= info.botline
-  end
-  if not self.opts.search.incremental and not is_visible() then
-    self.target = self:find({ count = vim.v.count1, forward = not self.opts.search.forward })
-    if not is_visible() then
-      self.target = nil
-    end
-  end
-
+  self:update_target()
   self.labeler(self)
 
   if M.is_search() then
@@ -228,6 +213,38 @@ function M:_update()
   end
 
   Highlight.update(self)
+end
+
+function M:update_target()
+  -- set target to next match.
+  -- When not using incremental search,
+  -- we need to set the target to the previous match
+  self.target = self:find({
+    pos = self.pos,
+    count = vim.v.count1,
+  })
+
+  local info = vim.fn.getwininfo(self.win)[1]
+  local function is_visible()
+    return self.target and self.target.pos[1] >= info.topline and self.target.pos[1] <= info.botline
+  end
+
+  if self.opts.search.incremental then
+    -- only update cursor if the target is not visible
+    -- and we are not activated
+    if self.target and not self.is_search() and not is_visible() then
+      vim.api.nvim_win_set_cursor(self.win, self.target.pos)
+    end
+  elseif not is_visible() then
+    self.target = self:find({
+      pos = self.pos,
+      count = vim.v.count1,
+      forward = not self.opts.search.forward,
+    })
+    if not is_visible() then
+      self.target = nil
+    end
+  end
 end
 
 return M
