@@ -74,7 +74,7 @@ function M:find(opts)
 
   if opts.match then
     for m, match in ipairs(self.matches) do
-      if match == opts.match then
+      if match.pos == opts.match.pos and match.end_pos == opts.match.end_pos then
         idx = m + (opts.forward and 1 or -1)
         break
       end
