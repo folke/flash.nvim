@@ -73,25 +73,20 @@ end
 
 function M.setup()
   for key in pairs(M.keys) do
-    vim.keymap.set(
-      { "n", "x", "o" },
-      key,
-      Repeat.wrap(function(is_repeat)
-        if is_repeat and M.state then
-          M.jumping = true
-          M.state:jump()
-          vim.schedule(function()
-            M.jumping = false
-          end)
-          return
-        end
+    vim.keymap.set({ "n", "x", "o" }, key, function()
+      if Repeat.is_repeat then
+        M.jumping = true
+        M.state:jump({ count = vim.v.count1 })
+        M.state:show()
+        vim.schedule(function()
+          M.jumping = false
+        end)
+      else
         M.jump(key)
-      end),
-      {
-        silent = true,
-        expr = true,
-      }
-    )
+      end
+    end, {
+      silent = true,
+    })
   end
 
   vim.api.nvim_create_autocmd({ "BufLeave", "CursorMoved", "InsertEnter" }, {

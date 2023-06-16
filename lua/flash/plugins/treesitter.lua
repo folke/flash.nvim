@@ -1,4 +1,4 @@
-local State = require("flash.state")
+local Repeat = require("flash.repeat")
 local Util = require("flash.util")
 
 local M = {}
@@ -42,12 +42,7 @@ end
 
 M.state = nil
 function M.jump()
-  if M.state then
-    M.state:hide()
-    M.state = nil
-  end
-
-  M.state = State.new({
+  M.state = Repeat.get_state("treesitter", {
     matcher = M.matcher,
     labels = "abcdefghijklmnopqrstuvwxyz",
     search = { multi_window = false, wrap = true },

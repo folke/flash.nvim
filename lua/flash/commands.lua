@@ -1,13 +1,12 @@
-local State = require("flash.state")
 local Util = require("flash.util")
 local Repeat = require("flash.repeat")
 
 ---@class Flash.Commands
 local M = {}
 
----@param opts? Flash.Config
+---@param opts? Flash.State.Config
 function M.jump(opts)
-  local state = State.new(opts)
+  local state = Repeat.get_state("jump", opts)
 
   while true do
     local c = Util.get_char()
@@ -32,13 +31,12 @@ function M.jump(opts)
     end
 
     -- exit if no results
-    if #state.results == 0 then
+    if #state.results == 0 and #pattern > 0 then
       break
     end
   end
   state:hide()
+  return state
 end
-
--- M.jump = Repeat.wrap(M.jump)
 
 return M
