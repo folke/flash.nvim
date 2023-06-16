@@ -97,9 +97,10 @@ function M:_jump(match)
   vim.api.nvim_create_autocmd("CmdlineLeave", {
     once = true,
     callback = vim.schedule_wrap(function()
+      -- delete the search pattern.
+      -- The correct one will be added in `on_jump`
+      vim.fn.histdel("search", -1)
       if M.op then
-        -- delete the special search pattern from the history
-        vim.fn.histdel("search", -1)
         -- restore original search pattern
         vim.fn.setreg("/", search_reg)
       else

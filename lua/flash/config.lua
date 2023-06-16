@@ -78,6 +78,7 @@ local defaults = {
   modes = {
     search = {
       highlight = { backdrop = false },
+      jump = { history = true },
     },
     forward = {
       search = { forward = true, wrap = false, multi_window = false },
