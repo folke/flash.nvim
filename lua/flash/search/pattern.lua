@@ -9,7 +9,7 @@ local Util = require("flash.util")
 local M = {}
 M.__index = M
 
----@alias Flash.Pattern.Mode "exact" | "fuzzy" | "search"
+---@alias Flash.Pattern.Mode "exact" | "fuzzy" | "search" | (fun(input:string):string,string?)
 
 ---@param pattern string
 ---@param mode Flash.Pattern.Mode
@@ -67,12 +67,19 @@ end
 ---@private
 function M._get(pattern, mode)
   local skip ---@type string?
-  if mode == "exact" then
-    pattern = "\\V" .. pattern:gsub("\\", "\\\\")
+  if type(mode) == "function" then
+    pattern, skip = mode(pattern)
+  elseif mode == "exact" then
+    pattern, skip = M._exact(pattern)
   elseif mode == "fuzzy" then
     pattern, skip = M._fuzzy(pattern)
   end
   return pattern, skip or pattern
+end
+
+---@param pattern string
+function M._exact(pattern)
+  return "\\V" .. pattern:gsub("\\", "\\\\")
 end
 
 ---@param opts? {ignorecase: boolean, whitespace:boolean}

@@ -31,11 +31,16 @@ local defaults = {
     forward = true,
     -- when `false`, find only matches in the given direction
     wrap = true,
-    ---@type "exact" | "search" | "fuzzy"
+    ---@type Flash.Pattern.Mode
     -- Each mode will take ignorecase and smartcase into account.
     -- * exact: exact match
     -- * search: regular search
     -- * fuzzy: fuzzy search
+    -- * fun(str): custom function that returns a pattern
+    --   For example, to only match at the beginning of a word:
+    --   mode = function(str)
+    --     return "\\<" .. str
+    --   end,
     -- NOTE: Mode is always set to `search` when triggering flash
     -- in a regular search.
     mode = "exact",
