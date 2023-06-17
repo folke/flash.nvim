@@ -1,4 +1,5 @@
 local Pos = require("flash.search.pos")
+local Pattern = require("flash.search.pattern")
 
 ---@class Flash.State.Window
 ---@field win number
@@ -9,7 +10,7 @@ local Pos = require("flash.search.pos")
 
 ---@class Flash.State.View
 ---@field state Flash.State
----@field pattern string
+---@field pattern Flash.Pattern
 ---@field wins Flash.State.Window[]
 local M = {}
 M.__index = M
@@ -21,7 +22,7 @@ M.cache = setmetatable({}, { __mode = "k" })
 function M.new(state)
   local self = setmetatable({}, M)
   self.state = state
-  self.pattern = ""
+  self.pattern = Pattern.new("", state.opts.search.mode)
   self.wins = {}
   return self
 end
@@ -31,7 +32,7 @@ function M:update()
   local dirty = false
 
   if self.pattern ~= self.state.pattern then
-    self.pattern = self.state.pattern
+    self.pattern = self.state.pattern:clone()
     dirty = true
     M.cache = {}
   end

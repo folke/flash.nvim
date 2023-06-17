@@ -2,13 +2,11 @@ local require = require("flash.require")
 
 local Pos = require("flash.search.pos")
 local Hacks = require("flash.hacks")
-local Pattern = require("flash.search.pattern")
 local Matcher = require("flash.matcher")
 
 ---@class Flash.Search: Flash.Matcher
 ---@field state Flash.State
 ---@field win window
----@field pattern Flash.Pattern
 local M = {}
 M.__index = M
 
@@ -18,21 +16,14 @@ function M.new(win, state)
   local self = setmetatable({}, M)
   self.state = state
   self.win = win
-  self.pattern = Pattern.new(self.state.pattern, self.state.opts.search.mode)
   return self
-end
-
-function M:_validate()
-  if self.state.pattern ~= self.pattern.pattern then
-    self.pattern = Pattern.new(self.state.pattern, self.state.opts.search.mode)
-  end
 end
 
 ---@param flags? string
 ---@return Flash.Match?
 function M:_next(flags)
   flags = flags or ""
-  local pos = vim.fn.searchpos(self.pattern.search, flags or "")
+  local pos = vim.fn.searchpos(self.state.pattern.search, flags or "")
   if pos[1] == 0 then
     return
   end
@@ -65,9 +56,7 @@ end
 
 ---@param opts? {from?:Pos, to?:Pos}
 function M:get(opts)
-  self:_validate()
-
-  if self.pattern.search == "" then
+  if self.state.pattern:empty() then
     return {}
   end
 
@@ -93,9 +82,7 @@ end
 -- Otherwise it uses the given direction.
 ---@param opts? Flash.Match.Find
 function M:find(opts)
-  self:_validate()
-
-  if self.pattern.search == "" then
+  if self.state.pattern:empty() then
     return
   end
 
@@ -122,8 +109,7 @@ end
 ---@param labels string[]
 ---@return string[]|nil returns labels to skip or `nil` when all labels should be skipped
 function M:skip(labels)
-  self:_validate()
-  local pattern = self.pattern.skip
+  local pattern = self.state.pattern.skip
   if pattern == "" then
     return
   end

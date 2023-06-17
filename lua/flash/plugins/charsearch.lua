@@ -21,6 +21,7 @@ M.motions = {
 
 function M.new()
   local State = require("flash.state")
+  ---@type Flash.State.Config
   local opts = {
     labeler = function(state)
       -- set to empty label, so that the character will just be highlighted
@@ -130,7 +131,7 @@ function M.jump(key)
   end
 
   -- update the state when needed
-  if M.state.pattern == "" then
+  if M.state.pattern:empty() then
     M.state:update({ search = M.pattern() })
   end
 

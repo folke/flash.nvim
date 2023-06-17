@@ -7,6 +7,7 @@ local Matcher = require("flash.matcher")
 local Search = require("flash.search")
 local View = require("flash.state.view")
 local Hacks = require("flash.hacks")
+local Pattern = require("flash.search.pattern")
 
 ---@class Flash.State.Config: Flash.Config
 ---@field matcher? fun(win: window, state:Flash.State): Flash.Match[]
@@ -20,7 +21,7 @@ local Hacks = require("flash.hacks")
 ---@field pos Pos
 ---@field results Flash.Match[]
 ---@field target? Flash.Match
----@field pattern string
+---@field pattern Flash.Pattern
 ---@field opts Flash.State.Config
 ---@field labeler fun(state:Flash.State)
 ---@field visible boolean
@@ -69,7 +70,7 @@ function M.new(opts)
   self.matchers = {}
   self.wins = {}
   self.matcher = self.opts.matcher and Matcher.from(self.opts.matcher) or Search.new
-  self.pattern = self.opts.pattern or ""
+  self.pattern = Pattern.new(self.opts.pattern, self.opts.search.mode)
   self.visible = true
   self.view = View.new(self)
   self.labeler = self.opts.labeler or require("flash.labeler").new(self):labeler()
@@ -140,7 +141,7 @@ end
 -- Checks if the given pattern is a jump label and jumps to it.
 ---@param pattern string
 function M:check_jump(pattern)
-  if pattern:find(self.pattern, 1, true) == 1 and #pattern == #self.pattern + 1 then
+  if pattern:find(self.pattern(), 1, true) == 1 and #pattern == #self.pattern() + 1 then
     local label = pattern:sub(-1)
     if self:jump(label) then
       return true
@@ -158,7 +159,7 @@ function M:update(opts)
     if self:check_jump(opts.search) then
       return true
     end
-    self.pattern = opts.search
+    self.pattern:set(opts.search)
   end
 
   if not self.visible then

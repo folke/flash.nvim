@@ -43,13 +43,13 @@ function M.on_jump(state)
   -- fix or restore the search register
   local sf = vim.v.searchforward
   if state.opts.jump.register then
-    vim.fn.setreg("/", state.pattern)
+    vim.fn.setreg("/", state.pattern())
   end
   vim.v.searchforward = sf
 
   -- add the real search pattern to the history
   if state.opts.jump.history then
-    vim.fn.histadd("search", state.pattern)
+    vim.fn.histadd("search", state.pattern())
   end
 
   -- clear the highlight

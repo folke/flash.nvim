@@ -18,20 +18,15 @@ function M.jump(opts)
       break
     end
 
-    local pattern = state.pattern
-    if c == Util.BS then
-      pattern = state.pattern:sub(1, -2)
-    else
-      pattern = state.pattern .. c
-    end
+    state.pattern:append(c)
 
     -- break if we jumped
-    if state:update({ search = pattern }) then
+    if state:update() then
       break
     end
 
     -- exit if no results
-    if #state.results == 0 and #pattern > 0 then
+    if #state.results == 0 and not state.pattern:empty() then
       break
     end
   end

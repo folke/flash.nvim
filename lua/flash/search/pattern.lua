@@ -1,8 +1,11 @@
+local Util = require("flash.util")
+
 ---@class Flash.Pattern
 ---@field pattern string
 ---@field search string
 ---@field skip string
 ---@field mode Flash.Pattern.Mode
+---@operator call:string Returns the input pattern
 local M = {}
 M.__index = M
 
@@ -13,10 +16,23 @@ M.__index = M
 function M.new(pattern, mode)
   local self = setmetatable({}, M)
   self.mode = mode
-  self:set(pattern)
+  self:set(pattern or "")
   return self
 end
 
+function M:__eq(other)
+  return other and other.pattern == self.pattern and other.mode == self.mode
+end
+
+function M:clone()
+  return M.new(self.pattern, self.mode)
+end
+
+function M:empty()
+  return self.pattern == ""
+end
+
+---@param pattern string
 ---@return boolean updated
 function M:set(pattern)
   if pattern ~= self.pattern then
@@ -25,27 +41,42 @@ function M:set(pattern)
       self.search = ""
       self.skip = ""
     else
-      self.search, self.skip = M.get(pattern, self.mode)
+      self.search, self.skip = M._get(pattern, self.mode)
     end
     return false
   end
   return true
 end
 
+---@param char string
+function M:append(char)
+  if char == Util.BS then
+    self:set(self.pattern:sub(1, -2))
+  else
+    self:set(self.pattern .. char)
+  end
+end
+
+---@return string the input pattern
+function M:__call()
+  return self.pattern
+end
+
 ---@param pattern string
 ---@param mode Flash.Pattern.Mode
-function M.get(pattern, mode)
-  local skip
+---@private
+function M._get(pattern, mode)
+  local skip ---@type string?
   if mode == "exact" then
     pattern = "\\V" .. pattern:gsub("\\", "\\\\")
   elseif mode == "fuzzy" then
-    pattern, skip = M.fuzzy(pattern)
+    pattern, skip = M._fuzzy(pattern)
   end
   return pattern, skip or pattern
 end
 
 ---@param opts? {ignorecase: boolean, whitespace:boolean}
-function M.fuzzy(pattern, opts)
+function M._fuzzy(pattern, opts)
   opts = vim.tbl_deep_extend("force", {
     ignorecase = vim.go.ignorecase,
     whitespace = false,
@@ -53,6 +84,7 @@ function M.fuzzy(pattern, opts)
 
   local sep = opts.whitespace and ".\\{-}" or "\\[^\\ ]\\{-}"
 
+  ---@param c string
   local chars = vim.tbl_map(function(c)
     return c == "\\" and "\\\\" or c
   end, vim.split(pattern, ""))
