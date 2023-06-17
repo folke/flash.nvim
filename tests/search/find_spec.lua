@@ -36,7 +36,7 @@ describe("search", function()
 
     local search = get_search("line")
     local matches = search:get()
-    assert.same("\\Vline", search.pattern.search)
+    assert.same("\\Vline", search.state.pattern.search)
     assert.same({
       { win = 1000, pos = { 2, 0 }, end_pos = { 2, 3 } },
       { win = 1000, pos = { 3, 0 }, end_pos = { 3, 3 } },
