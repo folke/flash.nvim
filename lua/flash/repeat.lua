@@ -1,3 +1,5 @@
+local require = require("flash.require")
+
 local State = require("flash.state")
 
 local M = {}
@@ -20,6 +22,10 @@ end
 
 M.is_repeat = false
 function M.setup()
+  if M._did_setup then
+    return
+  end
+  M._did_setup = true
   vim.on_key(function(key)
     if key == "." then
       M.is_repeat = true
@@ -36,6 +42,7 @@ M._states = {}
 ---@param mode string
 ---@param opts? Flash.State.Config
 function M.get_state(mode, opts)
+  M.setup()
   local last = M._states[mode]
   if M.is_repeat and last then
     last:show()

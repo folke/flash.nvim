@@ -34,6 +34,10 @@ M.__index = M
 M._states = setmetatable({}, { __mode = "k" })
 
 function M.setup()
+  if M._did_setup then
+    return
+  end
+  M._did_setup = true
   local ns = vim.api.nvim_create_namespace("flash")
   vim.api.nvim_set_decoration_provider(ns, {
     on_start = function()
@@ -58,6 +62,7 @@ end
 
 ---@param opts? Flash.State.Config
 function M.new(opts)
+  M.setup()
   local self = setmetatable({}, M)
   self.opts = Config.get(opts)
   self.results = {}

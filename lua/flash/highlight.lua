@@ -12,6 +12,7 @@ function M.setup()
   vim.api.nvim_set_hl(0, "FlashCurrent", { link = "IncSearch", default = true })
   vim.api.nvim_set_hl(0, "FlashLabel", { link = "Substitute", default = true })
 end
+M.setup()
 
 ---@param state Flash.State
 function M.backdrop(state)

@@ -3,6 +3,7 @@ local M = {}
 
 ---@class Flash.Config
 ---@field mode? string
+---@field enabled? boolean
 ---@field ns? string
 local defaults = {
   -- labels = "abcdefghijklmnopqrstuvwxyz",
@@ -97,9 +98,7 @@ function M.setup(opts)
   opts = opts or {}
   opts.mode = nil
   options = M.get(opts)
-  require("flash.highlight").setup()
-  require("flash.state").setup()
-  require("flash.repeat").setup()
+
   require("flash.plugins.search").setup()
   require("flash.plugins.charsearch").setup()
 end

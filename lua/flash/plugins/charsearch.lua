@@ -1,4 +1,5 @@
-local State = require("flash.state")
+local require = require("flash.require")
+
 local Util = require("flash.util")
 local Repeat = require("flash.repeat")
 
@@ -19,6 +20,7 @@ M.motions = {
 }
 
 function M.new()
+  local State = require("flash.state")
   local opts = {
     labeler = function(state)
       -- set to empty label, so that the character will just be highlighted

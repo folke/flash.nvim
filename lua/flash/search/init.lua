@@ -1,3 +1,5 @@
+local require = require("flash.require")
+
 local Pos = require("flash.search.pos")
 local Hacks = require("flash.hacks")
 local Pattern = require("flash.search.pattern")
