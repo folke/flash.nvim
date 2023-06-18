@@ -30,7 +30,7 @@ function M.setup()
   vim.api.nvim_create_autocmd("CmdlineChanged", {
     group = group,
     callback = wrap(function()
-      M.state:update({ search = vim.fn.getcmdline() })
+      M.state:update({ pattern = vim.fn.getcmdline() })
     end),
   })
 

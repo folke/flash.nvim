@@ -149,17 +149,17 @@ function M:check_jump(pattern)
   end
 end
 
----@param opts? {search:string, force:boolean}
+---@param opts? {pattern:string, force:boolean}
 ---@return boolean? abort `true` if the search was aborted
 function M:update(opts)
   opts = opts or {}
 
-  if opts.search then
+  if opts.pattern then
     -- abort if pattern is a jump label
-    if self:check_jump(opts.search) then
+    if self:check_jump(opts.pattern) then
       return true
     end
-    self.pattern:set(opts.search)
+    self.pattern:set(opts.pattern)
   end
 
   if not self.visible then

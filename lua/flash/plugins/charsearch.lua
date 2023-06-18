@@ -132,7 +132,7 @@ function M.jump(key)
 
   -- update the state when needed
   if M.state.pattern:empty() then
-    M.state:update({ search = M.pattern() })
+    M.state:update({ pattern = M.pattern() })
   end
 
   local forward = M.state.opts.search.forward
