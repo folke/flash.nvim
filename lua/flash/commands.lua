@@ -18,10 +18,8 @@ function M.jump(opts)
       break
     end
 
-    state.pattern:append(c)
-
     -- break if we jumped
-    if state:update() then
+    if state:update({ pattern = state.pattern:extend(c) }) then
       break
     end
 

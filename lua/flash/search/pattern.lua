@@ -49,12 +49,11 @@ function M:set(pattern)
 end
 
 ---@param char string
-function M:append(char)
+function M:extend(char)
   if char == Util.BS then
-    self:set(self.pattern:sub(1, -2))
-  else
-    self:set(self.pattern .. char)
+    return self.pattern:sub(1, -2)
   end
+  return self.pattern .. char
 end
 
 ---@return string the input pattern
