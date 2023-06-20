@@ -13,7 +13,7 @@ local defaults = {
     history = false,
     -- add pattern to search register
     -- useful to use with `n` and `N` to repeat the jump
-    register = true,
+    register = false,
     -- clear highlight after jump
     nohlsearch = true,
     -- save location in the jumplist
