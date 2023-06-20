@@ -1,4 +1,4 @@
-*flash.nvim.txt*         For Neovim >= 0.8.0         Last change: 2023 June 18
+*flash.nvim.txt*         For Neovim >= 0.8.0         Last change: 2023 June 20
 
 ==============================================================================
 Table of Contents                               *flash.nvim-table-of-contents*
