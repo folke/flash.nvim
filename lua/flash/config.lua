@@ -9,16 +9,16 @@ local defaults = {
   -- labels = "abcdefghijklmnopqrstuvwxyz",
   labels = "asdfghjklqwertyuiopzxcvbnm",
   jump = {
+    -- save location in the jumplist
+    jumplist = true,
+    -- jump position
+    pos = "start", ---@type "start" | "end" | "range"
     -- add pattern to search history
     history = false,
     -- add pattern to search register
-    -- useful to use with `n` and `N` to repeat the jump
     register = false,
     -- clear highlight after jump
-    nohlsearch = true,
-    -- save location in the jumplist
-    jumplist = true,
-    pos = "start", -- "start" | "end" | "range"
+    nohlsearch = false,
   },
   search = {
     -- search/jump in all windows
@@ -76,7 +76,7 @@ local defaults = {
     search = {
       enabled = true, -- enable flash for search
       highlight = { backdrop = false },
-      jump = { history = true },
+      jump = { history = true, register = true, nohlsearch = true },
       search = {
         -- `forward` will be automatically set to the search direction
         -- `mode` is always set to `search`
