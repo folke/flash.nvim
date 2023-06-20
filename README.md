@@ -1,5 +1,27 @@
 # ⚡flash.nvim
 
+## Examples
+
+<details><summary>Forward search only</summary>
+
+```lua
+require("flash").jump({
+  search = { forward = true, wrap = false, multi_window = false },
+})
+```
+
+</details>
+
+<details><summary>Backward search only</summary>
+
+```lua
+require("flash").jump({
+  search = { forward = false, wrap = false, multi_window = false },
+})
+```
+
+</details>
+
 ## 📦 Alternatives
 
 - [leap.nvim](https://github.com/ggandor/leap.nvim)
