@@ -5,13 +5,13 @@ local Repeat = require("flash.repeat")
 
 local M = {}
 
----@alias Flash.CharSearch.Motion "'f'" | "'F'" | "'t'" | "'T'"
-M.motion = nil ---@type Flash.CharSearch.Motion?
+---@alias Flash.Char.Motion "'f'" | "'F'" | "'t'" | "'T'"
+M.motion = nil ---@type Flash.Char.Motion?
 M.char = nil ---@type string?
 M.jumping = false
 M.state = nil ---@type Flash.State?
 
----@type table<Flash.CharSearch.Motion, Flash.State.Config>
+---@type table<Flash.Char.Motion, Flash.State.Config>
 M.motions = {
   f = { highlight = { label = { after = { 0, 0 } } } },
   t = {},
@@ -23,6 +23,7 @@ function M.new()
   local State = require("flash.state")
   ---@type Flash.State.Config
   local opts = {
+    mode = "char",
     labeler = function(state)
       -- set to empty label, so that the character will just be highlighted
       for _, m in ipairs(state.results) do
@@ -30,16 +31,8 @@ function M.new()
       end
     end,
     search = {
-      wrap = false,
       multi_window = false,
-      abort_pattern = false,
       mode = "search",
-    },
-    highlight = {
-      backdrop = true,
-    },
-    jump = {
-      register = false,
     },
   }
   return State.new(vim.tbl_deep_extend("force", opts, M.motions[M.motion] or {}))
