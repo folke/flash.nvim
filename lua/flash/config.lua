@@ -97,8 +97,8 @@ local defaults = {
       labels = "abcdefghijklmnopqrstuvwxyz",
       jump = { pos = "range" },
       highlight = {
+        label = { before = true, after = true, style = "inline" },
         backdrop = false,
-        label = { current = true, before = true, after = true, style = "inline" },
         matches = false,
       },
     },

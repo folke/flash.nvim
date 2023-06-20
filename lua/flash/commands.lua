@@ -32,4 +32,9 @@ function M.jump(opts)
   return state
 end
 
+---@param opts? Flash.State.Config
+function M.treesitter(opts)
+  return require("flash.plugins.treesitter").jump(opts)
+end
+
 return M
