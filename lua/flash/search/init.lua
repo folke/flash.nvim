@@ -23,7 +23,10 @@ end
 ---@return Flash.Match?
 function M:_next(flags)
   flags = flags or ""
-  local pos = vim.fn.searchpos(self.state.pattern.search, flags or "")
+  local ok, pos = pcall(vim.fn.searchpos, self.state.pattern.search, flags or "")
+  -- incomplete or invalid pattern
+  if not ok then
+    return
   end
   if pos[1] == 0 then
     return
