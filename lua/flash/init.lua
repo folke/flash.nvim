@@ -1,8 +1,9 @@
 ---@type Flash.Commands
 local M = {}
 
-function M.setup()
-  require("flash.config").setup()
+---@param opts? Flash.Config
+function M.setup(opts)
+  require("flash.config").setup(opts)
 end
 
 return setmetatable(M, {
