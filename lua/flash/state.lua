@@ -3,9 +3,9 @@ local require = require("flash.require")
 local Config = require("flash.config")
 local Highlight = require("flash.highlight")
 local Jump = require("flash.jump")
-local Matcher = require("flash.matcher")
+local Matcher = require("flash.search.matcher")
 local Search = require("flash.search")
-local View = require("flash.state.view")
+local Cache = require("flash.cache")
 local Hacks = require("flash.hacks")
 local Pattern = require("flash.search.pattern")
 
@@ -17,7 +17,7 @@ local Pattern = require("flash.search.pattern")
 ---@class Flash.State
 ---@field win window
 ---@field wins window[]
----@field view Flash.State.View
+---@field cache Flash.Cache
 ---@field pos Pos
 ---@field results Flash.Match[]
 ---@field target? Flash.Match
@@ -47,7 +47,11 @@ function M.setup()
           local ok, err = pcall(state.update, state)
           if not ok then
             vim.schedule(function()
-              vim.notify(err)
+              vim.notify(
+                "Flash error during redraw:\n" .. err,
+                vim.log.levels.ERROR,
+                { title = "flash.nvim" }
+              )
             end)
           end
         end
@@ -72,7 +76,7 @@ function M.new(opts)
   self.matcher = self.opts.matcher and Matcher.from(self.opts.matcher) or Search.new
   self.pattern = Pattern.new(self.opts.pattern, self.opts.search.mode)
   self.visible = true
-  self.view = View.new(self)
+  self.cache = Cache.new(self)
   self.labeler = self.opts.labeler or require("flash.labeler").new(self):labeler()
   self.ns = vim.api.nvim_create_namespace(self.opts.ns or "flash")
   M._states[self] = true
@@ -166,7 +170,7 @@ function M:update(opts)
     return
   end
 
-  if self.view:update() or opts.force then
+  if self.cache:update() or opts.force then
     self:_update()
   end
 end
@@ -200,7 +204,7 @@ function M:_update()
   for _, win in ipairs(self.wins) do
     local buf = vim.api.nvim_win_get_buf(win)
     matchers[win] = self:get_matcher(win)
-    local state = self.view:get_state(win)
+    local state = self.cache:get_state(win)
     for _, m in ipairs(state and state.matches or {}) do
       local id = m.pos:id(buf) .. m.end_pos:id(buf)
       if not done[id] then

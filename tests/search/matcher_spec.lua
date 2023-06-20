@@ -1,4 +1,4 @@
-local Matcher = require("flash.matcher")
+local Matcher = require("flash.search.matcher")
 local assert = require("luassert")
 
 describe("search", function()

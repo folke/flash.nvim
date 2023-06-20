@@ -2,7 +2,7 @@ local require = require("flash.require")
 
 local Pos = require("flash.search.pos")
 local Hacks = require("flash.hacks")
-local Matcher = require("flash.matcher")
+local Matcher = require("flash.search.matcher")
 
 ---@class Flash.Search: Flash.Matcher
 ---@field state Flash.State

@@ -8,7 +8,7 @@ local Pattern = require("flash.search.pattern")
 ---@field botline number
 ---@field changedtick number
 
----@class Flash.State.View
+---@class Flash.Cache
 ---@field state Flash.State
 ---@field pattern Flash.Pattern
 ---@field wins Flash.State.Window[]
