@@ -24,6 +24,7 @@ end
 function M:_next(flags)
   flags = flags or ""
   local pos = vim.fn.searchpos(self.state.pattern.search, flags or "")
+  end
   if pos[1] == 0 then
     return
   end
@@ -106,51 +107,49 @@ function M:find(opts)
   return ret
 end
 
+-- Returns valid labels for the current search pattern
+-- in this window.
 ---@param labels string[]
----@return string[]|nil returns labels to skip or `nil` when all labels should be skipped
-function M:skip(labels)
+---@return string[] returns labels to skip or `nil` when all labels should be skipped
+function M:labels(labels)
   local pattern = self.state.pattern.skip
+
+  -- skip all labels if the pattern is empty
   if pattern == "" then
-    return
+    return {}
   end
 
   -- skip all labels if the pattern is invalid
   local ok = pcall(vim.regex, pattern)
   if not ok then
-    return
+    return {}
+  end
+
+  -- skip all labels if the pattern ends with a backslash
+  -- except if it's escaped
+  if pattern:find("\\$") and not pattern:find("\\\\$") then
+    return {}
   end
 
   vim.api.nvim_win_call(self.win, function()
-    -- skip all labels if the pattern ends with a backslash
-    -- except if it's escaped
-    if pattern:find("\\$") and not pattern:find("\\\\$") then
-      labels = nil
-      return
-    end
-
     while #labels > 0 do
-      local p = pattern .. "\\m\\zs[" .. table.concat(labels, "") .. "]"
-      local ok, pos = pcall(vim.fn.searchpos, p, "cnw")
-
-      -- skip all labels on an invalid pattern
-      if not ok then
-        labels = nil
-        return
+      -- this is needed, since an uppercase label would trigger smartcase
+      local label_group = table.concat(labels, "")
+      if vim.go.ignorecase then
+        label_group = label_group:lower()
       end
+
+      local p = pattern .. "\\m\\zs[" .. label_group .. "]"
+      local pos = vim.fn.searchpos(p, "cnw")
 
       -- not found, we're done
       if pos[1] == 0 then
-        break
-      end
-
-      local char = vim.fn.getline(pos[1]):sub(pos[2], pos[2])
-      -- HACK: this will fail if the pattern is an incomplete regex
-      -- In that case, we skip all labels
-      if not vim.tbl_contains(labels, char) then
-        labels = nil
         return
       end
 
+      local char = vim.api.nvim_buf_get_lines(0, pos[1] - 1, pos[1], false)[1]:sub(pos[2], pos[2])
+
+      local label_count = #labels
       labels = vim.tbl_filter(function(c)
         -- when ignorecase is set, we need to skip
         -- both the upper and lower case labels
@@ -159,6 +158,13 @@ function M:skip(labels)
         end
         return c ~= char
       end, labels)
+
+      -- HACK: this will fail if the pattern is an incomplete regex
+      -- In that case, we skip all labels
+      if label_count == #labels then
+        labels = {}
+        break
+      end
     end
   end)
   return labels

@@ -47,7 +47,7 @@ function M:reset()
     end
   end
   for _, matcher in pairs(self.state.matchers) do
-    self.labels = matcher:skip(self.labels) or {}
+    self.labels = matcher:labels(self.labels)
   end
   for _, m in ipairs(self.state.results) do
     m.label = nil

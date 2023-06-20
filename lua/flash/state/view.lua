@@ -15,7 +15,7 @@ local Pattern = require("flash.search.pattern")
 local M = {}
 M.__index = M
 
----@type table<Flash.State.Window, {skips: string[], matches: Flash.Match[]}>
+---@type table<Flash.State.Window, {matches: Flash.Match[]}>
 M.cache = setmetatable({}, { __mode = "k" })
 
 ---@param state Flash.State

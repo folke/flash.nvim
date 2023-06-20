@@ -12,7 +12,7 @@ local Pos = require("flash.search.pos")
 ---@field win window
 ---@field get fun(self, opts?: {from?:Pos, to?:Pos}): Flash.Match[]
 ---@field find fun(self, opts?: Flash.Match.Find): Flash.Match
----@field skip fun(self, labels: string[]): string[] | nil
+---@field labels fun(self, labels: string[]): string[]
 ---@field update? fun(self)
 
 ---@class Flash.Matcher.Custom: Flash.Matcher
@@ -115,7 +115,7 @@ function M:find(opts)
 end
 
 ---@param labels string[]
-function M:skip(labels)
+function M:labels(labels)
   return labels
 end
 
