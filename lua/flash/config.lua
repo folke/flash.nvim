@@ -131,7 +131,7 @@ function M.setup(opts)
   end
 end
 
----@param ... Flash.Config?
+---@param ... Flash.Config|Flash.State.Config|nil
 ---@return Flash.State.Config
 function M.get(...)
   ---@type Flash.Config[]

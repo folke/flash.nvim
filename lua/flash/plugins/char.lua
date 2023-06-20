@@ -2,6 +2,7 @@ local require = require("flash.require")
 
 local Util = require("flash.util")
 local Repeat = require("flash.repeat")
+local Config = require("flash.config")
 
 local M = {}
 
@@ -21,8 +22,7 @@ M.motions = {
 
 function M.new()
   local State = require("flash.state")
-  ---@type Flash.State.Config
-  local opts = {
+  return State.new(Config.get({
     mode = "char",
     labeler = function(state)
       -- set to empty label, so that the character will just be highlighted
@@ -34,8 +34,7 @@ function M.new()
       multi_window = false,
       mode = "search",
     },
-  }
-  return State.new(vim.tbl_deep_extend("force", opts, M.motions[M.motion] or {}))
+  }, M.motions[M.motion]))
 end
 
 function M.pattern()
