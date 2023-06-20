@@ -4,10 +4,30 @@
 Table of Contents                               *flash.nvim-table-of-contents*
 
 1. flash.nvim                                          |flash.nvim-flash.nvim|
+  - Examples                                  |flash.nvim-flash.nvim-examples|
   - Alternatives                          |flash.nvim-flash.nvim-alternatives|
 
 ==============================================================================
 1. flash.nvim                                          *flash.nvim-flash.nvim*
+
+
+EXAMPLES                                      *flash.nvim-flash.nvim-examples*
+
+Forward search only ~
+
+>lua
+    require("flash").jump({
+      search = { forward = true, wrap = false, multi_window = false },
+    })
+<
+
+Backward search only ~
+
+>lua
+    require("flash").jump({
+      search = { forward = false, wrap = false, multi_window = false },
+    })
+<
 
 
 ALTERNATIVES                              *flash.nvim-flash.nvim-alternatives*
