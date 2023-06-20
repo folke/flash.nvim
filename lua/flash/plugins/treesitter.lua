@@ -1,5 +1,6 @@
 local Repeat = require("flash.repeat")
 local Util = require("flash.util")
+local Config = require("flash.config")
 
 local M = {}
 
@@ -26,6 +27,8 @@ function M.matcher(win, state)
     node = node:parent()
   end
 
+  local labels = vim.split(state.opts.labels .. state.opts.labels:upper(), "")
+
   -- convert ranges to matches
   ---@type Flash.Match[]
   local ret = {}
@@ -34,6 +37,7 @@ function M.matcher(win, state)
     local match = {
       pos = { range[1] + 1, range[2] },
       end_pos = { range[3] + 1, range[4] - 1 },
+      label = table.remove(labels, 1),
     }
     -- If the match is at the end of the buffer,
     -- then move it to the last character of the last line.
@@ -47,28 +51,19 @@ function M.matcher(win, state)
   return ret
 end
 
-M.state = nil
-function M.jump()
-  M.state = Repeat.get_state("treesitter", {
-    matcher = M.matcher,
-    labels = "abcdefghijklmnopqrstuvwxyz",
-    search = { multi_window = false, wrap = true },
-    jump = { pos = "range" },
-    highlight = {
-      backdrop = false,
-      label = {
-        current = true,
-        before = true,
-        after = true,
-        style = "inline",
-        stable = false,
-      },
-      matches = false,
-    },
-  })
+---@param opts? Flash.Config
+function M.jump(opts)
+  local state = Repeat.get_state(
+    "treesitter",
+    Config.get({ mode = "treesitter" }, opts, {
+      matcher = M.matcher,
+      labeler = function() end,
+      search = { multi_window = false, wrap = true },
+    })
+  )
 
   local pos = vim.api.nvim_win_get_cursor(0)
-  local current = M.state:jump("a")
+  local current = state:jump("a")
 
   while true do
     local char = Util.get_char()
@@ -77,20 +72,21 @@ function M.jump()
       vim.api.nvim_win_set_cursor(0, pos)
       break
     elseif char == ";" then
-      current = M.state:jump({ match = current, forward = false })
+      current = state:jump({ match = current, forward = false })
     elseif char == "," then
-      current = M.state:jump({ forward = true, match = current })
+      current = state:jump({ forward = true, match = current })
     elseif char == Util.CR then
-      M.state:jump(current and current.label or nil)
+      state:jump(current and current.label or nil)
       break
     else
-      if not M.state:jump(char) then
+      if not state:jump(char) then
         vim.api.nvim_input(char)
       end
       break
     end
   end
-  M.state:hide()
+  state:hide()
+  return state
 end
 
 return M
