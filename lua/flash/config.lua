@@ -24,7 +24,6 @@ local defaults = {
     -- search/jump in all windows
     multi_window = true,
     -- search direction
-    -- NOTE: will be overriden in a regular search with `/` or `?`
     forward = true,
     -- when `false`, find only matches in the given direction
     wrap = true,
@@ -38,11 +37,8 @@ local defaults = {
     --   mode = function(str)
     --     return "\\<" .. str
     --   end,
-    -- NOTE: Mode is always set to `search` when triggering flash
-    -- in a regular search.
     mode = "exact",
-    -- behave like `incsearch`. Enabled for regular search,
-    -- when `incsearch` is enabled.
+    -- behave like `incsearch`
     incremental = false,
     filetype_exclude = { "notify", "noice" },
   },
@@ -57,14 +53,10 @@ local defaults = {
       before = false, ---@type boolean|number[]
       -- position of the label extmark
       style = "overlay", ---@type "eol" | "overlay" | "right_align" | "inline"
-      -- when `true`, labels will be re-used when possible for the same position
-      stable = true,
     },
     -- show a backdrop with hl FlashBackdrop
     backdrop = true,
-    -- Will apply the same highlights as a regular search.
-    -- This is useful to prevent flickring during search.
-    -- Especially with plugins like noice.nvim.
+    -- Highlight the search matches
     matches = true,
     -- extmark priority
     priority = 5000,
@@ -79,13 +71,43 @@ local defaults = {
   -- Use it with `require("flash").jump({mode = "forward"})`
   ---@type table<string, Flash.Config>
   modes = {
+    -- options used when flash is activated through
+    -- a regular search with `/` or `?`
     search = {
+      enabled = true, -- enable flash for search
       highlight = { backdrop = false },
       jump = { history = true },
+      search = {
+        -- `forward` will be automatically set to the search direction
+        -- `mode` is always set to `search`
+        -- `incremental` is set to `true` when `incsearch` is enabled
+      },
     },
+    -- options used when flash is activated through
+    -- `f`, `F`, `t`, `T`, `;` and `,` motions
+    char = {
+      enabled = true,
+      search = { wrap = false },
+      highlight = { backdrop = true },
+      jump = { register = false },
+    },
+    -- options used for treesitter selections
+    -- `require("flash").treesitter()`
+    treesitter = {
+      labels = "abcdefghijklmnopqrstuvwxyz",
+      jump = { pos = "range" },
+      highlight = {
+        backdrop = false,
+        label = { current = true, before = true, after = true, style = "inline" },
+        matches = false,
+      },
+    },
+    -- you can define your own modes
+    -- `require("flash").jump({mode = "forward"})`
     forward = {
       search = { forward = true, wrap = false, multi_window = false },
     },
+    -- `require("flash").jump({mode = "backward"})`
     backward = {
       search = { forward = false, wrap = false, multi_window = false },
     },
@@ -101,20 +123,33 @@ function M.setup(opts)
   opts.mode = nil
   options = M.get(opts)
 
-  require("flash.plugins.search").setup()
-  require("flash.plugins.charsearch").setup()
+  if options.modes.search.enabled then
+    require("flash.plugins.search").setup()
+  end
+  if options.modes.char.enabled then
+    require("flash.plugins.char").setup()
+  end
 end
 
----@param opts? Flash.Config
-function M.get(opts)
-  return vim.tbl_deep_extend(
-    "force",
-    {},
-    defaults,
-    options or {},
-    opts and opts.mode and options.modes[opts.mode] or {},
-    opts or {}
-  )
+---@param ... Flash.Config?
+---@return Flash.State.Config
+function M.get(...)
+  ---@type Flash.Config[]
+  local all = {}
+
+  for i = 1, select("#", ...) do
+    ---@type Flash.Config?
+    local opts = select(i, ...)
+    if opts then
+      if opts.mode then
+        all[#all + 1] = defaults.modes[opts.mode] or {}
+        opts.mode = nil
+      end
+      all[#all + 1] = opts
+    end
+  end
+
+  return vim.tbl_deep_extend("force", {}, defaults, options or {}, unpack(all))
 end
 
 return setmetatable(M, {
