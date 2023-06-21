@@ -1,10 +1,8 @@
-local State = require("flash.state")
-local Util = require("flash.util")
-
 local M = {}
 
+-- Example plugin that shows labels at positions with diagnostics.
 function M.show()
-  local state = State.new({
+  require("flash").jump({
     search = { multi_window = true, wrap = true },
     highlight = { backdrop = true, label = { current = true } },
     matcher = function(win)
@@ -17,24 +15,14 @@ function M.show()
         }
       end, vim.diagnostic.get(buf))
     end,
-  })
-
-  local pos = vim.api.nvim_win_get_cursor(0)
-
-  local char = Util.get_char()
-  if char then
-    local match = state:find({ label = char })
-    if match then
+    action = function(match, state)
       vim.api.nvim_win_call(match.win, function()
         vim.api.nvim_win_set_cursor(match.win, match.pos)
         vim.diagnostic.open_float()
-        vim.api.nvim_win_set_cursor(match.win, pos)
+        vim.api.nvim_win_set_cursor(match.win, state.pos)
       end)
-    else
-      vim.api.nvim_input(char)
-    end
-  end
-  state:hide()
+    end,
+  })
 end
 
 return M
