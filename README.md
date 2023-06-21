@@ -281,6 +281,7 @@ require("flash").jump({
 
 - [leap.nvim](https://github.com/ggandor/leap.nvim)
 - [lightspeed.nvim](https://github.com/ggandor/lightspeed.nvim)
+- [vim-sneak](https://github.com/justinmk/vim-sneak)
 - [mini.jump](https://github.com/echasnovski/mini.nvim/blob/main/readmes/mini-jump.md)
 - [mini.jump2d](https://github.com/echasnovski/mini.nvim/blob/main/readmes/mini-jump2d.md)
 - [hop.nvim](https://github.com/phaazon/hop.nvim)
