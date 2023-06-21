@@ -77,7 +77,9 @@ function M:label(m, used)
   end
   if label and self:valid(label) then
     self:use(label)
-    self.used[pos] = label
+    if self.state.opts.highlight.label.reuse ~= "lowercase" or label:lower() == label then
+      self.used[pos] = label
+    end
     m.label = label
   end
   return #self.labels > 0
