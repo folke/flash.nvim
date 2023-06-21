@@ -10,10 +10,10 @@ enhanced character motions, and Treesitter integration.
   </tr>
   <tr>
     <td>
-      <img src="https://github.com/folke/flash.nvim/assets/292349/46141f94-5691-4b4e-9676-e107a4fe0fd8" />
+      <img src="https://github.com/folke/flash.nvim/assets/292349/e0ac4cbc-fa54-4505-8261-43ec0505518d" />
     </td>
     <td>
-      <img src="https://github.com/folke/flash.nvim/assets/292349/07dcea5b-c294-45c5-b198-7af4691b24e1" />
+      <img src="https://github.com/folke/flash.nvim/assets/292349/90af85e3-3f22-4c51-af4b-2a2488c9560b" />
     </td>
   </tr>
   <tr>
@@ -22,10 +22,10 @@ enhanced character motions, and Treesitter integration.
   </tr>
   <tr>
     <td>
-      <img src="https://github.com/folke/flash.nvim/assets/292349/da00754e-80e1-41ec-8674-4b52cc8190a6" />
+      <img src="https://github.com/folke/flash.nvim/assets/292349/379cb2de-8ec3-4acf-8811-d3590a5854b6" />
     </td>
     <td>
-      <img src="https://github.com/folke/flash.nvim/assets/292349/3e1a675c-7095-4861-8252-bae1c1034dd2" />
+      <img src="https://github.com/folke/flash.nvim/assets/292349/b963b05e-3d28-45ff-b43a-928a06e5f92a" />
     </td>
   </tr>
 </table>
