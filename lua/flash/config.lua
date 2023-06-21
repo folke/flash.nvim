@@ -8,18 +8,6 @@ local M = {}
 local defaults = {
   -- labels = "abcdefghijklmnopqrstuvwxyz",
   labels = "asdfghjklqwertyuiopzxcvbnm",
-  jump = {
-    -- save location in the jumplist
-    jumplist = true,
-    -- jump position
-    pos = "start", ---@type "start" | "end" | "range"
-    -- add pattern to search history
-    history = false,
-    -- add pattern to search register
-    register = false,
-    -- clear highlight after jump
-    nohlsearch = false,
-  },
   search = {
     -- search/jump in all windows
     multi_window = true,
@@ -41,6 +29,18 @@ local defaults = {
     -- behave like `incsearch`
     incremental = false,
     filetype_exclude = { "notify", "noice" },
+  },
+  jump = {
+    -- save location in the jumplist
+    jumplist = true,
+    -- jump position
+    pos = "start", ---@type "start" | "end" | "range"
+    -- add pattern to search history
+    history = false,
+    -- add pattern to search register
+    register = false,
+    -- clear highlight after jump
+    nohlsearch = false,
   },
   highlight = {
     label = {
@@ -101,15 +101,6 @@ local defaults = {
         backdrop = false,
         matches = false,
       },
-    },
-    -- you can define your own modes
-    -- `require("flash").jump({mode = "forward"})`
-    forward = {
-      search = { forward = true, wrap = false, multi_window = false },
-    },
-    -- `require("flash").jump({mode = "backward"})`
-    backward = {
-      search = { forward = false, wrap = false, multi_window = false },
     },
   },
 }
