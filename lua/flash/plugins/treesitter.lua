@@ -21,9 +21,7 @@ function M.matcher(win, state)
 
   while node do
     local range = { node:range() }
-    if not vim.deep_equal(range, ranges[#ranges]) then
-      table.insert(ranges, range)
-    end
+    table.insert(ranges, range)
     node = node:parent()
   end
 
@@ -33,6 +31,8 @@ function M.matcher(win, state)
   ---@type Flash.Match[]
   local ret = {}
   local first = true
+  ---@type table<string,boolean>
+  local done = {}
   for _, range in ipairs(ranges) do
     ---@type Flash.Match
     local match = {
@@ -48,9 +48,22 @@ function M.matcher(win, state)
       match.end_pos[1] = line_count
       match.end_pos[2] =
         #vim.api.nvim_buf_get_lines(buf, match.end_pos[1] - 1, match.end_pos[1], false)[1]
+    elseif match.end_pos[2] == -1 then
+      -- If the end points to the start of the next line, move it to the
+      -- end of the previous line.
+      -- Otherwise operations include the first character of the next line
+      local line =
+        vim.api.nvim_buf_get_lines(buf, match.end_pos[1] - 2, match.end_pos[1] - 1, false)[1]
+      match.end_pos[1] = match.end_pos[1] - 1
+      match.end_pos[2] = #line
     end
-    ret[#ret + 1] = match
+    local id = table.concat({ unpack(match.pos), unpack(match.end_pos) }, ".")
+    if not done[id] then
+      done[id] = true
+      ret[#ret + 1] = match
+    end
   end
+  vim.print(ret)
   return ret
 end
 
