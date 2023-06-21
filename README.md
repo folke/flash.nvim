@@ -250,6 +250,20 @@ require("flash").jump({
 
 </details>
 
+<details><summary>Match beginning of words only</summary>
+
+```lua
+require("flash").jump({
+  search = {
+    mode = function(str)
+      return "\\<" .. str
+    end,
+  },
+})
+```
+
+</details>
+
 ## 📦 Alternatives
 
 - [leap.nvim](https://github.com/ggandor/leap.nvim)
