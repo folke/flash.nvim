@@ -32,13 +32,16 @@ function M.matcher(win, state)
   -- convert ranges to matches
   ---@type Flash.Match[]
   local ret = {}
+  local first = true
   for _, range in ipairs(ranges) do
     ---@type Flash.Match
     local match = {
       pos = { range[1] + 1, range[2] },
       end_pos = { range[3] + 1, range[4] - 1 },
       label = table.remove(labels, 1),
+      first = first,
     }
+    first = false
     -- If the match is at the end of the buffer,
     -- then move it to the last character of the last line.
     if match.end_pos[1] > line_count then
@@ -63,7 +66,15 @@ function M.jump(opts)
   )
 
   local pos = vim.api.nvim_win_get_cursor(0)
-  local current = state:jump("a")
+  ---@type Flash.Match?
+  local current
+  for _, m in ipairs(state.results) do
+    ---@cast m Flash.Match | {first?:boolean}
+    if m.first then
+      current = m
+    end
+  end
+  current = state:jump(current)
 
   while true do
     local char = Util.get_char()

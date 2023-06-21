@@ -84,12 +84,14 @@ function M.new(opts)
   return self
 end
 
----@param target? string|Flash.Match.Find
+---@param target? string|Flash.Match.Find|Flash.Match
 ---@return Flash.Match?
 function M:jump(target)
   local match ---@type Flash.Match?
   if type(target) == "string" then
     match = self:find({ label = target })
+  elseif target and target.end_pos then
+    match = target
   elseif target then
     match = self:find(target)
   else
