@@ -236,6 +236,26 @@ Show diagnostics at target, without changing cursor position ~
     })
 <
 
+Match beginning of words only ~
+
+>lua
+    require("flash").jump({
+      search = {
+        mode = function(str)
+          return "\\<" .. str
+        end,
+      },
+    })
+<
+
+Initialize flash with the word under the cursor ~
+
+>lua
+    require("flash").jump({
+      pattern = vim.fn.expand("<cword>"),
+    })
+<
+
 
 ALTERNATIVES                              *flash.nvim-flash.nvim-alternatives*
 
