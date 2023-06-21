@@ -226,6 +226,16 @@ require("flash").jump({
 
 </details>
 
+<details><summary>Show diagnostic float without changing the cursor position</summary>
+
+The example plugin can be found [here](https://github.com/folke/flash.nvim/blob/main/lua/flash/plugins/diagnostics.lua)
+
+- `require("flash.plugins.diagnostics").show()`
+- will open flash with all diagnostics in visible windows as targets
+- pressing a label will open the line diagnostic without changing the cursor position
+
+</details>
+
 ## 📦 Alternatives
 
 - [leap.nvim](https://github.com/ggandor/leap.nvim)
