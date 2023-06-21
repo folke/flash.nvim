@@ -33,8 +33,8 @@ function M.show()
     else
       vim.api.nvim_input(char)
     end
-    state:hide()
   end
+  state:hide()
 end
 
 return M
