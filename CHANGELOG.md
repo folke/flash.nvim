@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.2.0](https://github.com/folke/flash.nvim/compare/v1.1.0...v1.2.0) (2023-06-21)
+
+
+### Features
+
+* added example that matches beginning of words only ([1e2c61d](https://github.com/folke/flash.nvim/commit/1e2c61d8db882cc001fcebff9eba2549336ce87a))
+* **config:** setting to disable uppercase labels. Fixes [#11](https://github.com/folke/flash.nvim/issues/11) ([13d7b3e](https://github.com/folke/flash.nvim/commit/13d7b3e70cadc7e4d64f818a04fbca2b33ac1d4f))
+* **labeler:** reuse only lowercase labels by default. See [#11](https://github.com/folke/flash.nvim/issues/11) ([8f0b9ed](https://github.com/folke/flash.nvim/commit/8f0b9ed656d7b92eb0d60c34b6a5bd3803cc0e0b))
+
 ## [1.1.0](https://github.com/folke/flash.nvim/compare/v1.0.0...v1.1.0) (2023-06-21)
 
 
