@@ -50,7 +50,7 @@ local defaults = {
       uppercase = true,
       -- add a label for the first match in the current window.
       -- you can always jump to the first match with `<CR>`
-      current = false,
+      current = true,
       -- show the label after the match
       after = true, ---@type boolean|number[]
       -- show the label before the match
