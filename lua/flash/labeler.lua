@@ -38,7 +38,8 @@ end
 function M:reset()
   local skip = {} ---@type table<string, boolean>
   self.labels = {}
-  for _, l in ipairs(vim.split(self.state.opts.labels .. self.state.opts.labels:upper(), "")) do
+
+  for _, l in ipairs(self.state:labels()) do
     if not skip[l] then
       self.labels[#self.labels + 1] = l
       skip[l] = true

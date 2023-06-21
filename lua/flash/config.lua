@@ -46,6 +46,8 @@ local defaults = {
   },
   highlight = {
     label = {
+      -- allow uppercase labels
+      uppercase = true,
       -- add a label for the first match in the current window.
       -- you can always jump to the first match with `<CR>`
       current = false,

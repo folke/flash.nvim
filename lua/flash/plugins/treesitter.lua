@@ -27,7 +27,7 @@ function M.matcher(win, state)
     node = node:parent()
   end
 
-  local labels = vim.split(state.opts.labels .. state.opts.labels:upper(), "")
+  local labels = state:labels()
 
   -- convert ranges to matches
   ---@type Flash.Match[]

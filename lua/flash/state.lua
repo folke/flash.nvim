@@ -60,6 +60,14 @@ function M.setup()
   })
 end
 
+function M:labels()
+  local labels = self.opts.labels
+  if self.opts.highlight.label.uppercase then
+    labels = labels .. self.opts.labels:upper()
+  end
+  return vim.split(labels, "")
+end
+
 function M.is_search()
   local t = vim.fn.getcmdtype()
   return t == "/" or t == "?"
