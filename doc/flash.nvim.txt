@@ -17,7 +17,7 @@ Table of Contents                               *flash.nvim-table-of-contents*
 `flash.nvim` lets you navigate your code with search labels, enhanced character
 motions, and Treesitter integration.
 
-
+SearchJumpf, t, F, TTreesitter
 FEATURES                                      *flash.nvim-flash.nvim-features*
 
 - **Search Integration**integrate flash.nvim with your regular
