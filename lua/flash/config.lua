@@ -133,7 +133,7 @@ function M.get(...)
     local opts = select(i, ...)
     if opts then
       if opts.mode then
-        all[#all + 1] = defaults.modes[opts.mode] or {}
+        all[#all + 1] = options.modes[opts.mode] or {}
         opts.mode = nil
       end
       all[#all + 1] = opts
