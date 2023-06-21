@@ -125,6 +125,8 @@ Install the plugin with your preferred package manager:
     register = false,
     -- clear highlight after jump
     nohlsearch = false,
+    -- automatically jump when there is only one match
+    autojump = false,
   },
   highlight = {
     label = {
@@ -151,6 +153,10 @@ Install the plugin with your preferred package manager:
       label = "FlashLabel",
     },
   },
+  -- action to perform when picking a label.
+  -- defaults to the jumping logic depending on the mode.
+  ---@type fun(match:Flash.Match, state:Flash.State)|nil
+  action = nil,
   -- You can override the default options for a specific mode.
   -- Use it with `require("flash").jump({mode = "forward"})`
   ---@type table<string, Flash.Config>

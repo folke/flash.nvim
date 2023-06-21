@@ -41,6 +41,8 @@ local defaults = {
     register = false,
     -- clear highlight after jump
     nohlsearch = false,
+    -- automatically jump when there is only one match
+    autojump = false,
   },
   highlight = {
     label = {

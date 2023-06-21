@@ -27,6 +27,10 @@ function M.jump(opts)
     if #state.results == 0 and not state.pattern:empty() then
       break
     end
+    if #state.results == 1 and state.opts.jump.autojump then
+      state:jump()
+      break
+    end
   end
   state:hide()
   return state
