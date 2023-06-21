@@ -47,6 +47,4 @@ function M.jump()
   M.state:hide()
 end
 
-M.jump()
-
 return M
