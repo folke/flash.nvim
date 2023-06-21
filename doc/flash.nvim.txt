@@ -32,6 +32,7 @@ FEATURES                                      *flash.nvim-flash.nvim-features*
 - **Jump Mode**a standalone jumping mode similar to search
 - **Search Modes**`exact`, `search` (regex), and `fuzzy` search modes
 - 🪟 **Multi Window** jumping
+- **dot-repeatable** jumps
 
 
 INSTALLATION                              *flash.nvim-flash.nvim-installation*
