@@ -37,6 +37,4 @@ function M.show()
   end
 end
 
-M.show()
-
 return M
