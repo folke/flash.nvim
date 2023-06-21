@@ -84,13 +84,6 @@ function M.new(opts)
   return self
 end
 
----@param match Flash.Match
----@protected
-function M:_jump(match)
-  Jump.jump(match, self)
-  Jump.on_jump(self)
-end
-
 ---@param target? string|Flash.Match.Find
 ---@return Flash.Match?
 function M:jump(target)
@@ -103,7 +96,12 @@ function M:jump(target)
     match = self.target
   end
   if match then
-    self:_jump(match)
+    if self.opts.action then
+      self.opts.action(match, self)
+    else
+      Jump.jump(match, self)
+      Jump.on_jump(self)
+    end
     return match
   end
 end
