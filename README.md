@@ -67,6 +67,7 @@ Install the plugin with your preferred package manager:
       "s",
       mode = { "n", "x", "o" },
       function()
+        -- default options: exact mode, multi window, all directions, with a backdrop
         require("flash").jump()
       end,
     },
@@ -193,8 +194,15 @@ Install the plugin with your preferred package manager:
 
 ## 🚀 Usage
 
+- **jump**: `require("flash").treesitter(opts?)` opens **flash** in **Treesitter** mode
+  - use a jump label, or use `;` and `,` to increase/decrease the selection
+- **regular search**: search as you normally do, but enhanced with jump labels
+- `f`, `t`, `F`, `T` motions:
+  - go to next match with `;` or repeat the motion character like `f`
+  - go to previous match with `,`
+  - highlights clear automatically when moving, changing buffers or pressing `<esc>`
 - `require("flash").jump(opts?)` opens **flash** with the given options
-- `require("flash").treesitter(opts?)` opens **flash** in **Treesitter** mode
+  - type any number of characters before typing a jump label
 
 ## Examples
 
