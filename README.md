@@ -44,6 +44,7 @@ enhanced character motions, and Treesitter integration.
 - 🎯 **Jump Mode**: a standalone jumping mode similar to search
 - 🔎 **Search Modes**: `exact`, `search` (regex), and `fuzzy` search modes
 - 🪟 **Multi Window** jumping
+- ⚫ **dot-repeatable** jumps
 
 ## 📦 Installation
 
