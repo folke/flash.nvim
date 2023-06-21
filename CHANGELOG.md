@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.1.0](https://github.com/folke/flash.nvim/compare/v1.0.0...v1.1.0) (2023-06-21)
+
+
+### Features
+
+* added config.jump.autojump. Fixes [#5](https://github.com/folke/flash.nvim/issues/5) ([1808d3e](https://github.com/folke/flash.nvim/commit/1808d3ebb6ea5810957b8f8e32aab8f4e9e7f14c))
+* added custom actions on label select ([eb0769f](https://github.com/folke/flash.nvim/commit/eb0769ff38001ed3eead9e54289b7f63387e1525))
+* added example plugin that shows a diagnostic at a certain label without moving the cursor ([7a9bd11](https://github.com/folke/flash.nvim/commit/7a9bd118a3b4d2829d4718c26d8af21b36ebfb87))
+
+
+### Bug Fixes
+
+* **config:** get mode opts from options instead of defaults. Fixes [#4](https://github.com/folke/flash.nvim/issues/4) ([41fab4c](https://github.com/folke/flash.nvim/commit/41fab4cb225d9233fec7987bb1445c9768d84caf))
+* **diag:** always hide when done ([226c634](https://github.com/folke/flash.nvim/commit/226c634e3db6f02eb734d37c16d729bae41a77ef))
+* **jump:** register and history should use pattern.search instead of pattern. Fixes [#7](https://github.com/folke/flash.nvim/issues/7) ([a11cf6a](https://github.com/folke/flash.nvim/commit/a11cf6ad205dd2493d2af6643bc20bef925004f5))
+* **treesitter:** make treesitter plugin work with custom labels. Fixes [#9](https://github.com/folke/flash.nvim/issues/9) ([3fac625](https://github.com/folke/flash.nvim/commit/3fac6253fd59e7c32300e6209c8f1e60ea8a3c81))
+
 ## 1.0.0 (2023-06-21)
 
 
