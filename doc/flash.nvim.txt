@@ -5,6 +5,7 @@ Table of Contents                               *flash.nvim-table-of-contents*
 
 1. flash.nvim                                          |flash.nvim-flash.nvim|
   - Features                                  |flash.nvim-flash.nvim-features|
+  - Requirements                          |flash.nvim-flash.nvim-requirements|
   - Installation                          |flash.nvim-flash.nvim-installation|
   - Configuration                        |flash.nvim-flash.nvim-configuration|
   - Usage                                        |flash.nvim-flash.nvim-usage|
@@ -33,6 +34,11 @@ FEATURES                                      *flash.nvim-flash.nvim-features*
 - **Search Modes**`exact`, `search` (regex), and `fuzzy` search modes
 - 🪟 **Multi Window** jumping
 - **dot-repeatable** jumps
+
+
+REQUIREMENTS                              *flash.nvim-flash.nvim-requirements*
+
+- Neovim >= **0.8.0** (needs to be built with **LuaJIT**)
 
 
 INSTALLATION                              *flash.nvim-flash.nvim-installation*
