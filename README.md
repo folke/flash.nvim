@@ -204,7 +204,7 @@ Install the plugin with your preferred package manager:
 - `require("flash").jump(opts?)` opens **flash** with the given options
   - type any number of characters before typing a jump label
 
-## Examples
+### Examples
 
 <details><summary>Forward search only</summary>
 
