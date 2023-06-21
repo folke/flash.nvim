@@ -59,17 +59,17 @@ Install the plugin with your preferred package manager:
   opts = {},
   keys = {
     {
-      "S",
-      mode = { "o", "x" },
-      function()
-        require("flash").treesitter()
-      end,
-    },
-    {
       "s",
       mode = { "n", "x", "o" },
       function()
         require("flash").jump()
+      end,
+    },
+    {
+      "S",
+      mode = { "o", "x" },
+      function()
+        require("flash").treesitter()
       end,
     },
   },
