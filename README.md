@@ -3,6 +3,33 @@
 `flash.nvim` lets you navigate your code with search labels,
 enhanced character motions, and Treesitter integration.
 
+<table>
+  <tr>
+    <th>Search</th>
+    <th>Jump</th>
+  </tr>
+  <tr>
+    <td>
+      <img src="https://github.com/folke/flash.nvim/assets/292349/46141f94-5691-4b4e-9676-e107a4fe0fd8" />
+    </td>
+    <td>
+      <img src="https://github.com/folke/flash.nvim/assets/292349/07dcea5b-c294-45c5-b198-7af4691b24e1" />
+    </td>
+  </tr>
+  <tr>
+    <th><code>f</code>, <code>t</code>, <code>F</code>, <code>T</code></th>
+    <th>Treesitter</th>
+  </tr>
+  <tr>
+    <td>
+      <img src="https://github.com/folke/flash.nvim/assets/292349/da00754e-80e1-41ec-8674-4b52cc8190a6" />
+    </td>
+    <td>
+      <img src="https://github.com/folke/flash.nvim/assets/292349/3e1a675c-7095-4861-8252-bae1c1034dd2" />
+    </td>
+  </tr>
+</table>
+
 ## ✨ Features
 
 - 🔍 **Search Integration**: integrate flash.nvim with your regular
