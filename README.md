@@ -5,8 +5,8 @@ enhanced character motions, and Treesitter integration.
 
 <table>
   <tr>
-    <th>Search</th>
-    <th>Jump</th>
+    <th>Search Integration</th>
+    <th>Standalone Jump</th>
   </tr>
   <tr>
     <td>
