@@ -264,6 +264,16 @@ require("flash").jump({
 
 </details>
 
+<details><summary>Initialize flash with the word under the cursor</summary>
+
+```lua
+require("flash").jump({
+  pattern = vim.fn.expand("<cword>"),
+})
+```
+
+</details>
+
 ## 📦 Alternatives
 
 - [leap.nvim](https://github.com/ggandor/leap.nvim)
