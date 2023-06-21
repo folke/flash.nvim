@@ -32,10 +32,12 @@ enhanced character motions, and Treesitter integration.
 
 ## ✨ Features
 
-- 🔍 **Search Integration**: integrate flash.nvim with your regular
+- 🔍 **Search Integration**: integrate **flash.nvim** with your regular
   search using / or ?. Labels appear next to the matches,
-  allowing you to quickly jump to any location.
-- ⚡ **Enhanced f,t,F,T motions**
+  allowing you to quickly jump to any location. Labels are
+  guaranteed not to exist as a continuation of the search pattern.
+- ⌨️ **type as many characters as you want** before using a jump label.
+- ⚡ **Enhanced `f`, `t`, `F`, `T` motions**
 - 🌳 **Treesitter Integration**: all parents of the Treesitter node
   under your cursor are highlighted with a label for quick selection
   of a specific Treesitter node.
