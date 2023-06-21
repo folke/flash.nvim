@@ -46,6 +46,10 @@ enhanced character motions, and Treesitter integration.
 - 🪟 **Multi Window** jumping
 - ⚫ **dot-repeatable** jumps
 
+## 📋 Requirements
+
+- Neovim >= **0.8.0** (needs to be built with **LuaJIT**)
+
 ## 📦 Installation
 
 Install the plugin with your preferred package manager:
