@@ -94,6 +94,9 @@ function M:find(opts)
   local flags = (opts.forward and "" or "b")
     .. (opts.wrap and "w" or "W")
     .. (opts.count == 0 and "c" or "")
+  if opts.match then
+    opts.pos = opts.match.pos
+  end
 
   ---@type Flash.Match?
   local ret
