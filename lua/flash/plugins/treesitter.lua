@@ -63,7 +63,6 @@ function M.matcher(win, state)
       ret[#ret + 1] = match
     end
   end
-  vim.print(ret)
   return ret
 end
 
