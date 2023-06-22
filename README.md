@@ -73,7 +73,7 @@ Install the plugin with your preferred package manager:
     },
     {
       "S",
-      mode = { "o", "x" },
+      mode = { "n", "o", "x" },
       function()
         require("flash").treesitter()
       end,
