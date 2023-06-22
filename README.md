@@ -182,6 +182,9 @@ Install the plugin with your preferred package manager:
     -- `f`, `F`, `t`, `T`, `;` and `,` motions
     char = {
       enabled = true,
+      -- by default all keymaps are enabled, but you can disable some of them,
+      -- by removing them from the list.
+      keys = { "f", "f", "t", "t", ";", "," },
       search = { wrap = false },
       highlight = { backdrop = true },
       jump = { register = false },
