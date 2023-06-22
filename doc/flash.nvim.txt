@@ -1,4 +1,4 @@
-*flash.nvim.txt*         For Neovim >= 0.8.0         Last change: 2023 June 21
+*flash.nvim.txt*         For Neovim >= 0.8.0         Last change: 2023 June 22
 
 ==============================================================================
 Table of Contents                               *flash.nvim-table-of-contents*
@@ -9,6 +9,7 @@ Table of Contents                               *flash.nvim-table-of-contents*
   - Installation                          |flash.nvim-flash.nvim-installation|
   - Configuration                        |flash.nvim-flash.nvim-configuration|
   - Usage                                        |flash.nvim-flash.nvim-usage|
+  - Highlights                              |flash.nvim-flash.nvim-highlights|
   - Alternatives                          |flash.nvim-flash.nvim-alternatives|
 
 ==============================================================================
@@ -259,6 +260,15 @@ Initialize flash with the word under the cursor ~
     })
 <
 
+
+HIGHLIGHTS                                  *flash.nvim-flash.nvim-highlights*
+
+  Group           Default      Description
+  --------------- ------------ ----------------
+  FlashBackdrop   Comment      backdrop
+  FlashMatch      Search       search matches
+  FlashCurrent    IncSearch    current match
+  FlashLabel      Substitute   jump label
 
 ALTERNATIVES                              *flash.nvim-flash.nvim-alternatives*
 
