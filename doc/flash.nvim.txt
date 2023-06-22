@@ -208,9 +208,13 @@ USAGE                                            *flash.nvim-flash.nvim-usage*
     - use a jump label, or use `;` and `,` to increase/decrease the selection
 - **regular search**search as you normally do, but enhanced with jump labels
 - `f`, `t`, `F`, `T` motions:
-    - go to next match with `;` or repeat the motion character like `f`
-    - go to previous match with `,`
-    - highlights clear automatically when moving, changing buffers or pressing `<esc>`
+    - After typing `f{char}` or `F{char},` you can repeat the motion with `f`
+        or go to the previous match with `F` to undo a jump.
+    - Similarly, after typing `t{char}` or `T{char},` you can repeat the motion
+        with `t` or go to the previous match with `T`.
+    - You can also go to the next match with `;` or previous match with `,`
+    - Any highlights clear automatically when moving, changing buffers,
+        or pressing `<esc>`.
 - `require("flash").jump(opts?)` opens **flash** with the given options
     - type any number of characters before typing a jump label
 
