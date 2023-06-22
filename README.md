@@ -188,7 +188,7 @@ Install the plugin with your preferred package manager:
       enabled = true,
       -- by default all keymaps are enabled, but you can disable some of them,
       -- by removing them from the list.
-      keys = { "f", "f", "t", "t", ";", "," },
+      keys = { "f", "F", "t", "T", ";", "," },
       search = { wrap = false },
       highlight = { backdrop = true },
       jump = { register = false },
