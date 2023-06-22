@@ -302,6 +302,7 @@ require("flash").jump({
 ```lua
 require("flash").jump({
   search = { mode = "search" },
+  highlight = { label = { after = { 0, 0 } } },
   pattern = "^"
 })
 
