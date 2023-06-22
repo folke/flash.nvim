@@ -91,8 +91,12 @@ end
 
 function M.parse(key)
   -- repeat last search when hitting the same key
-  if M.visible() and M.motion == key then
-    key = ";"
+  if M.visible() then
+    if M.motion:lower() == key then
+      key = ";"
+    elseif M.motion:upper() == key then
+      key = ","
+    end
   end
   -- different motion, clear the state
   if M.motions[key] and M.motion ~= key then
