@@ -56,20 +56,22 @@ end
 
 function M.setup()
   for _, key in ipairs({ "f", "F", "t", "T", ";", "," }) do
-    vim.keymap.set({ "n", "x", "o" }, key, function()
-      if Repeat.is_repeat then
-        M.jumping = true
-        M.state:jump({ count = vim.v.count1 })
-        M.state:show()
-        vim.schedule(function()
-          M.jumping = false
-        end)
-      else
-        M.jump(key)
-      end
-    end, {
-      silent = true,
-    })
+    if vim.tbl_contains(Config.modes.char.keys, key) then
+      vim.keymap.set({ "n", "x", "o" }, key, function()
+        if Repeat.is_repeat then
+          M.jumping = true
+          M.state:jump({ count = vim.v.count1 })
+          M.state:show()
+          vim.schedule(function()
+            M.jumping = false
+          end)
+        else
+          M.jump(key)
+        end
+      end, {
+        silent = true,
+      })
+    end
   end
 
   vim.api.nvim_create_autocmd({ "BufLeave", "CursorMoved", "InsertEnter" }, {
