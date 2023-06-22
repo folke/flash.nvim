@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.3.0](https://github.com/folke/flash.nvim/compare/v1.2.0...v1.3.0) (2023-06-22)
+
+
+### Features
+
+* **char:** optionally disable some ftFT keymaps ([3e27d9a](https://github.com/folke/flash.nvim/commit/3e27d9ab07b9363b0ecb94645eae38909f7baa5a))
+* **config:** show labels for current jump target by default ([0dcc00e](https://github.com/folke/flash.nvim/commit/0dcc00ea6a3b312b8e081f3f582adc26a4721ac7))
+* **search:** optional trigger character. Not recommended. Fixes [#21](https://github.com/folke/flash.nvim/issues/21) ([cb0977c](https://github.com/folke/flash.nvim/commit/cb0977cd0f7cec4573ee1210edc2032739866b2b))
+
+
+### Bug Fixes
+
+* **char:** fixup for keys ([81469aa](https://github.com/folke/flash.nvim/commit/81469aaf3ccf15d7c942bbd9144f2c06f68fe1ee))
+* **treesitter:** properly deal with nodes ending at col 0. Fixes [#17](https://github.com/folke/flash.nvim/issues/17) ([6cd4414](https://github.com/folke/flash.nvim/commit/6cd44145f75392fbfe67700b59517dbf8324bd21))
+* **treesitter:** removed debug print ([0fabd1b](https://github.com/folke/flash.nvim/commit/0fabd1b4ddea5754576ccc09a515867a3ac129ce))
+
 ## [1.2.0](https://github.com/folke/flash.nvim/compare/v1.1.0...v1.2.0) (2023-06-21)
 
 
