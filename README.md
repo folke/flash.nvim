@@ -277,6 +277,15 @@ require("flash").jump({
 
 </details>
 
+## 🌈 Highlights
+
+| Group           | Default      | Description    |
+| --------------- | ------------ | -------------- |
+| `FlashBackdrop` | `Comment`    | backdrop       |
+| `FlashMatch`    | `Search`     | search matches |
+| `FlashCurrent`  | `IncSearch`  | current match  |
+| `FlashLabel`    | `Substitute` | jump label     |
+
 ## 📦 Alternatives
 
 - [leap.nvim](https://github.com/ggandor/leap.nvim)
