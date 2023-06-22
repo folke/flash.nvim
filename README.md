@@ -297,6 +297,18 @@ require("flash").jump({
 
 </details>
 
+<details><summary>Jump to a line</summary>
+
+```lua
+require("flash").jump({
+  search = { mode = "search" },
+  pattern = "^"
+})
+
+```
+
+</details>
+
 ## 🌈 Highlights
 
 | Group           | Default      | Description    |
