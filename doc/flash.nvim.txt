@@ -285,6 +285,7 @@ Jump to a line ~
 >lua
     require("flash").jump({
       search = { mode = "search" },
+      highlight = { label = { after = { 0, 0 } } },
       pattern = "^"
     })
 <
