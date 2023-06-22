@@ -9,6 +9,7 @@ Table of Contents                               *flash.nvim-table-of-contents*
   - Installation                          |flash.nvim-flash.nvim-installation|
   - Configuration                        |flash.nvim-flash.nvim-configuration|
   - Usage                                        |flash.nvim-flash.nvim-usage|
+  - Examples                                  |flash.nvim-flash.nvim-examples|
   - Highlights                              |flash.nvim-flash.nvim-highlights|
   - Alternatives                          |flash.nvim-flash.nvim-alternatives|
 
@@ -219,7 +220,7 @@ USAGE                                            *flash.nvim-flash.nvim-usage*
     - type any number of characters before typing a jump label
 
 
-EXAMPLES ~
+EXAMPLES                                      *flash.nvim-flash.nvim-examples*
 
 Forward search only ~
 
