@@ -212,7 +212,7 @@ Install the plugin with your preferred package manager:
 
 ## 🚀 Usage
 
-- **jump**: `require("flash").treesitter(opts?)` opens **flash** in **Treesitter** mode
+- **Treesitter**: `require("flash").treesitter(opts?)` opens **flash** in **Treesitter** mode
   - use a jump label, or use `;` and `,` to increase/decrease the selection
 - **regular search**: search as you normally do, but enhanced with jump labels
 - `f`, `t`, `F`, `T` motions:
@@ -223,7 +223,7 @@ Install the plugin with your preferred package manager:
   - You can also go to the next match with `;` or previous match with `,`
   - Any highlights clear automatically when moving, changing buffers,
     or pressing `<esc>`.
-- `require("flash").jump(opts?)` opens **flash** with the given options
+- **jump**: `require("flash").jump(opts?)` opens **flash** with the given options
   - type any number of characters before typing a jump label
 
 ### Examples
