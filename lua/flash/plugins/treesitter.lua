@@ -73,7 +73,7 @@ function M.jump(opts)
     Config.get({ mode = "treesitter" }, opts, {
       matcher = M.matcher,
       labeler = function() end,
-      search = { multi_window = false, wrap = true },
+      search = { multi_window = false, wrap = true, incremental = false },
     })
   )
 
