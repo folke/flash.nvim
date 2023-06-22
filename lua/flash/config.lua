@@ -28,7 +28,7 @@ local defaults = {
     mode = "exact",
     -- behave like `incsearch`
     incremental = false,
-    filetype_exclude = { "notify", "noice" },
+    filetype_exclude = { "notify", "noice", "cmp_menu" },
     -- Optional trigger character that needs to be typed before
     -- a jump label can be used. It's NOT recommended to set this,
     -- unless you know what you're doing
