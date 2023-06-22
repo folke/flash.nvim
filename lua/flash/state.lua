@@ -82,7 +82,7 @@ function M.new(opts)
   self.matchers = {}
   self.wins = {}
   self.matcher = self.opts.matcher and Matcher.from(self.opts.matcher) or Search.new
-  self.pattern = Pattern.new(self.opts.pattern, self.opts.search.mode)
+  self.pattern = Pattern.new(self.opts.pattern, self.opts.search.mode, self.opts.search.trigger)
   self.visible = true
   self.cache = Cache.new(self)
   self.labeler = self.opts.labeler or require("flash.labeler").new(self):labeler()
@@ -153,6 +153,9 @@ end
 -- Checks if the given pattern is a jump label and jumps to it.
 ---@param pattern string
 function M:check_jump(pattern)
+  if self.opts.search.trigger ~= "" and self.pattern():sub(-1) ~= self.opts.search.trigger then
+    return
+  end
   if pattern:find(self.pattern(), 1, true) == 1 and #pattern == #self.pattern() + 1 then
     local label = pattern:sub(-1)
     if self:jump(label) then

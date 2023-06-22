@@ -22,7 +22,7 @@ M.cache = setmetatable({}, { __mode = "k" })
 function M.new(state)
   local self = setmetatable({}, M)
   self.state = state
-  self.pattern = Pattern.new("", state.opts.search.mode)
+  self.pattern = Pattern.new("", state.opts.search.mode, state.opts.search.trigger)
   self.wins = {}
   return self
 end

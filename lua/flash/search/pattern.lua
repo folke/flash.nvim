@@ -4,6 +4,7 @@ local Util = require("flash.util")
 ---@field pattern string
 ---@field search string
 ---@field skip string
+---@field trigger string
 ---@field mode Flash.Pattern.Mode
 ---@operator call:string Returns the input pattern
 local M = {}
@@ -13,9 +14,11 @@ M.__index = M
 
 ---@param pattern string
 ---@param mode Flash.Pattern.Mode
-function M.new(pattern, mode)
+---@param trigger string
+function M.new(pattern, mode, trigger)
   local self = setmetatable({}, M)
   self.mode = mode
+  self.trigger = trigger or ""
   self:set(pattern or "")
   return self
 end
@@ -25,7 +28,7 @@ function M:__eq(other)
 end
 
 function M:clone()
-  return M.new(self.pattern, self.mode)
+  return M.new(self.pattern, self.mode, self.trigger)
 end
 
 function M:empty()
@@ -41,6 +44,9 @@ function M:set(pattern)
       self.search = ""
       self.skip = ""
     else
+      if self.trigger ~= "" and pattern:sub(-1) == self.trigger then
+        pattern = pattern:sub(1, -2)
+      end
       self.search, self.skip = M._get(pattern, self.mode)
     end
     return false
