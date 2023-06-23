@@ -339,6 +339,10 @@ This should be bound to a keymap like `<leader>t`. Then you could do
     })
 <
 
+Perform any remote action ~
+
+See here <https://github.com/folke/flash.nvim/discussions/24>
+
 
 HIGHLIGHTS                                  *flash.nvim-flash.nvim-highlights*
 
