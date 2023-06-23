@@ -343,6 +343,25 @@ require("flash").jump({
 
 </details>
 
+<details><summary>Jump to a position, make a Treesitter selection and jump back</summary>
+
+This should be bound to a keymap like `<leader>t`.
+Then you could do `y<leader>t` to remotely yank a Treesitter selection.
+
+```lua
+require("flash").jump({
+  action = function(match, state)
+    vim.api.nvim_win_call(match.win, function()
+      vim.api.nvim_win_set_cursor(match.win, match.pos)
+      require("flash").treesitter()
+      vim.api.nvim_win_set_cursor(match.win, state.pos)
+    end)
+  end,
+})
+```
+
+</details>
+
 ## 🌈 Highlights
 
 | Group           | Default      | Description    |
