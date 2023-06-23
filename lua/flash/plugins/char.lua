@@ -24,9 +24,9 @@ function M.new()
   local State = require("flash.state")
   return State.new(Config.get({
     mode = "char",
-    labeler = function(state)
+    labeler = function(matches)
       -- set to empty label, so that the character will just be highlighted
-      for _, m in ipairs(state.results) do
+      for _, m in ipairs(matches) do
         m.label = ""
       end
     end,

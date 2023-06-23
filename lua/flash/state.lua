@@ -12,7 +12,7 @@ local Pattern = require("flash.search.pattern")
 ---@class Flash.State.Config: Flash.Config
 ---@field matcher? fun(win: window, state:Flash.State): Flash.Match[]
 ---@field pattern? string
----@field labeler? fun(state:Flash.State)
+---@field labeler? fun(matches:Flash.Match[], state:Flash.State)
 
 ---@class Flash.State
 ---@field win window
@@ -23,7 +23,7 @@ local Pattern = require("flash.search.pattern")
 ---@field target? Flash.Match
 ---@field pattern Flash.Pattern
 ---@field opts Flash.State.Config
----@field labeler fun(state:Flash.State)
+---@field labeler fun(matches:Flash.Match[], state:Flash.State)
 ---@field visible boolean
 ---@field matcher fun(win: window, state:Flash.State): Flash.Matcher
 ---@field matchers Flash.Matcher[]
@@ -227,7 +227,7 @@ function M:_update()
   self.matchers = matchers
 
   self:update_target()
-  self.labeler(self)
+  self.labeler(self.results, self)
 
   if M.is_search() then
     Hacks.restore_incsearch_state()
