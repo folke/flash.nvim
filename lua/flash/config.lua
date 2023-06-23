@@ -33,6 +33,7 @@ local defaults = {
     exclude = {
       "notify",
       "cmp_menu",
+      "noice",
       function(win)
         -- exclude non-focusable windows
         return not vim.api.nvim_win_get_config(win).focusable
