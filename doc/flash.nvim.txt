@@ -1,4 +1,4 @@
-*flash.nvim.txt*         For Neovim >= 0.8.0         Last change: 2023 June 22
+*flash.nvim.txt*         For Neovim >= 0.8.0         Last change: 2023 June 23
 
 ==============================================================================
 Table of Contents                               *flash.nvim-table-of-contents*
@@ -299,6 +299,26 @@ Jump to a line ~
       search = { mode = "search" },
       highlight = { label = { after = { 0, 0 } } },
       pattern = "^"
+    })
+<
+
+Select any word ~
+
+>lua
+    require("flash").jump({
+      pattern = ".", -- initialize pattern with any char
+      search = {
+        mode = function(pattern)
+          -- remove leading dot
+          if pattern:sub(1, 1) == "." then
+            pattern = pattern:sub(2)
+          end
+          -- return word pattern and proper skip pattern
+          return ([[\v<%s\w>]]):format(pattern), ([[\v<%s]]):format(pattern)
+        end,
+      },
+      -- select the range
+      jump = { pos = "range" },
     })
 <
 
