@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.1](https://github.com/folke/flash.nvim/compare/v1.4.0...v1.4.1) (2023-06-23)
+
+
+### Bug Fixes
+
+* **char:** don't repeat on motion char when executing a macro. See [#34](https://github.com/folke/flash.nvim/issues/34) ([674cfb4](https://github.com/folke/flash.nvim/commit/674cfb43e5424a5405661ba632810bacfc0a9c37))
+
 ## [1.4.0](https://github.com/folke/flash.nvim/compare/v1.3.0...v1.4.0) (2023-06-23)
 
 
