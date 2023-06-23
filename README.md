@@ -390,15 +390,21 @@ This should be bound to a keymap like `<leader>t`.
 Then you could do `y<leader>t` to remotely yank a Treesitter selection.
 
 ```lua
-require("flash").jump({
-  action = function(match, state)
-    vim.api.nvim_win_call(match.win, function()
+vim.keymap.set({ "n", "x", "o" }, "<leader>t", function()
+  local win = vim.api.nvim_get_current_win()
+  local view = vim.fn.winsaveview()
+  require("flash").jump({
+    action = function(match, state)
+      vim.api.nvim_set_current_win(match.win)
       vim.api.nvim_win_set_cursor(match.win, match.pos)
       require("flash").treesitter()
-      vim.api.nvim_win_set_cursor(match.win, state.pos)
-    end)
-  end,
-})
+      vim.schedule(function()
+        vim.api.nvim_set_current_win(win)
+        vim.fn.winrestview(view)
+      end)
+    end,
+  })
+end)
 ```
 
 </details>
