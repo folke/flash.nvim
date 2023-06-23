@@ -1,3 +1,6 @@
+-- Original code by @max397574
+-- https://github.com/folke/flash.nvim/discussions/24
+
 local Config = require("flash.config")
 
 ---@class Flash.Remote
