@@ -235,6 +235,37 @@ Install the plugin with your preferred package manager:
 - **jump**: `require("flash").jump(opts?)` opens **flash** with the given options
   - type any number of characters before typing a jump label
 
+## 📡 API
+
+The options for `require("flash").jump(opts?)`, are the same as
+those in the config section, but can additionally have the following fields:
+
+- `matcher`: a custom function that generates matches for a given window
+- `labeler`: a custom function to label matches
+
+You can also add labels in the `matcher` function and then set `labeler`
+to an empty function `labeler = function() end`
+
+<details><summary>Type Definitions</summary>
+
+```typescript
+type FlashMatcher = (win: number, state: FlashState) => FlashMatch[];
+type FlashLabeler = (matches: FlashMatch[], state: FlashState) => void;
+
+interface FlashMatch {
+  win: number;
+  pos: [number, number]; // (1,0)-indexed
+  end_pos: [number, number]; // (1,0)-indexed
+  label?: string;
+}
+
+// Check the code for the full definition
+// of Flash.State at `lua/flash/state.lua`
+type FlashState = {};
+```
+
+</details>
+
 ## 💡 Examples
 
 <details><summary>Forward search only</summary>

@@ -2,8 +2,8 @@ local Pos = require("flash.search.pos")
 
 ---@class Flash.Match
 ---@field win window
----@field pos Pos
----@field end_pos Pos
+---@field pos Pos -- (1,0) indexed
+---@field end_pos Pos -- (1,0) indexed
 ---@field label? string
 
 ---@alias Flash.Match.Find {forward?:boolean, wrap?:boolean, count?:number, pos?: Pos, match?:Flash.Match}
