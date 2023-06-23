@@ -41,4 +41,9 @@ function M.treesitter(opts)
   return require("flash.plugins.treesitter").jump(opts)
 end
 
+---@param opts? Flash.State.Config
+function M.remote(opts)
+  return require("flash.plugins.remote").jump(opts)
+end
+
 return M
