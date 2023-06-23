@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.5.0](https://github.com/folke/flash.nvim/compare/v1.4.1...v1.5.0) (2023-06-23)
+
+
+### Features
+
+* added remote plugin ([fb50450](https://github.com/folke/flash.nvim/commit/fb5045044f28caf08ca6d89e9fe40874138faeef))
+* flash remote. thank you [@max397574](https://github.com/max397574)! ([809ea4f](https://github.com/folke/flash.nvim/commit/809ea4f804d831ca5ff26c94b8d409ad9dfec8eb))
+
+
+### Bug Fixes
+
+* **char:** always stop highlights in insert mode ([64e5129](https://github.com/folke/flash.nvim/commit/64e51292e83e7ce409248fd07ff00b51a993a6c0))
+
 ## [1.4.1](https://github.com/folke/flash.nvim/compare/v1.4.0...v1.4.1) (2023-06-23)
 
 
