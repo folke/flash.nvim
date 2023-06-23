@@ -407,6 +407,13 @@ This should be bound to a keymap like `<leader>t`. Then you could do
     end)
 <
 
+Alternatively, this can be achieved using a remote action:
+
+- `yr` to start yank and remote
+- select a label
+- `S` to start Treesitter node selection
+- pick a Treesitter label
+
 
 HIGHLIGHTS                                  *flash.nvim-flash.nvim-highlights*
 
