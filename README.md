@@ -362,6 +362,12 @@ require("flash").jump({
 
 </details>
 
+<details><summary>Perform any remote action</summary>
+
+See [here](https://github.com/folke/flash.nvim/discussions/24)
+
+</details>
+
 ## 🌈 Highlights
 
 | Group           | Default      | Description    |
