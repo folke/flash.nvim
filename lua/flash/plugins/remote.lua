@@ -28,10 +28,10 @@ function M.jump(opts)
   M.register = vim.v.register
   M.view = vim.fn.winsaveview()
   M.win = vim.api.nvim_get_current_win()
+  M.opfunc = vim.go.operatorfunc
 
   opts = Config.get(opts, { mode = "remote" }, {
     action = function(match)
-      M.opfunc = vim.go.operatorfunc
       vim.api.nvim_set_current_win(match.win)
       vim.api.nvim_win_set_cursor(match.win, match.pos)
       vim.go.operatorfunc = "v:lua.require'flash.plugins.remote'.op"

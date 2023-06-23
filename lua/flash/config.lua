@@ -131,6 +131,8 @@ local defaults = {
         matches = false,
       },
     },
+    -- options used for remote flash
+    remote = {},
   },
 }
 

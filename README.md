@@ -44,6 +44,7 @@ enhanced character motions, and Treesitter integration.
 - 🎯 **Jump Mode**: a standalone jumping mode similar to search
 - 🔎 **Search Modes**: `exact`, `search` (regex), and `fuzzy` search modes
 - 🪟 **Multi Window** jumping
+- 🌐 **Remote Actions**: perform motions in remote locations
 - ⚫ **dot-repeatable** jumps
 - 📡 **highly extensible**: check the [examples](https://github.com/folke/flash.nvim#-examples)
 
@@ -71,6 +72,7 @@ Install the plugin with your preferred package manager:
         -- default options: exact mode, multi window, all directions, with a backdrop
         require("flash").jump()
       end,
+      desc = "Flash",
     },
     {
       "S",
@@ -78,6 +80,15 @@ Install the plugin with your preferred package manager:
       function()
         require("flash").treesitter()
       end,
+      desc = "Flash Treesitter",
+    },
+    {
+      "r",
+      mode = "o",
+      function()
+        require("flash").remote()
+      end,
+      desc = "Remote Flash",
     },
   },
 }
@@ -214,6 +225,8 @@ Install the plugin with your preferred package manager:
         matches = false,
       },
     },
+    -- options used for remote flash
+    remote = {}
   },
 }
 ```
@@ -233,6 +246,13 @@ Install the plugin with your preferred package manager:
   - You can also go to the next match with `;` or previous match with `,`
   - Any highlights clear automatically when moving, changing buffers,
     or pressing `<esc>`.
+- **remote**: `require("flash").remote(opts?)` opens **flash** in **remote** mode
+  - this is only useful in operator pending mode.
+  - For example, press `yr` to start yanking and open flash
+    - select a label to set the cursor position
+    - perform any motion, like `iw` or even start flash Treesitter with `S`
+    - the yank will be performed on the new selection
+    - you'll be back in the original window / position
 - **jump**: `require("flash").jump(opts?)` opens **flash** with the given options
   - type any number of characters before typing a jump label
 
@@ -407,12 +427,6 @@ vim.keymap.set({ "n", "x", "o" }, "<leader>t", function()
   })
 end)
 ```
-
-</details>
-
-<details><summary>Perform any remote action</summary>
-
-See [here](https://github.com/folke/flash.nvim/discussions/24)
 
 </details>
 
