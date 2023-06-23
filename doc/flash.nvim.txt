@@ -35,6 +35,7 @@ FEATURES                                      *flash.nvim-flash.nvim-features*
 - **Jump Mode**a standalone jumping mode similar to search
 - **Search Modes**`exact`, `search` (regex), and `fuzzy` search modes
 - 🪟 **Multi Window** jumping
+- **Remote Actions**perform motions in remote locations
 - **dot-repeatable** jumps
 - **highly extensible**check the examples <https://github.com/folke/flash.nvim#-examples>
 
@@ -64,6 +65,7 @@ lazy.nvim <https://github.com/folke/lazy.nvim>
             -- default options: exact mode, multi window, all directions, with a backdrop
             require("flash").jump()
           end,
+          desc = "Flash",
         },
         {
           "S",
@@ -71,6 +73,15 @@ lazy.nvim <https://github.com/folke/lazy.nvim>
           function()
             require("flash").treesitter()
           end,
+          desc = "Flash Treesitter",
+        },
+        {
+          "r",
+          mode = "o",
+          function()
+            require("flash").remote()
+          end,
+          desc = "Remote Flash",
         },
       },
     }
@@ -209,6 +220,8 @@ Default Settings ~
             matches = false,
           },
         },
+        -- options used for remote flash
+        remote = {}
       },
     }
 <
@@ -227,6 +240,13 @@ USAGE                                            *flash.nvim-flash.nvim-usage*
     - You can also go to the next match with `;` or previous match with `,`
     - Any highlights clear automatically when moving, changing buffers,
         or pressing `<esc>`.
+- **remote**`require("flash").remote(opts?)` opens **flash** in **remote** mode
+    - this is only useful in operator pending mode.
+    - For example, press `yr` to start yanking and open flash
+        - select a label to set the cursor position
+        - perform any motion, like `iw` or even start flash Treesitter with `S`
+        - the yank will be performed on the new selection
+        - you’ll be back in the original window / position
 - **jump**`require("flash").jump(opts?)` opens **flash** with the given options
     - type any number of characters before typing a jump label
 
@@ -386,10 +406,6 @@ This should be bound to a keymap like `<leader>t`. Then you could do
       })
     end)
 <
-
-Perform any remote action ~
-
-See here <https://github.com/folke/flash.nvim/discussions/24>
 
 
 HIGHLIGHTS                                  *flash.nvim-flash.nvim-highlights*
