@@ -75,8 +75,8 @@ function M.setup()
   end
 
   vim.api.nvim_create_autocmd({ "BufLeave", "CursorMoved", "InsertEnter" }, {
-    callback = function()
-      if not M.jumping and M.state then
+    callback = function(event)
+      if (event.event == "InsertEnter" or not M.jumping) and M.state then
         M.state:hide()
       end
     end,
