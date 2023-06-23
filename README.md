@@ -33,7 +33,7 @@ enhanced character motions, and Treesitter integration.
 ## ✨ Features
 
 - 🔍 **Search Integration**: integrate **flash.nvim** with your regular
-  search using / or ?. Labels appear next to the matches,
+  search using `/` or `?`. Labels appear next to the matches,
   allowing you to quickly jump to any location. Labels are
   guaranteed not to exist as a continuation of the search pattern.
 - ⌨️ **type as many characters as you want** before using a jump label.
