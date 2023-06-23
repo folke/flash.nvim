@@ -128,6 +128,7 @@ Install the plugin with your preferred package manager:
     ---@type (string|fun(win:window))[]
     exclude = {
       "notify",
+      "noice",
       "cmp_menu",
       function(win)
         -- exclude non-focusable windows
