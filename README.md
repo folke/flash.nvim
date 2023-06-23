@@ -395,6 +395,7 @@ vim.keymap.set({ "n", "x", "o" }, "<leader>t", function()
   local view = vim.fn.winsaveview()
   require("flash").jump({
     action = function(match, state)
+      state:hide()
       vim.api.nvim_set_current_win(match.win)
       vim.api.nvim_win_set_cursor(match.win, match.pos)
       require("flash").treesitter()
