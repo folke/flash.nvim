@@ -428,6 +428,13 @@ vim.keymap.set({ "n", "x", "o" }, "<leader>t", function()
 end)
 ```
 
+Alternatively, this can be achieved using a remote action:
+
+- `yr` to start yank and remote
+- select a label
+- `S` to start Treesitter node selection
+- pick a Treesitter label
+
 </details>
 
 ## 🌈 Highlights
