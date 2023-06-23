@@ -91,7 +91,7 @@ end
 
 function M.parse(key)
   -- repeat last search when hitting the same key
-  if M.visible() then
+  if M.visible() and vim.fn.reg_executing() == "" then
     if M.motion:lower() == key then
       key = ";"
     elseif M.motion:upper() == key then
