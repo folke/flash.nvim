@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.4.0](https://github.com/folke/flash.nvim/compare/v1.3.0...v1.4.0) (2023-06-23)
+
+
+### Features
+
+* **char:** tfTF now behave like clever-f when repeating the motion. Fixes [#26](https://github.com/folke/flash.nvim/issues/26) ([97c3a99](https://github.com/folke/flash.nvim/commit/97c3a993e60ebdd42c7671af07620f705ee6378f))
+* **config:** allow custom window filters. Added non-focusable windows by default ([e6ee00d](https://github.com/folke/flash.nvim/commit/e6ee00d4e76edac8cbcabe0f442a5ec34450d1f6))
+
+
+### Bug Fixes
+
+* **config:** dont show flash in cmp_menu ([29c35de](https://github.com/folke/flash.nvim/commit/29c35dec5f81504ee63a39fec90597222620af0a))
+* **treesitter:** always disable incremental mode for treesitter. Fixes [#27](https://github.com/folke/flash.nvim/issues/27) ([6e84716](https://github.com/folke/flash.nvim/commit/6e8471673a7158a8820986f6aad770a912a66eed))
+
 ## [1.3.0](https://github.com/folke/flash.nvim/compare/v1.2.0...v1.3.0) (2023-06-22)
 
 
