@@ -45,6 +45,7 @@ enhanced character motions, and Treesitter integration.
 - 🔎 **Search Modes**: `exact`, `search` (regex), and `fuzzy` search modes
 - 🪟 **Multi Window** jumping
 - ⚫ **dot-repeatable** jumps
+- 📡 **highly extensible**: check the [examples](https://github.com/folke/flash.nvim#-examples)
 
 ## 📋 Requirements
 
