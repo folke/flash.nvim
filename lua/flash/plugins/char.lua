@@ -55,6 +55,8 @@ function M.visible()
 end
 
 function M.setup()
+  Repeat.setup()
+
   for _, key in ipairs({ "f", "F", "t", "T", ";", "," }) do
     if vim.tbl_contains(Config.modes.char.keys, key) then
       vim.keymap.set({ "n", "x", "o" }, key, function()
