@@ -123,6 +123,7 @@ Default Settings ~
         ---@type (string|fun(win:window))[]
         exclude = {
           "notify",
+          "noice",
           "cmp_menu",
           function(win)
             -- exclude non-focusable windows
