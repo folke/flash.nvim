@@ -19,6 +19,7 @@ local Pattern = require("flash.search.pattern")
 ---@field wins window[]
 ---@field cache Flash.Cache
 ---@field pos Pos
+---@field view any
 ---@field results Flash.Match[]
 ---@field target? Flash.Match
 ---@field pattern Flash.Pattern
@@ -81,7 +82,12 @@ function M.new(opts)
   self.results = {}
   self.matchers = {}
   self.wins = {}
-  self.matcher = self.opts.matcher and Matcher.from(self.opts.matcher) or Search.new
+  self.matcher = self.opts.matcher
+  if type(self.matcher) == "function" then
+    self.matcher = Matcher.from(self.opts.matcher)
+  elseif self.matcher == nil then
+    self.matcher = Search.new
+  end
   self.pattern = Pattern.new(self.opts.pattern, self.opts.search.mode, self.opts.search.trigger)
   self.visible = true
   self.cache = Cache.new(self)
