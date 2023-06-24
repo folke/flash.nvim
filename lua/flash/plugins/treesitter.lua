@@ -1,19 +1,19 @@
 local Repeat = require("flash.repeat")
 local Util = require("flash.util")
 local Config = require("flash.config")
+local Pos = require("flash.search.pos")
 
 local M = {}
 
 ---@param win window
----@param state Flash.State
-function M.matcher(win, state)
+---@param pos? Pos
+function M.get_nodes(win, pos)
   local buf = vim.api.nvim_win_get_buf(win)
   local line_count = vim.api.nvim_buf_line_count(buf)
 
   -- get all ranges of the current node and its parents
   local ranges = {} ---@type TSNode[]
 
-  local pos = win == state.win and state.pos or nil
   local node = vim.treesitter.get_node({
     bufnr = buf,
     pos = pos and { pos[1] - 1, pos[2] } or nil,
@@ -24,8 +24,6 @@ function M.matcher(win, state)
     table.insert(ranges, range)
     node = node:parent()
   end
-
-  local labels = state:labels()
 
   -- convert ranges to matches
   ---@type Flash.Match[]
@@ -38,7 +36,6 @@ function M.matcher(win, state)
     local match = {
       pos = { range[1] + 1, range[2] },
       end_pos = { range[3] + 1, range[4] - 1 },
-      label = table.remove(labels, 1),
       first = first,
     }
     first = false
@@ -62,6 +59,24 @@ function M.matcher(win, state)
       done[id] = true
       ret[#ret + 1] = match
     end
+  end
+
+  for _, m in ipairs(ret) do
+    m.pos = Pos(m.pos)
+    m.end_pos = Pos(m.end_pos)
+    m.win = win
+  end
+  return ret
+end
+
+---@param win window
+---@param state Flash.State
+function M.matcher(win, state)
+  local labels = state:labels()
+  local ret = M.get_nodes(win, state.pos)
+
+  for i = 1, #ret do
+    ret[i].label = table.remove(labels, 1)
   end
   return ret
 end
