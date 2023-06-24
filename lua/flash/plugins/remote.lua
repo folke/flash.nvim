@@ -66,12 +66,21 @@ end
 function M.jump(opts)
   M.save()
 
-  opts = Config.get(opts, { mode = "remote" }, {
+  opts = Config.get({ mode = "remote" }, opts, {
     action = function(match)
       vim.api.nvim_set_current_win(match.win)
-      vim.api.nvim_win_set_cursor(match.win, match.pos)
-      vim.go.operatorfunc = "v:lua.require'flash.plugins.remote'.op"
-      vim.api.nvim_feedkeys("g@", "n", false)
+      if opts.jump.pos == "range" then
+        vim.api.nvim_buf_set_mark(0, "[", match.pos[1], match.pos[2], {})
+        vim.api.nvim_buf_set_mark(0, "]", match.end_pos[1], match.end_pos[2], {})
+        M.op()
+      else
+        vim.api.nvim_win_set_cursor(
+          match.win,
+          opts.jump.pos == "start" and match.pos or match.end_pos
+        )
+        vim.go.operatorfunc = "v:lua.require'flash.plugins.remote'.op"
+        vim.api.nvim_feedkeys("g@", "n", false)
+      end
     end,
   })
 
