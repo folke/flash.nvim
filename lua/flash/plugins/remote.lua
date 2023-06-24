@@ -37,13 +37,20 @@ function M.restore()
     vim.api.nvim_set_current_win(M.win)
     vim.fn.winrestview(M.view)
   end
+  restore = vim.schedule_wrap(restore)
+
   if M.operator == "c" then
     vim.api.nvim_create_autocmd("InsertLeave", {
       once = true,
       callback = restore,
     })
+  elseif M.operator == "y" then -- need to check for some opt to paste after yank
+    vim.api.nvim_create_autocmd("TextYankPost", {
+      once = true,
+      callback = restore,
+    })
   else
-    vim.schedule(restore)
+    restore()
   end
 end
 
