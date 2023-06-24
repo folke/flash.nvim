@@ -148,6 +148,7 @@ local options
 function M.setup(opts)
   opts = opts or {}
   opts.mode = nil
+  options = {}
   options = M.get(opts)
 
   if options.modes.search.enabled then
@@ -164,13 +165,18 @@ function M.get(...)
   ---@type Flash.Config[]
   local all = {}
 
+  ---@type table<string, boolean>
+  local modes = {}
+
   for i = 1, select("#", ...) do
     ---@type Flash.Config?
     local opts = select(i, ...)
     if opts then
-      if opts.mode then
-        all[#all + 1] = options.modes[opts.mode] or {}
-        opts.mode = nil
+      local mopts = opts
+      while mopts.mode and not modes[mopts.mode] do
+        modes[mopts.mode] = true
+        mopts = options.modes[mopts.mode] or {}
+        all[#all + 1] = mopts
       end
       all[#all + 1] = opts
     end
