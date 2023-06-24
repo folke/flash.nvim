@@ -253,7 +253,7 @@ function M:update_target()
   if self.opts.search.incremental then
     -- only update cursor if the target is not visible
     -- and we are not activated
-    if self.target and not self.is_search() and not is_visible() then
+    if self.target and not self.is_search() then
       vim.api.nvim_win_set_cursor(self.win, self.target.pos)
     end
   elseif not is_visible() then
