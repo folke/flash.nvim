@@ -18,29 +18,36 @@ function M.op()
   vim.api.nvim_win_set_cursor(0, vim.api.nvim_buf_get_mark(0, "]"))
   vim.go.operatorfunc = M.opfunc
   vim.api.nvim_input('"' .. M.register .. M.operator)
-
-  if M.operator == "c" then
-    vim.api.nvim_create_autocmd("InsertLeave", {
-      once = true,
-      callback = M.restore,
-    })
-  else
-    vim.schedule(M.restore)
-  end
+  M.restore()
 end
 
-function M.restore()
+local function restore()
   vim.api.nvim_set_current_win(M.win)
   vim.fn.winrestview(M.view)
 end
 
----@param opts? Flash.State.Config
-function M.jump(opts)
+function M.restore()
+  if M.operator == "c" then
+    vim.api.nvim_create_autocmd("InsertLeave", {
+      once = true,
+      callback = restore,
+    })
+  else
+    vim.schedule(restore)
+  end
+end
+
+function M.save()
   M.operator = vim.v.operator
   M.register = vim.v.register
   M.view = vim.fn.winsaveview()
   M.win = vim.api.nvim_get_current_win()
   M.opfunc = vim.go.operatorfunc
+end
+
+---@param opts? Flash.State.Config
+function M.jump(opts)
+  M.save()
 
   opts = Config.get(opts, { mode = "remote" }, {
     action = function(match)
