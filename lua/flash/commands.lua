@@ -18,8 +18,17 @@ function M.jump(opts)
       break
     end
 
+    local orig = state.pattern()
+
     -- break if we jumped
     if state:update({ pattern = state.pattern:extend(c) }) then
+      break
+    end
+
+    if state.opts.search.max_length and #state.pattern() > state.opts.search.max_length then
+      state:update({ pattern = orig })
+      state:jump()
+      vim.api.nvim_input(c)
       break
     end
 

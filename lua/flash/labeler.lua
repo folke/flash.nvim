@@ -45,8 +45,13 @@ function M:reset()
       skip[l] = true
     end
   end
-  for _, matcher in pairs(self.state.matchers) do
-    self.labels = matcher:labels(self.labels)
+  if
+    not self.state.opts.search.max_length
+    or #self.state.pattern() < self.state.opts.search.max_length
+  then
+    for _, matcher in pairs(self.state.matchers) do
+      self.labels = matcher:labels(self.labels)
+    end
   end
   for _, m in ipairs(self.state.results) do
     m.label = nil

@@ -43,6 +43,10 @@ local defaults = {
     -- a jump label can be used. It's NOT recommended to set this,
     -- unless you know what you're doing
     trigger = "",
+    -- max pattern length. If the pattern length is equal to this
+    -- labels will no longer be skipped. When it exceeds this length
+    -- it will either end in a jump or terminate the search
+    max_length = nil, ---@type number?
   },
   jump = {
     -- save location in the jumplist
