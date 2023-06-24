@@ -5,6 +5,11 @@ local Pos = require("flash.search.pos")
 ---@field pos Pos -- (1,0) indexed
 ---@field end_pos Pos -- (1,0) indexed
 ---@field label? string
+---@field highlight_range? Flash.HighlightRange
+
+---@class Flash.HighlightRange
+---@field pos Pos -- (1,0) indexed
+---@field end_pos Pos -- (1,0) indexed
 
 ---@alias Flash.Match.Find {forward?:boolean, wrap?:boolean, count?:number, pos?: Pos, match?:Flash.Match}
 

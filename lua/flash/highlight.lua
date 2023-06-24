@@ -119,10 +119,11 @@ function M.update(state)
     local buf = vim.api.nvim_win_get_buf(match.win)
 
     if state.opts.highlight.matches then
-      vim.api.nvim_buf_set_extmark(buf, state.ns, match.pos[1] - 1, match.pos[2], {
-        end_row = match.end_pos[1] - 1,
-        end_col = match.end_pos[2] + 1,
-        hl_group = target and match.pos == target.pos and state.opts.highlight.groups.current
+      local hi = match.highlight_range or match
+      vim.api.nvim_buf_set_extmark(buf, state.ns, hi.pos[1] - 1, hi.pos[2], {
+        end_row = hi.end_pos[1] - 1,
+        end_col = hi.end_pos[2] + 1,
+        hl_group = target and hi.pos == target.pos and state.opts.highlight.groups.current
           or state.opts.highlight.groups.match,
         strict = false,
         priority = state.opts.highlight.priority + 1,
