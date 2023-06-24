@@ -22,4 +22,17 @@ describe("config", function()
     assert.is_true(Config.get({ mode = "foo" }).field)
     assert.is_true(Config.get({ mode = "bar" }).field)
   end)
+
+  it("processes modes recursively in correct order", function()
+    Config.setup({
+      modes = {
+        a = { mode = "b", v = "a" },
+        b = { mode = "c", v = "b" },
+        c = { v = "c" },
+      },
+    })
+    assert.same("d", Config.get({ mode = "a", v = "d" }).v)
+    assert.same("a", Config.get({ mode = "a" }).v)
+    assert.same("b", Config.get({ mode = "b" }).v)
+  end)
 end)

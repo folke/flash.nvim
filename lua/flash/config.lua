@@ -176,13 +176,13 @@ function M.get(...)
     ---@type Flash.Config?
     local opts = select(i, ...)
     if opts then
-      local mopts = opts
-      while mopts.mode and not modes[mopts.mode] do
-        modes[mopts.mode] = true
-        mopts = options.modes[mopts.mode] or {}
-        all[#all + 1] = mopts
+      table.insert(all, opts)
+      local idx = #all
+      while opts.mode and not modes[opts.mode] do
+        modes[opts.mode] = true
+        opts = options.modes[opts.mode] or {}
+        table.insert(all, idx, opts)
       end
-      all[#all + 1] = opts
     end
   end
 
