@@ -1,5 +1,28 @@
 # Changelog
 
+## [1.7.0](https://github.com/folke/flash.nvim/compare/v1.6.0...v1.7.0) (2023-06-24)
+
+
+### Features
+
+* **config:** allow mode inheritance. Closes [#50](https://github.com/folke/flash.nvim/issues/50) ([3deefe8](https://github.com/folke/flash.nvim/commit/3deefe88e02e68c163c320614be1727fa887cd65))
+* **jump:** added option to force inclusive/exclusive. Closes [#49](https://github.com/folke/flash.nvim/issues/49) ([e71efbf](https://github.com/folke/flash.nvim/commit/e71efbfbc73df21d3e79d30c4c27bd29892c216c))
+* **remote:** peoperly deal with c for remote. Will jump back when leaving insert mode ([1075013](https://github.com/folke/flash.nvim/commit/10750139d3d4f2fb6c7bb8cc33aef988a7b26b7c))
+* **state:** allow passing a callable object as matcher ([f49fa9c](https://github.com/folke/flash.nvim/commit/f49fa9cbddd6a30c59420892e09f57f391bd9516))
+
+
+### Bug Fixes
+
+* **cache:** allow current window to be excluded ([770763c](https://github.com/folke/flash.nvim/commit/770763ce2d2b4c340249cb7000de81c2085438c8))
+* **cache:** fixup for window selection ([ed3bec6](https://github.com/folke/flash.nvim/commit/ed3bec6da9b92cee4954bfb71c4e71d06406191c))
+* **char:** add group to autocmd ([fc08d27](https://github.com/folke/flash.nvim/commit/fc08d279ddb92ba2323684a2077aa7797384fc3c))
+* **remote:** properly restore remote window as well. Also remove the `normal! o` ([587a243](https://github.com/folke/flash.nvim/commit/587a2436f84301b84937242657dcc03be4a80702))
+
+
+### Performance Improvements
+
+* **remote:** restore views on TextYankPost ([d4dadc8](https://github.com/folke/flash.nvim/commit/d4dadc8fae53ded2a51a2ca0a9d82889e148e0b7))
+
 ## [1.6.0](https://github.com/folke/flash.nvim/compare/v1.5.0...v1.6.0) (2023-06-24)
 
 
