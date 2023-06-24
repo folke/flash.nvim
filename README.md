@@ -442,7 +442,7 @@ Alternatively, this can be achieved using a remote action:
 
 </details>
 
-<details><summary>`f`, `t`, `F`, `T` with labels</summary>
+<details><summary><code>f</code>, <code>t</code>, <code>F</code>, <code>T</code> with labels</summary>
 
 ```lua
 -- to use this, make sure to set `opts.modes.char.enabled = false`
