@@ -12,21 +12,31 @@ local Config = require("flash.config")
 local M = {}
 
 function M.op()
-  vim.cmd("normal! v")
   vim.api.nvim_win_set_cursor(0, vim.api.nvim_buf_get_mark(0, "["))
-  vim.cmd("normal! o")
+  vim.cmd("normal! v")
   vim.api.nvim_win_set_cursor(0, vim.api.nvim_buf_get_mark(0, "]"))
   vim.go.operatorfunc = M.opfunc
   vim.api.nvim_input('"' .. M.register .. M.operator)
   M.restore()
 end
 
-local function restore()
-  vim.api.nvim_set_current_win(M.win)
-  vim.fn.winrestview(M.view)
-end
-
 function M.restore()
+  local win = vim.api.nvim_get_current_win()
+  local view = vim.fn.winsaveview()
+
+  local function restore()
+    -- HACK: also restore the remote window.
+    -- A bug causes the window to get the cursor position of the
+    -- previous window. I don't think this is cacused by flash. Need to
+    -- further investigate.
+    if win ~= M.win then
+      vim.api.nvim_win_call(win, function()
+        vim.fn.winrestview(view)
+      end)
+    end
+    vim.api.nvim_set_current_win(M.win)
+    vim.fn.winrestview(M.view)
+  end
   if M.operator == "c" then
     vim.api.nvim_create_autocmd("InsertLeave", {
       once = true,
