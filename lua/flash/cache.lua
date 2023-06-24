@@ -95,32 +95,33 @@ end
 
 function M:_update_wins()
   -- prioritize current window
-  ---@type window[]
-  local wins = self.state.opts.search.multi_window and vim.api.nvim_tabpage_list_wins(0) or {}
-  local keep_current = false
+  self.state.wins = { self.state.win }
 
-  ---@param w window
-  wins = vim.tbl_filter(function(w)
-    local buf = vim.api.nvim_win_get_buf(w)
-    local ft = vim.bo[buf].filetype
+  if self.state.opts.search.multi_window then
+    local keep_current = false
 
-    for _, exclude in ipairs(self.state.opts.search.exclude) do
-      if type(exclude) == "string" and exclude == ft then
-        return false
-      elseif type(exclude) == "function" and exclude(w) then
+    ---@param w window
+    self.state.wins = vim.tbl_filter(function(w)
+      local buf = vim.api.nvim_win_get_buf(w)
+      local ft = vim.bo[buf].filetype
+
+      for _, exclude in ipairs(self.state.opts.search.exclude) do
+        if type(exclude) == "string" and exclude == ft then
+          return false
+        elseif type(exclude) == "function" and exclude(w) then
+          return false
+        end
+      end
+      if w == self.state.win then
+        keep_current = true
         return false
       end
+      return true
+    end, vim.api.nvim_tabpage_list_wins(0))
+    if keep_current then
+      table.insert(self.state.wins, 1, self.state.win)
     end
-    if w == self.state.win then
-      keep_current = true
-      return false
-    end
-    return true
-  end, wins)
-  if keep_current then
-    table.insert(wins, 1, self.state.win)
   end
-  self.state.wins = wins
 end
 
 ---@param win window
