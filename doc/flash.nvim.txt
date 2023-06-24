@@ -419,7 +419,7 @@ Alternatively, this can be achieved using a remote action:
 - `S` to start Treesitter node selection
 - pick a Treesitter label
 
-`f`, `t`, `F`, `T` with labels ~
+f, t, F, T with labels ~
 
 >lua
     -- to use this, make sure to set `opts.modes.char.enabled = false`
