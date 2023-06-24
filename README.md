@@ -139,6 +139,10 @@ Install the plugin with your preferred package manager:
     -- a jump label can be used. It's NOT recommended to set this,
     -- unless you know what you're doing
     trigger = "",
+    -- max pattern length. If the pattern length is equal to this
+    -- labels will no longer be skipped. When it exceeds this length
+    -- it will either end in a jump or terminate the search
+    max_length = nil, ---@type number?
   },
   jump = {
     -- save location in the jumplist
@@ -435,6 +439,28 @@ Alternatively, this can be achieved using a remote action:
 - select a label
 - `S` to start Treesitter node selection
 - pick a Treesitter label
+
+</details>
+
+<details><summary>`f`, `t`, `F`, `T` with labels</summary>
+
+```lua
+-- to use this, make sure to set `opts.modes.char.enabled = false`
+local Config = require("flash.config")
+local Char = require("flash.plugins.char")
+for _, motion in ipairs({ "f", "t", "F", "T" }) do
+  vim.keymap.set({ "n", "x", "o" }, motion, function()
+    require("flash").jump(Config.get({
+      mode = "char",
+      search = {
+        mode = Char.mode(motion),
+        max_length = 1,
+      },
+    }, Char.motions[motion]))
+  end)
+end
+
+```
 
 </details>
 
