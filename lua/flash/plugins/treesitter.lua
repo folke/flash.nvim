@@ -7,7 +7,8 @@ local M = {}
 
 ---@param win window
 ---@param pos? Pos
-function M.get_nodes(win, pos)
+---@param end_pos? Pos
+function M.get_nodes(win, pos, end_pos)
   local buf = vim.api.nvim_win_get_buf(win)
   local line_count = vim.api.nvim_buf_line_count(buf)
 
@@ -36,6 +37,7 @@ function M.get_nodes(win, pos)
     local match = {
       pos = { range[1] + 1, range[2] },
       end_pos = { range[3] + 1, range[4] - 1 },
+      highlight_range = end_pos and { pos = pos, end_pos = end_pos },
       first = first,
     }
     first = false
