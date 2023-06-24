@@ -32,22 +32,24 @@ function M.new()
     end,
     search = {
       multi_window = false,
-      mode = "search",
+      mode = M.mode(M.motion),
     },
   }, M.motions[M.motion]))
 end
 
-function M.pattern()
-  local c = M.char:gsub("\\", "\\\\")
-  local pattern ---@type string
-  if M.motion == "t" then
-    pattern = "\\m.\\ze\\V" .. c
-  elseif M.motion == "T" then
-    pattern = "\\V" .. c .. "\\zs\\m."
-  else
-    pattern = "\\V" .. c
+function M.mode(motion)
+  return function(c)
+    c = c:gsub("\\", "\\\\")
+    local pattern ---@type string
+    if motion == "t" then
+      pattern = "\\m.\\ze\\V" .. c
+    elseif motion == "T" then
+      pattern = "\\V" .. c .. "\\zs\\m."
+    else
+      pattern = "\\V" .. c
+    end
+    return pattern
   end
-  return pattern
 end
 
 function M.visible()
@@ -132,7 +134,7 @@ function M.jump(key)
 
   -- update the state when needed
   if M.state.pattern:empty() then
-    M.state:update({ pattern = M.pattern() })
+    M.state:update({ pattern = M.char })
   end
 
   local forward = M.state.opts.search.forward
