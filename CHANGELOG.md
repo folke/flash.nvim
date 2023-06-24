@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.6.0](https://github.com/folke/flash.nvim/compare/v1.5.0...v1.6.0) (2023-06-24)
+
+
+### Features
+
+* **config:** pattern can now have a `max_length`. When length is reached, labels are no longer skipped. When it exceeds, either a jump is followed or the search is ended ([bd9dbee](https://github.com/folke/flash.nvim/commit/bd9dbee041296a582faa6dfe25e1af87d65614c7))
+
+
+### Bug Fixes
+
+* **config:** exclude noice by default ([bc9a599](https://github.com/folke/flash.nvim/commit/bc9a5992b947ae84b5c1458f0b117abda1b61154))
+* **repeat:** make sure repeat is enabled for char searches. Fixes [#40](https://github.com/folke/flash.nvim/issues/40) ([219f0c0](https://github.com/folke/flash.nvim/commit/219f0c09b664257a7d9b46023bcb24563ae49832))
+* **state:** always reposition the cursor on incremental mode ([81e38d6](https://github.com/folke/flash.nvim/commit/81e38d604d285d835a9186f82e28a302bc048128))
+
 ## [1.5.0](https://github.com/folke/flash.nvim/compare/v1.4.1...v1.5.0) (2023-06-23)
 
 
