@@ -19,10 +19,19 @@ function M.op()
   vim.go.operatorfunc = M.opfunc
   vim.api.nvim_input('"' .. M.register .. M.operator)
 
-  vim.schedule(function()
-    vim.api.nvim_set_current_win(M.win)
-    vim.fn.winrestview(M.view)
-  end)
+  if M.operator == "c" then
+    vim.api.nvim_create_autocmd("InsertLeave", {
+      once = true,
+      callback = M.restore,
+    })
+  else
+    vim.schedule(M.restore)
+  end
+end
+
+function M.restore()
+  vim.api.nvim_set_current_win(M.win)
+  vim.fn.winrestview(M.view)
 end
 
 ---@param opts? Flash.State.Config
