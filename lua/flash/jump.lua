@@ -5,7 +5,12 @@ local M = {}
 ---@return Flash.Match?
 function M.jump(match, state)
   -- fix inclusive/exclusive
-  if vim.fn.mode(true):sub(1, 2) == "no" and state.opts.jump.pos ~= "range" then
+  -- default is exclusive
+  local inclusive = state.opts.jump.inclusive
+  if inclusive == nil then
+    inclusive = vim.fn.mode(true):sub(1, 2) == "no" and state.opts.jump.pos ~= "range"
+  end
+  if inclusive then
     vim.cmd("normal! v")
   end
 
