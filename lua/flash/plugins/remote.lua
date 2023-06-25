@@ -9,7 +9,7 @@ local Config = require("flash.config")
 ---@field register? string
 ---@field win? window
 ---@field view? any
----@field on_restore? function
+---@field opts? Flash.State.Config
 local M = {}
 
 function M.op()
@@ -37,8 +37,8 @@ function M.restore()
     end
     vim.api.nvim_set_current_win(M.win)
     vim.fn.winrestview(M.view)
-    if M.on_restore then
-      M.on_restore(M)
+    if M.opts.remote.on_restore then
+      M.opts.remote.on_restore(M)
     end
   end
   restore = vim.schedule_wrap(restore)
@@ -58,20 +58,23 @@ function M.restore()
   end
 end
 
+---@param opts Flash.State.Config
 function M.save(opts)
   M.operator = vim.v.operator
   M.register = vim.v.register
   M.view = vim.fn.winsaveview()
   M.win = vim.api.nvim_get_current_win()
   M.opfunc = vim.go.operatorfunc
-  M.on_restore = opts.remote and opts.remote.on_restore
+  M.opts = opts
 end
 
 ---@param opts? Flash.State.Config
 function M.jump(opts)
   opts = Config.get({ mode = "remote" }, opts, {
     action = function(match)
+      ---@cast opts Flash.State.Config
       vim.api.nvim_set_current_win(match.win)
+      -- we already have a range, so no need to start a motion
       if opts.jump.pos == "range" then
         vim.api.nvim_buf_set_mark(0, "[", match.pos[1], match.pos[2], {})
         vim.api.nvim_buf_set_mark(0, "]", match.end_pos[1], match.end_pos[2], {})
