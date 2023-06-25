@@ -1,4 +1,5 @@
 local Search = require("flash.search")
+local Labeler = require("flash.labeler")
 local State = require("flash.state")
 local assert = require("luassert")
 
@@ -16,7 +17,7 @@ describe("labeler", function()
     local state = State.new({ pattern = pattern, search = {
       mode = "search",
     } })
-    return Search.new(1000, state)
+    return Labeler.new(state)
   end
 
   before_each(function()
@@ -30,14 +31,14 @@ describe("labeler", function()
       bar
       barfoo
     ]])
-    local labels = search("bar"):labels({ "a", "b", "c", "f" })
+    local labels = search("bar"):skip(1000, { "a", "b", "c", "f" })
     assert.same({ "a", "b", "c" }, labels)
   end)
   it("skips all labels for an empty pattern", function()
     set([[
        test pattern
      ]])
-    local labels = search(""):labels({ "a", "b", "c", "t" })
+    local labels = search(""):skip(1000, { "a", "b", "c", "t" })
     assert.same({}, labels)
   end)
 
@@ -45,7 +46,7 @@ describe("labeler", function()
     set([[
        invalid pattern
      ]])
-    local labels = search("[i"):labels({ "a", "b", "i", "v" })
+    local labels = search("[i"):skip(1000, { "a", "b", "i", "v" })
     assert.same({}, labels)
   end)
 
@@ -53,7 +54,7 @@ describe("labeler", function()
     set([[
        pattern with backslash\
      ]])
-    local labels = search("backslash\\"):labels({ "a", "b", "s", "\\" })
+    local labels = search("backslash\\"):skip(1000, { "a", "b", "s", "\\" })
     assert.same({}, labels)
   end)
 
@@ -61,7 +62,7 @@ describe("labeler", function()
     set([[
        pattern withc
      ]])
-    local labels = search("with"):labels({ "a", "b", "c", "p", "w" })
+    local labels = search("with"):skip(1000, { "a", "b", "c", "p", "w" })
     assert.same({ "a", "b", "p", "w" }, labels)
   end)
 
@@ -70,7 +71,7 @@ describe("labeler", function()
        pattern withC
      ]])
     vim.opt.ignorecase = true
-    local labels = search("with"):labels({ "a", "b", "C", "p", "w" })
+    local labels = search("with"):skip(1000, { "a", "b", "C", "p", "w" })
     assert.same({ "a", "b", "p", "w" }, labels)
   end)
 
@@ -79,7 +80,7 @@ describe("labeler", function()
        pattern withC
      ]])
     vim.opt.ignorecase = true
-    local labels = search("with"):labels({ "a", "b", "c", "p", "w" })
+    local labels = search("with"):skip(1000, { "a", "b", "c", "p", "w" })
     assert.same({ "a", "b", "p", "w" }, labels)
   end)
 
@@ -88,7 +89,7 @@ describe("labeler", function()
        pattern withc
      ]])
     vim.opt.ignorecase = true
-    local labels = search("with"):labels({ "a", "b", "C", "p", "w" })
+    local labels = search("with"):skip(1000, { "a", "b", "C", "p", "w" })
     assert.same({ "a", "b", "p", "w" }, labels)
   end)
 
@@ -96,7 +97,7 @@ describe("labeler", function()
     set([[
        pattern with incomplete regex (
      ]])
-    local labels = search("regex \\("):labels({ "a", "b", "i", "r", "(" })
+    local labels = search("regex \\("):skip(1000, { "a", "b", "i", "r", "(" })
     assert.same({}, labels)
   end)
 end)
