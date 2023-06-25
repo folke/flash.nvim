@@ -12,9 +12,6 @@ function M.visible()
 end
 
 function M.show()
-  if vim.g.vscode then
-    return
-  end
   if M.visible() then
     return
   end
@@ -62,9 +59,6 @@ end
 
 ---@param pattern string
 function M.set(pattern)
-  if vim.g.vscode then
-    return
-  end
   M.show()
   local text = vim.deepcopy(Config.prompt.prefix)
   text[#text + 1] = { pattern }

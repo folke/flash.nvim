@@ -207,7 +207,13 @@ function M.get(...)
     end
   end
 
-  return vim.tbl_deep_extend("force", {}, defaults, options or {}, unpack(all))
+  ---@type Flash.State.Config
+  local ret = vim.tbl_deep_extend("force", {}, defaults, options or {}, unpack(all))
+  if vim.g.vscode then
+    ret.prompt.enabled = false
+    ret.search.multi_window = false
+  end
+  return ret
 end
 
 return setmetatable(M, {
