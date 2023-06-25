@@ -534,6 +534,39 @@ require("flash").jump({continue = true})
 
 </details>
 
+<details><summary>Remote Treesitter with prelabelling</summary>
+Start by typing a search pattern as with any other jump. The nodes around the
+matches of that pattern will be labelled in the same way as `treesitter` mode.
+You may hit the label key at any time to select that node. The labels are
+assigned to not conflict with the search pattern, just as in normal jump mode.
+
+```lua
+      {
+        "R",
+        mode = "o",
+        desc = "remote ts",
+        function()
+          require("flash").remote {
+            mode = "remote_ts",
+            matcher = require "flash.plugins.flat_map"(require("flash.plugins.treesitter").get_nodes),
+          }
+        end,
+      },
+      {
+        "R",
+        mode = "x",
+        desc = "remote ts",
+        function()
+          require("flash").jump {
+            mode = "remote_ts",
+            matcher = require "flash.plugins.flat_map"(require("flash.plugins.treesitter").get_nodes),
+          }
+        end,
+      },
+```
+
+</details>
+
 ## 🌈 Highlights
 
 | Group           | Default      | Description    |
