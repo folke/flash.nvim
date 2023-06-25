@@ -38,7 +38,7 @@ function M.restore()
     vim.api.nvim_set_current_win(M.win)
     vim.fn.winrestview(M.view)
     if M.opts.remote.on_restore then
-      M.opts.remote.on_restore(M)
+      M.opts.remote.on_restore()
     end
   end
   restore = vim.schedule_wrap(restore)
@@ -58,14 +58,14 @@ function M.restore()
   end
 end
 
----@param opts Flash.State.Config
+---@param opts? Flash.State.Config
 function M.save(opts)
   M.operator = vim.v.operator
   M.register = vim.v.register
   M.view = vim.fn.winsaveview()
   M.win = vim.api.nvim_get_current_win()
   M.opfunc = vim.go.operatorfunc
-  M.opts = opts
+  M.opts = opts or Config.get()
 end
 
 ---@param opts? Flash.State.Config
