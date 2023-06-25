@@ -9,6 +9,7 @@ local Config = require("flash.config")
 ---@field register? string
 ---@field win? window
 ---@field view? any
+---@field opts? Flash.State.Config
 local M = {}
 
 function M.op()
@@ -36,6 +37,9 @@ function M.restore()
     end
     vim.api.nvim_set_current_win(M.win)
     vim.fn.winrestview(M.view)
+    if M.opts.remote.on_restore then
+      M.opts.remote.on_restore(M)
+    end
   end
   restore = vim.schedule_wrap(restore)
 
@@ -54,26 +58,38 @@ function M.restore()
   end
 end
 
-function M.save()
+---@param opts Flash.State.Config
+function M.save(opts)
   M.operator = vim.v.operator
   M.register = vim.v.register
   M.view = vim.fn.winsaveview()
   M.win = vim.api.nvim_get_current_win()
   M.opfunc = vim.go.operatorfunc
+  M.opts = opts
 end
 
 ---@param opts? Flash.State.Config
 function M.jump(opts)
-  M.save()
-
-  opts = Config.get(opts, { mode = "remote" }, {
+  opts = Config.get({ mode = "remote" }, opts, {
     action = function(match)
+      ---@cast opts Flash.State.Config
       vim.api.nvim_set_current_win(match.win)
-      vim.api.nvim_win_set_cursor(match.win, match.pos)
-      vim.go.operatorfunc = "v:lua.require'flash.plugins.remote'.op"
-      vim.api.nvim_feedkeys("g@", "n", false)
+      -- we already have a range, so no need to start a motion
+      if opts.jump.pos == "range" then
+        vim.api.nvim_buf_set_mark(0, "[", match.pos[1], match.pos[2], {})
+        vim.api.nvim_buf_set_mark(0, "]", match.end_pos[1], match.end_pos[2], {})
+        M.op()
+      else
+        vim.api.nvim_win_set_cursor(
+          match.win,
+          opts.jump.pos == "start" and match.pos or match.end_pos
+        )
+        vim.go.operatorfunc = "v:lua.require'flash.plugins.remote'.op"
+        vim.api.nvim_feedkeys("g@", "n", false)
+      end
     end,
   })
+  M.save(opts)
 
   vim.api.nvim_input("<esc>")
   vim.schedule(function()

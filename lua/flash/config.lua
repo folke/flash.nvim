@@ -164,6 +164,7 @@ local defaults = {
       zindex = 1000,
     },
   },
+  remote = {},
 }
 
 ---@type Flash.Config
