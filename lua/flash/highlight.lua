@@ -7,12 +7,30 @@ function M.clear(ns)
 end
 
 function M.setup()
-  vim.api.nvim_set_hl(0, "FlashBackdrop", { link = "Comment", default = true })
-  vim.api.nvim_set_hl(0, "FlashMatch", { link = "Search", default = true })
-  vim.api.nvim_set_hl(0, "FlashCurrent", { link = "IncSearch", default = true })
-  vim.api.nvim_set_hl(0, "FlashLabel", { link = "Substitute", default = true })
-  vim.api.nvim_set_hl(0, "FlashPrompt", { link = "MsgArea", default = true })
-  vim.api.nvim_set_hl(0, "FlashPromptIcon", { link = "Special", default = true })
+  if vim.g.vscode then
+    local hls = {
+      FlashBackdrop = { fg = "#545c7e" },
+      FlashCurrent = { bg = "#ff966c", fg = "#1b1d2b" },
+      FlashLabel = { bg = "#ff007c", bold = true, fg = "#c8d3f5" },
+      FlashMatch = { bg = "#3e68d7", fg = "#c8d3f5" },
+    }
+    for hl_group, hl in pairs(hls) do
+      hl.default = true
+      vim.api.nvim_set_hl(0, hl_group, hl)
+    end
+  else
+    local links = {
+      FlashBackdrop = "Comment",
+      FlashMatch = "Search",
+      FlashCurrent = "IncSearch",
+      FlashLabel = "Substitute",
+      FlashPrompt = "MsgArea",
+      FlashPromptIcon = "Special",
+    }
+    for hl_group, link in pairs(links) do
+      vim.api.nvim_set_hl(0, hl_group, { link = link, default = true })
+    end
+  end
 end
 M.setup()
 
