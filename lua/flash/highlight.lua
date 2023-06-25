@@ -60,8 +60,10 @@ function M.update(state)
 
   local after = state.opts.highlight.label.after
   after = after == true and { 0, 1 } or after
+  ---@cast after number[]
   local before = state.opts.highlight.label.before
   before = before == true and { 0, -1 } or before
+  ---@cast before number[]
 
   if style == "inline" and before then
     before[2] = before[2] + 1
