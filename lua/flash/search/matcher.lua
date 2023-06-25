@@ -27,14 +27,16 @@ function M.new(win)
   return self
 end
 
----@param fn fun(win: window, state:Flash.State): Flash.Match[]
+---@param fn fun(win: window, state:Flash.State, opts: {from:Pos, to:Pos}): Flash.Match[]
 function M.from(fn)
   return function(win, state)
     local ret = M.new(win)
-    ret.update = function(self)
-      self:set(fn(win, state))
+    ret.get = function(self, opts)
+      local matches = fn(win, state, opts)
+      self:set(matches)
+      return M.get(self, opts)
     end
-    ret:update()
+
     return ret
   end
 end

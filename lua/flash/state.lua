@@ -12,7 +12,7 @@ local Util = require("flash.util")
 local Prompt = require("flash.prompt")
 
 ---@class Flash.State.Config: Flash.Config
----@field matcher? fun(win: window, state:Flash.State): Flash.Match[]
+---@field matcher? fun(win: window, state:Flash.State, pos: {from:Pos, to:Pos}): Flash.Match[]
 ---@field pattern? string
 ---@field labeler? fun(matches:Flash.Match[], state:Flash.State)
 ---@field remote? {on_restore?: fun()}
