@@ -44,7 +44,7 @@ M._states = {}
 function M.get_state(mode, opts)
   M.setup()
   local last = M._states[mode]
-  if M.is_repeat and last then
+  if (M.is_repeat or (opts and opts.continue)) and last then
     last:show()
     return last
   end

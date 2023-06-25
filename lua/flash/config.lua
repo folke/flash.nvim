@@ -106,6 +106,8 @@ local defaults = {
   action = nil,
   -- initial pattern to use when opening flash
   pattern = "",
+  -- When `true`, flash will try to continue the last search
+  continue = false,
   -- You can override the default options for a specific mode.
   -- Use it with `require("flash").jump({mode = "forward"})`
   ---@type table<string, Flash.Config>

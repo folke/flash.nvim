@@ -200,6 +200,8 @@ Install the plugin with your preferred package manager:
   action = nil,
   -- initial pattern to use when opening flash
   pattern = "",
+  -- When `true`, flash will try to continue the last search
+  continue = false,
   -- You can override the default options for a specific mode.
   -- Use it with `require("flash").jump({mode = "forward"})`
   ---@type table<string, Flash.Config>
@@ -506,6 +508,14 @@ and `<c-s>` in insert mode, to jump to a label in Telescope results.
       })
     end,
   }
+```
+
+</details>
+
+<details><summary>Continue last search</summary>
+
+```lua
+require("flash").jump({continue = true})
 ```
 
 </details>
