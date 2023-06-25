@@ -8,6 +8,7 @@ local Search = require("flash.search")
 local Cache = require("flash.cache")
 local Hacks = require("flash.hacks")
 local Pattern = require("flash.search.pattern")
+local Util = require("flash.util")
 
 ---@class Flash.State.Config: Flash.Config
 ---@field matcher? fun(win: window, state:Flash.State): Flash.Match[]
@@ -202,6 +203,8 @@ end
 function M:show()
   if not self.visible then
     self.visible = true
+    -- force cache to update win and position
+    self.win = nil
     self:update({ force = true })
   end
 end
@@ -272,6 +275,51 @@ function M:update_target()
       self.target = nil
     end
   end
+end
+
+function M:step()
+  local c = Util.get_char()
+  if c == nil then
+    return
+    -- jump to first
+  elseif c == Util.CR then
+    self:jump()
+    return
+  end
+
+  local orig = self.pattern()
+
+  -- break if we jumped
+  if self:update({ pattern = self.pattern:extend(c) }) then
+    return
+  end
+
+  -- when we exceed max length, either jump to the label,
+  -- or input the last key and break
+  if self.opts.search.max_length and #self.pattern() > self.opts.search.max_length then
+    self:update({ pattern = orig })
+    self:jump()
+    vim.api.nvim_input(c)
+    return
+  end
+
+  -- exit if no results
+  if #self.results == 0 and not self.pattern:empty() then
+    return
+  end
+
+  -- autojump if only one result
+  if #self.results == 1 and self.opts.jump.autojump then
+    self:jump()
+    return
+  end
+  return true
+end
+
+function M:loop()
+  while self:step() do
+  end
+  self:hide()
 end
 
 return M
