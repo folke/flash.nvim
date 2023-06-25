@@ -9,6 +9,7 @@ local Cache = require("flash.cache")
 local Hacks = require("flash.hacks")
 local Pattern = require("flash.search.pattern")
 local Util = require("flash.util")
+local Prompt = require("flash.prompt")
 
 ---@class Flash.State.Config: Flash.Config
 ---@field matcher? fun(win: window, state:Flash.State): Flash.Match[]
@@ -278,6 +279,9 @@ function M:update_target()
 end
 
 function M:step()
+  if self.opts.prompt.enabled then
+    Prompt.set(self.pattern())
+  end
   local c = Util.get_char()
   if c == nil then
     return
@@ -320,6 +324,7 @@ function M:loop()
   while self:step() do
   end
   self:hide()
+  Prompt.hide()
 end
 
 return M

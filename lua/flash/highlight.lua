@@ -11,6 +11,8 @@ function M.setup()
   vim.api.nvim_set_hl(0, "FlashMatch", { link = "Search", default = true })
   vim.api.nvim_set_hl(0, "FlashCurrent", { link = "IncSearch", default = true })
   vim.api.nvim_set_hl(0, "FlashLabel", { link = "Substitute", default = true })
+  vim.api.nvim_set_hl(0, "FlashPrompt", { link = "MsgArea", default = true })
+  vim.api.nvim_set_hl(0, "FlashPromptIcon", { link = "Special", default = true })
 end
 M.setup()
 

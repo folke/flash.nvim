@@ -34,6 +34,7 @@ local defaults = {
       "notify",
       "cmp_menu",
       "noice",
+      "flash_prompt",
       function(win)
         -- exclude non-focusable windows
         return not vim.api.nvim_win_get_config(win).focusable
@@ -148,6 +149,20 @@ local defaults = {
     },
     -- options used for remote flash
     remote = {},
+  },
+  -- options for the floating window that shows the prompt,
+  -- for regular jumps
+  prompt = {
+    enabled = true,
+    prefix = { { "⚡", "FlashPromptIcon" } },
+    win_config = {
+      relative = "editor",
+      width = 1, -- when <=1 it's a percentage of the editor width
+      height = 1,
+      row = -1, -- when negative it's an offset from the bottom
+      col = 0, -- when negative it's an offset from the right
+      zindex = 1000,
+    },
   },
 }
 
