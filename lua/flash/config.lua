@@ -148,7 +148,9 @@ local defaults = {
       },
     },
     -- options used for remote flash
-    remote = {},
+    remote = {
+      remote_op = { restore = true, motion = true },
+    },
   },
   -- options for the floating window that shows the prompt,
   -- for regular jumps
@@ -164,7 +166,17 @@ local defaults = {
       zindex = 1000,
     },
   },
-  remote = {},
+  -- options for remote operator pending mode
+  remote_op = {
+    -- restore window views and cursor position
+    -- after doing a remote operation
+    restore = false,
+    -- always enter a new motion when doing a remote operation,
+    -- and jump.pos is `start` or `end`.
+    -- When `false`, the remote window's cursor position and jump
+    -- target will be used instead.
+    motion = false,
+  },
 }
 
 ---@type Flash.Config

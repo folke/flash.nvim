@@ -48,59 +48,82 @@ end
 ---@return Flash.Match?
 function M.remote_op(match, state)
   vim.api.nvim_feedkeys(Util.t("<Esc>"), "t", false)
-  local win = vim.api.nvim_get_current_win()
-
   -- schedul e this so that the  active operator is properly cancelled
   vim.schedule(function()
     vim.api.nvim_set_current_win(match.win)
 
-    local from = vim.api.nvim_win_get_cursor(match.win)
-    M._jump(match, state, { op = true })
-    local to = vim.api.nvim_win_get_cursor(match.win)
+    -- use a new motion to select the text-object to act on,
+    -- unless we're jumping to a range
+    if state.opts.remote_op.motion then
+      if vim.fn.mode() == "v" then
+        vim.cmd("normal! v")
+      end
 
-    -- if a range was selected, use that instead
-    if vim.fn.mode() == "v" then
-      vim.cmd("normal! v") -- end the selection
-      from = vim.api.nvim_buf_get_mark(0, "<")
-      to = vim.api.nvim_buf_get_mark(0, ">")
+      if state.opts.jump.pos == "range" then
+        vim.api.nvim_win_set_cursor(match.win, match.pos)
+        vim.cmd("normal! v")
+        vim.api.nvim_win_set_cursor(match.win, match.end_pos)
+      else
+        vim.api.nvim_win_set_cursor(
+          match.win,
+          state.opts.jump.pos == "start" and match.pos or match.end_pos
+        )
+      end
+
+    -- otherwise, use the remote window's cursor position
+    else
+      local from = vim.api.nvim_win_get_cursor(match.win)
+      M._jump(match, state, { op = true })
+      local to = vim.api.nvim_win_get_cursor(match.win)
+
+      -- if a range was selected, use that instead
+      if vim.fn.mode() == "v" then
+        vim.cmd("normal! v") -- end the selection
+        from = vim.api.nvim_buf_get_mark(0, "<")
+        to = vim.api.nvim_buf_get_mark(0, ">")
+      end
+
+      -- select the range for the operator
+      vim.api.nvim_win_set_cursor(0, from)
+      vim.cmd("normal! v")
+      vim.api.nvim_win_set_cursor(0, to)
     end
-
-    -- select the range for the operator
-    vim.api.nvim_win_set_cursor(0, from)
-    vim.cmd("normal! v")
-    vim.api.nvim_win_set_cursor(0, to)
 
     -- re-trigger the operator
     vim.api.nvim_input('"' .. vim.v.register .. vim.v.operator)
-    vim.schedule(function()
-      M.restore_remote(state)
-    end)
+    if state.opts.remote_op.restore then
+      vim.schedule(function()
+        M.restore_remote(state)
+      end)
+    end
   end)
 end
 
+-- Restore window views after the remote operation ends
 ---@param state Flash.State
 function M.restore_remote(state)
-  -- wait till getting user input clears
-  if Hacks.mappings_disabled() then
-    local check = assert(vim.loop.new_check())
-    check:start(function()
-      if not Hacks.mappings_disabled() then
-        check:stop()
-        check:close()
-        vim.schedule(function()
-          M.restore_remote(state)
-        end)
-      end
-    end)
-    return
-  end
-
   local restore = vim.schedule_wrap(function()
     state:restore()
   end)
 
+  -- wait till getting user input clears
+  if not Hacks.mappings_enabled() then
+    return Util.on_done(function()
+      return Hacks.mappings_enabled()
+    end, function()
+      M.restore_remote(state)
+    end)
+
+  -- wait till operator pending mode ends
+  elseif vim.fn.mode(true):sub(1, 2) == "no" then
+    return Util.on_done(function()
+      return vim.fn.mode(true):sub(1, 2) ~= "no"
+    end, function()
+      M.restore_remote(state)
+    end)
+
   -- restore after making edits
-  if vim.v.operator == "c" then
+  elseif vim.fn.mode() == "i" and vim.v.operator == "c" then
     vim.api.nvim_create_autocmd("InsertLeave", {
       once = true,
       callback = restore,
