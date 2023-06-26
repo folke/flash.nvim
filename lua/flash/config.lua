@@ -146,6 +146,7 @@ local defaults = {
     treesitter = {
       labels = "abcdefghijklmnopqrstuvwxyz",
       jump = { pos = "range" },
+      search = { incremental = false },
       highlight = {
         label = { before = true, after = true, style = "inline" },
         backdrop = false,
