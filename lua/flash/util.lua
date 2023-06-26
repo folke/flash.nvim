@@ -16,4 +16,44 @@ function M.get_char()
   return ok and ret ~= M.ESC and ret or nil
 end
 
+function M.layout_wins()
+  local queue = { vim.fn.winlayout() }
+  ---@type table<window, window>
+  local wins = {}
+  while #queue > 0 do
+    local node = table.remove(queue)
+    if node[1] == "leaf" then
+      wins[node[2]] = node[2]
+    else
+      vim.list_extend(queue, node[2])
+    end
+  end
+  return wins
+end
+
+function M.save_layout()
+  local current_win = vim.api.nvim_get_current_win()
+  local wins = M.layout_wins()
+  ---@type table<window, table>
+  local state = {}
+  for _, win in pairs(wins) do
+    state[win] = vim.api.nvim_win_call(win, vim.fn.winsaveview)
+  end
+  return function()
+    for win, s in pairs(state) do
+      if vim.api.nvim_win_is_valid(win) then
+        local buf = vim.api.nvim_win_get_buf(win)
+        -- never restore terminal buffers to prevent flickering
+        if vim.bo[buf].buftype ~= "terminal" then
+          pcall(vim.api.nvim_win_call, win, function()
+            vim.fn.winrestview(s)
+          end)
+        end
+      end
+    end
+    vim.api.nvim_set_current_win(current_win)
+    state = {}
+  end
+end
+
 return M

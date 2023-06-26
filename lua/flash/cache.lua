@@ -1,5 +1,6 @@
 local Pos = require("flash.search.pos")
 local Pattern = require("flash.search.pattern")
+local Util = require("flash.util")
 
 ---@class Flash.State.Window
 ---@field win number
@@ -41,6 +42,7 @@ function M:update()
   if self.state.win ~= win then
     self.state.win = win
     self.state.pos = Pos(vim.api.nvim_win_get_cursor(win))
+    self.state.restore_windows = Util.save_layout()
     M.cache = {}
     dirty = true
   end

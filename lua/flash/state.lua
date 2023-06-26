@@ -31,6 +31,7 @@ local Prompt = require("flash.prompt")
 ---@field visible boolean
 ---@field matcher fun(win: window, state:Flash.State): Flash.Matcher
 ---@field matchers Flash.Matcher[]
+---@field restore_windows? fun()
 ---@field ns number
 local M = {}
 M.__index = M
@@ -122,6 +123,13 @@ function M:jump(target)
       Jump.on_jump(self)
     end
     return match
+  end
+end
+
+-- Will restore all window views
+function M:restore()
+  if self.restore_windows then
+    self.restore_windows()
   end
 end
 
