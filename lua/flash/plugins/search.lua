@@ -23,7 +23,14 @@ function M.setup()
   vim.api.nvim_create_autocmd("CmdlineChanged", {
     group = group,
     callback = wrap(function()
-      M.state:update({ pattern = vim.fn.getcmdline() })
+      local pattern = vim.fn.getcmdline()
+
+      -- when doing // or ??, get the pattern from the search register
+      -- See :h search-commands
+      if pattern:sub(1, 1) == vim.fn.getcmdtype() then
+        pattern = vim.fn.getreg("/")
+      end
+      M.state:update({ pattern = pattern })
     end),
   })
 
