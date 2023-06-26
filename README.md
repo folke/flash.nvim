@@ -128,8 +128,9 @@ Install the plugin with your preferred package manager:
     ---@type (string|fun(win:window))[]
     exclude = {
       "notify",
-      "noice",
       "cmp_menu",
+      "noice",
+      "flash_prompt",
       function(win)
         -- exclude non-focusable windows
         return not vim.api.nvim_win_get_config(win).focusable
@@ -168,6 +169,8 @@ Install the plugin with your preferred package manager:
   },
   highlight = {
     label = {
+      -- allow uppercase labels
+      uppercase = true,
       -- add a label for the first match in the current window.
       -- you can always jump to the first match with `<CR>`
       current = true,
@@ -180,6 +183,8 @@ Install the plugin with your preferred package manager:
       -- flash tries to re-use labels that were already assigned to a position,
       -- when typing more characters. By default only lower-case labels are re-used.
       reuse = "lowercase", ---@type "lowercase" | "all"
+      -- for the current window, label targets closer to the cursor first
+      distance = true,
     },
     -- show a backdrop with hl FlashBackdrop
     backdrop = true,
@@ -241,7 +246,9 @@ Install the plugin with your preferred package manager:
       },
     },
     -- options used for remote flash
-    remote = {}
+    remote = {
+      remote_op = { restore = true, motion = true },
+    },
   },
   -- options for the floating window that shows the prompt,
   -- for regular jumps
@@ -256,6 +263,17 @@ Install the plugin with your preferred package manager:
       col = 0, -- when negative it's an offset from the right
       zindex = 1000,
     },
+  },
+  -- options for remote operator pending mode
+  remote_op = {
+    -- restore window views and cursor position
+    -- after doing a remote operation
+    restore = false,
+    -- always enter a new motion when doing a remote operation,
+    -- and jump.pos is `start` or `end`.
+    -- When `false`, the remote window's cursor position and jump
+    -- target will be used instead.
+    motion = false,
   },
 }
 ```
@@ -276,12 +294,23 @@ Install the plugin with your preferred package manager:
   - Any highlights clear automatically when moving, changing buffers,
     or pressing `<esc>`.
 - **remote**: `require("flash").remote(opts?)` opens **flash** in **remote** mode
+  - equivalent to:
+    ```lua
+    require("flash").jump({
+      remote_op = {
+        restore = true,
+        motion = true,
+      },
+    })
+    ```
   - this is only useful in operator pending mode.
   - For example, press `yr` to start yanking and open flash
     - select a label to set the cursor position
     - perform any motion, like `iw` or even start flash Treesitter with `S`
     - the yank will be performed on the new selection
     - you'll be back in the original window / position
+  - You can also configure the `remote_op` options by default, so that `ys`,
+    behaves like `yr` for remote operations
 - **jump**: `require("flash").jump(opts?)` opens **flash** with the given options
   - type any number of characters before typing a jump label
 - **VS Code**: some functionality is changed/disabled when running **flash** in **VS Code**:
