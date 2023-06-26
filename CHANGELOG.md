@@ -1,5 +1,41 @@
 # Changelog
 
+## [1.8.0](https://github.com/folke/flash.nvim/compare/v1.7.0...v1.8.0) (2023-06-26)
+
+
+### Features
+
+* added prompt window that shows pattern during jump (can be disabled) ([3fff703](https://github.com/folke/flash.nvim/commit/3fff7033f53b8f0714efd0dd56b03aa3f22c6376))
+* **api:** allow a match to disable getting a label ([ea56cea](https://github.com/folke/flash.nvim/commit/ea56ceaea4760b2031719d8e5eb1b6231ef9f43c))
+* **api:** allow a match to enable/disable highlight ([38eca97](https://github.com/folke/flash.nvim/commit/38eca97c8bdbbbd7be64b562eeb9f964cf8bc145))
+* **ffi:** added `mappings_enabled` ([6f6af15](https://github.com/folke/flash.nvim/commit/6f6af15b491bee14460873fe63fc7b20e7c73dd8))
+* **hacks:** added support for detecting user input waiting ([81c610a](https://github.com/folke/flash.nvim/commit/81c610acd374b40fc7a7fa4b493b1b9783d3d52d))
+* **highlight:** added option to disable distance based labeling ([ad9212f](https://github.com/folke/flash.nvim/commit/ad9212f28ef37e893a5a4113f8757052b2035c36))
+* **highlight:** show fake cursor in all windows when flash is active ([471b165](https://github.com/folke/flash.nvim/commit/471b165722ae5db4ddad7cbaf1d351127fb55529))
+* **highlight:** when running in vscode, set default hl groups to something that works ([d4c30b1](https://github.com/folke/flash.nvim/commit/d4c30b169f01b8108c5bc38e230a975408133603))
+* **jump:** added jump offset ([0f2dfac](https://github.com/folke/flash.nvim/commit/0f2dfaca329ed9a7db9e5062d964492cf51765eb))
+* **jump:** added options for remote operator pending mode ([436d1f4](https://github.com/folke/flash.nvim/commit/436d1f402a696733b8a1512072bbd0ac8da72cea))
+* **jump:** remote operator pending operations will now always return to the original window ([c11d0d1](https://github.com/folke/flash.nvim/commit/c11d0d15660ce309c733982b2c34cd54c9c9d9f0))
+* **label:** minimum pattern length to show labels. Closes [#68](https://github.com/folke/flash.nvim/issues/68) ([2c2302a](https://github.com/folke/flash.nvim/commit/2c2302a3eae1dc72d2140c58974e2f73df41556d))
+* matcher function now has a from/to opts param ([1cb669d](https://github.com/folke/flash.nvim/commit/1cb669d2ce074ea39722da9fec6b0c2686b3b484))
+* **remote_op:** allow setting motion to `nil` to automatically start a new motion when needed ([259062d](https://github.com/folke/flash.nvim/commit/259062ddc47f9de11e0e498cd58040705d7b6f5c))
+* **remote:** implement remote using new `remote_op` options ([51f5c35](https://github.com/folke/flash.nvim/commit/51f5c352db8791f4218e19cc7fa40948cdda9647))
+* searches can now be continued. Closes [#54](https://github.com/folke/flash.nvim/issues/54) ([487aa52](https://github.com/folke/flash.nvim/commit/487aa52956fdf79ba545151227b0ad39c5276c69))
+* **state:** added support for restoring all window views and current window ([01736c0](https://github.com/folke/flash.nvim/commit/01736c01eb43dcf497a946689c7f434b1d13b4a8))
+* **util:** luv check that does something when something finishes ([a3643eb](https://github.com/folke/flash.nvim/commit/a3643eb5424c12b5abc7b08a74d0d53fa5a29af0))
+* **vscode:** make flash work properly in vscode by updating/changing the default config. Fixes [#58](https://github.com/folke/flash.nvim/issues/58) ([fa72836](https://github.com/folke/flash.nvim/commit/fa72836760417436cfe8e33ee74edaefd8ee9e00))
+
+
+### Bug Fixes
+
+* **config:** process modes in correct order. Fixes [#50](https://github.com/folke/flash.nvim/issues/50) again ([919cbe4](https://github.com/folke/flash.nvim/commit/919cbe49b66758cf57529847c396e718a9883de0))
+* disable prompt on vscode ([f93b33d](https://github.com/folke/flash.nvim/commit/f93b33d736fb2eb6f28526ab465cfe7f32e7d96f))
+* **jump:** fixup to always use a motion for remote ops ([11fa883](https://github.com/folke/flash.nvim/commit/11fa8833c62175a88fc35c50f1d23d5002d20fda))
+* **jump:** improved operator pending mode for jumps ([16f785f](https://github.com/folke/flash.nvim/commit/16f785f26e74b8f0b49901356c57cda2a06379f5))
+* **jump:** operator pending mode for remote jumps now behaves correctly ([cb24e66](https://github.com/folke/flash.nvim/commit/cb24e667ea58cfa7ea9df9fdf41bb6a26ea13da1))
+* **remote:** make sure opts always exists ([7083750](https://github.com/folke/flash.nvim/commit/7083750697dea16b3943ca8a92c958acd83c2126))
+* **search:** added support for search-commands. Fixes [#67](https://github.com/folke/flash.nvim/issues/67) ([7a59c42](https://github.com/folke/flash.nvim/commit/7a59c4239ed11ca3ec91cd7544535d836f09eb20))
+
 ## [1.7.0](https://github.com/folke/flash.nvim/compare/v1.6.0...v1.7.0) (2023-06-24)
 
 
