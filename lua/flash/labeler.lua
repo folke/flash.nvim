@@ -54,7 +54,9 @@ function M:reset()
     end
   end
   for _, m in ipairs(self.state.results) do
-    m.label = nil
+    if m.label ~= false then
+      m.label = nil
+    end
   end
 end
 
@@ -71,7 +73,7 @@ end
 ---@param m Flash.Match
 ---@param used boolean?
 function M:label(m, used)
-  if m.label then
+  if m.label ~= nil then
     return true
   end
   local pos = m.pos:id(m.win)
