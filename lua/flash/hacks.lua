@@ -11,6 +11,7 @@ local function _ffi()
     local ffi = require("ffi")
     ffi.cdef([[
       int search_match_endcol;
+      int no_mapping;
       unsigned int search_match_lines;
     ]])
     C = ffi.C
@@ -34,6 +35,11 @@ function M.save_incsearch_state()
     match_endcol = C.search_match_endcol,
     match_lines = C.search_match_lines,
   }
+end
+
+function M.mappings_disabled()
+  _ffi()
+  return C.no_mapping == 1
 end
 
 function M.restore_incsearch_state()
