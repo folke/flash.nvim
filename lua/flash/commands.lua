@@ -17,7 +17,9 @@ end
 
 ---@param opts? Flash.State.Config
 function M.remote(opts)
-  return require("flash.plugins.remote").jump(opts)
+  local Config = require("flash.config")
+  opts = Config.get({ mode = "remote" }, opts)
+  return M.jump(opts)
 end
 
 return M
