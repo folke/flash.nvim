@@ -87,6 +87,8 @@ local defaults = {
       -- flash tries to re-use labels that were already assigned to a position,
       -- when typing more characters. By default only lower-case labels are re-used.
       reuse = "lowercase", ---@type "lowercase" | "all"
+      -- for the current window, label targets closer to the cursor first
+      distance = true,
     },
     -- show a backdrop with hl FlashBackdrop
     backdrop = true,

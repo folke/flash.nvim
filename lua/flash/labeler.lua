@@ -115,20 +115,22 @@ function M:filter()
 
   -- sort by current win, other win, then by distance
   table.sort(ret, function(a, b)
+    local use_distance = self.state.opts.highlight.label.distance and a.win == self.state.win
+
     if a.win ~= b.win then
       local aw = a.win == self.state.win and 0 or a.win
       local bw = b.win == self.state.win and 0 or b.win
       return aw < bw
     end
     if a.pos[1] ~= b.pos[1] then
-      if a.win == self.state.win then
+      if use_distance then
         local da = math.abs(a.pos[1] - from[1])
         local db = math.abs(b.pos[1] - from[1])
         return da < db
       end
       return a.pos[1] < b.pos[1]
     end
-    if a.win == self.state.win then
+    if use_distance then
       local da = math.abs(a.pos[2] - from[2])
       local db = math.abs(b.pos[2] - from[2])
       return da < db
