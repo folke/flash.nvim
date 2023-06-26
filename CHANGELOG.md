@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.9.0](https://github.com/folke/flash.nvim/compare/v1.8.0...v1.9.0) (2023-06-26)
+
+
+### Features
+
+* **treesitter:** added treesitter search to label ts nodes around search matches ([6f791d4](https://github.com/folke/flash.nvim/commit/6f791d4709a2c8ef2373302d3a067ae45fdc2f8d))
+
+
+### Bug Fixes
+
+* added unicode support for labels/skips and fuzzy search. See [#66](https://github.com/folke/flash.nvim/issues/66) ([2528752](https://github.com/folke/flash.nvim/commit/2528752b7efbf3f67cce8b9d0d75ee769f72c01e))
+* **state:** restore window views on esc or ctrl-c ([7b21dfd](https://github.com/folke/flash.nvim/commit/7b21dfddcf7ccc4fb665ca0db80810210f8cde7c))
+* **treesitter:** add incremental = false to default settings of treesitter ([1cf706f](https://github.com/folke/flash.nvim/commit/1cf706f342bea4447c2f8ac13c2fab9df060ce1e))
+
 ## [1.8.0](https://github.com/folke/flash.nvim/compare/v1.7.0...v1.8.0) (2023-06-26)
 
 
