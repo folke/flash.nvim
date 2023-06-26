@@ -69,7 +69,16 @@ function M:labels()
   if self.opts.highlight.label.uppercase then
     labels = labels .. self.opts.labels:upper()
   end
-  return vim.split(labels, "")
+  local list = vim.fn.split(labels, "\\zs")
+  local ret = {} ---@type string[]
+  local added = {} ---@type table<string, boolean>
+  for _, l in ipairs(list) do
+    if not added[l] then
+      added[l] = true
+      ret[#ret + 1] = l
+    end
+  end
+  return ret
 end
 
 function M.is_search()
@@ -172,7 +181,10 @@ function M:check_jump(pattern)
   if self.opts.search.trigger ~= "" and self.pattern():sub(-1) ~= self.opts.search.trigger then
     return
   end
-  if pattern:find(self.pattern(), 1, true) == 1 and #pattern == #self.pattern() + 1 then
+  if
+    pattern:find(self.pattern(), 1, true) == 1
+    and vim.fn.strwidth(pattern) == vim.fn.strwidth(self.pattern()) + 1
+  then
     local label = pattern:sub(-1)
     if self:jump(label) then
       return true

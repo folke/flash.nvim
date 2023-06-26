@@ -99,7 +99,7 @@ function M._fuzzy(pattern, opts)
   ---@param c string
   local chars = vim.tbl_map(function(c)
     return c == "\\" and "\\\\" or c
-  end, vim.split(pattern, ""))
+  end, vim.fn.split(pattern, "\\zs"))
 
   local ret = "\\V" .. table.concat(chars, sep) .. (opts.ignorecase and "\\c" or "\\C")
   return ret, ret .. sep
