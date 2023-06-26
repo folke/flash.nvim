@@ -37,9 +37,9 @@ function M.save_incsearch_state()
   }
 end
 
-function M.mappings_disabled()
+function M.mappings_enabled()
   _ffi()
-  return C.no_mapping == 1
+  return C.no_mapping == 0
 end
 
 function M.restore_incsearch_state()
