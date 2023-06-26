@@ -348,6 +348,7 @@ interface FlashMatch {
   pos: [number, number]; // (1,0)-indexed
   end_pos: [number, number]; // (1,0)-indexed
   label?: string | false; // set to false to never show a label for this match
+  highlight?: boolean; // override opts.highlight.matches for this match
 }
 
 // Check the code for the full definition

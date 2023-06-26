@@ -134,7 +134,12 @@ function M.update(state)
   for _, match in ipairs(state.results) do
     local buf = vim.api.nvim_win_get_buf(match.win)
 
-    if state.opts.highlight.matches then
+    local highlight = state.opts.highlight.matches
+    if match.highlight ~= nil then
+      highlight = match.highlight
+    end
+
+    if highlight then
       vim.api.nvim_buf_set_extmark(buf, state.ns, match.pos[1] - 1, match.pos[2], {
         end_row = match.end_pos[1] - 1,
         end_col = match.end_pos[2] + 1,
