@@ -22,6 +22,11 @@ end
 
 function M:update()
   self:reset()
+
+  if #self.state.pattern() < self.state.opts.highlight.label.min_pattern_length then
+    return
+  end
+
   local matches = self:filter()
 
   for _, match in ipairs(matches) do

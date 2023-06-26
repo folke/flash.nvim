@@ -185,6 +185,9 @@ Install the plugin with your preferred package manager:
       reuse = "lowercase", ---@type "lowercase" | "all"
       -- for the current window, label targets closer to the cursor first
       distance = true,
+      -- minimum pattern length to show labels
+      -- Ignored for custom labelers.
+      min_pattern_length = 0,
     },
     -- show a backdrop with hl FlashBackdrop
     backdrop = true,
