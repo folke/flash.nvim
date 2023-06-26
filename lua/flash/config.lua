@@ -173,10 +173,10 @@ local defaults = {
     -- restore window views and cursor position
     -- after doing a remote operation
     restore = false,
-    -- always enter a new motion when doing a remote operation,
-    -- and jump.pos is `start` or `end`.
-    -- When `false`, the remote window's cursor position and jump
-    -- target will be used instead.
+    -- For `jump.pos = "range"`, this setting is ignored.
+    -- `true`: always enter a new motion when doing a remote operation
+    -- `false`: use the window's cursor position and jump target
+    -- `nil`: act as `true` for remote windows, `false` for the current window
     motion = false,
   },
 }

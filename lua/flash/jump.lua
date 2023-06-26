@@ -50,11 +50,16 @@ function M.remote_op(match, state)
   vim.api.nvim_feedkeys(Util.t("<Esc>"), "t", false)
   -- schedul e this so that the  active operator is properly cancelled
   vim.schedule(function()
+    local motion = state.opts.remote_op.motion
+    if motion == nil then
+      motion = match.win ~= vim.api.nvim_get_current_win()
+    end
+
     vim.api.nvim_set_current_win(match.win)
 
     -- use a new motion to select the text-object to act on,
     -- unless we're jumping to a range
-    if state.opts.remote_op.motion then
+    if motion then
       if vim.fn.mode() == "v" then
         vim.cmd("normal! v")
       end
