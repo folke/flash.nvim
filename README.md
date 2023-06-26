@@ -99,7 +99,7 @@ Install the plugin with your preferred package manager:
         -- show labeled treesitter nodes around the search matches
         require("flash").treesitter_search()
       end,
-      desc = "Remote Flash",
+      desc = "Treesitter Search",
     }
   },
 }
