@@ -1,5 +1,6 @@
 local Pos = require("flash.search.pos")
 local Util = require("flash.util")
+local Hacks = require("flash.hacks")
 local M = {}
 
 ---@param match Flash.Match
@@ -47,8 +48,9 @@ end
 ---@return Flash.Match?
 function M.remote_op(match, state)
   vim.api.nvim_feedkeys(Util.t("<Esc>"), "t", false)
+  local win = vim.api.nvim_get_current_win()
 
-  -- schedule this so that the active operator is properly cancelled
+  -- schedul e this so that the  active operator is properly cancelled
   vim.schedule(function()
     vim.api.nvim_set_current_win(match.win)
 
@@ -70,7 +72,42 @@ function M.remote_op(match, state)
 
     -- re-trigger the operator
     vim.api.nvim_input('"' .. vim.v.register .. vim.v.operator)
+    vim.schedule(function()
+      M.restore_remote(state)
+    end)
   end)
+end
+
+---@param state Flash.State
+function M.restore_remote(state)
+  -- wait till getting user input clears
+  if Hacks.mappings_disabled() then
+    local check = assert(vim.loop.new_check())
+    check:start(function()
+      if not Hacks.mappings_disabled() then
+        check:stop()
+        check:close()
+        vim.schedule(function()
+          M.restore_remote(state)
+        end)
+      end
+    end)
+    return
+  end
+
+  local restore = vim.schedule_wrap(function()
+    state:restore()
+  end)
+
+  -- restore after making edits
+  if vim.v.operator == "c" then
+    vim.api.nvim_create_autocmd("InsertLeave", {
+      once = true,
+      callback = restore,
+    })
+  else
+    restore()
+  end
 end
 
 -- Performs the actual jump in the current window,
