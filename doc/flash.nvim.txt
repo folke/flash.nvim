@@ -92,7 +92,7 @@ lazy.nvim <https://github.com/folke/lazy.nvim>
             -- show labeled treesitter nodes around the search matches
             require("flash").treesitter_search()
           end,
-          desc = "Remote Flash",
+          desc = "Treesitter Search",
         }
       },
     }
