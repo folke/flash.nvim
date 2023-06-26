@@ -64,8 +64,24 @@ function M.backdrop(state)
 end
 
 ---@param state Flash.State
+function M.cursor(state)
+  for _, win in ipairs(state.wins) do
+    local cursor = vim.api.nvim_win_get_cursor(win)
+    local buf = vim.api.nvim_win_get_buf(win)
+    vim.api.nvim_buf_set_extmark(buf, state.ns, cursor[1] - 1, cursor[2], {
+      hl_group = "Cursor",
+      end_col = cursor[2] + 1,
+      priority = state.opts.highlight.priority + 1,
+      strict = false,
+    })
+  end
+end
+
+---@param state Flash.State
 function M.update(state)
   M.clear(state.ns)
+
+  M.cursor(state)
 
   if state.opts.highlight.backdrop then
     M.backdrop(state)
