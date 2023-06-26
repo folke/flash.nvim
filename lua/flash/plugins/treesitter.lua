@@ -92,7 +92,6 @@ function M.jump(opts)
     })
   )
 
-  local pos = vim.api.nvim_win_get_cursor(0)
   ---@type Flash.Match?
   local current
   for _, m in ipairs(state.results) do
@@ -107,7 +106,7 @@ function M.jump(opts)
     local char = Util.get_char()
     if not char then
       vim.cmd([[normal! v]])
-      vim.api.nvim_win_set_cursor(0, pos)
+      state:restore()
       break
     elseif char == ";" then
       current = state:jump({ match = current, forward = false })

@@ -304,6 +304,7 @@ function M:step()
   end
   local c = Util.get_char()
   if c == nil then
+    self:restore()
     return
     -- jump to first
   elseif c == Util.CR then
