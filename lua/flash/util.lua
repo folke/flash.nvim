@@ -56,4 +56,21 @@ function M.save_layout()
   end
 end
 
+---@param done fun():boolean
+---@param on_done fun()
+function M.on_done(done, on_done)
+  local check = assert(vim.loop.new_check())
+  local fn = function()
+    if check:is_closing() then
+      return
+    end
+    if done() then
+      check:stop()
+      check:close()
+      on_done()
+    end
+  end
+  check:start(vim.schedule_wrap(fn))
+end
+
 return M
