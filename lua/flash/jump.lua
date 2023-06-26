@@ -16,13 +16,13 @@ function M.jump(match, state)
   local is_op = mode:sub(1, 2) == "no"
   local is_visual = mode:sub(1, 1) == "v"
 
+  if is_op and (state.opts.remote_op.motion or match.win ~= vim.api.nvim_get_current_win()) then
+    -- use our special logic for remote operator pending mode
+    return M.remote_op(match, state)
+  end
+
   -- change window if needed
   if match.win ~= vim.api.nvim_get_current_win() then
-    if is_op then
-      -- use our special logic for remote operator pending mode
-      return M.remote_op(match, state)
-    end
-
     if is_visual then
       -- cancel visual mode in the current window,
       -- to avoid issues with the remote window
