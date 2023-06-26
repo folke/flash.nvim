@@ -153,6 +153,14 @@ local defaults = {
         matches = false,
       },
     },
+    treesitter_search = {
+      jump = { pos = "range" },
+      search = { multi_window = true, wrap = true, incremental = false },
+      remote_op = { restore = true },
+      highlight = {
+        label = { before = true, after = true, style = "inline" },
+      },
+    },
     -- options used for remote flash
     remote = {
       remote_op = { restore = true, motion = true },

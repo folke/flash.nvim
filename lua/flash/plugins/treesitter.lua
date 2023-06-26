@@ -126,4 +126,32 @@ function M.jump(opts)
   return state
 end
 
+---@param opts? Flash.Config
+function M.search(opts)
+  local state = Repeat.get_state(
+    "treesitter-search",
+    Config.get({ mode = "treesitter_search" }, opts, {
+      matcher = function(win, _state, _opts)
+        local Search = require("flash.search")
+        local search = Search.new(win, _state)
+        local matches = {} ---@type Flash.Match[]
+        for _, m in ipairs(search:get(_opts)) do
+          -- don't add labels to the search results
+          m.label = false
+          table.insert(matches, m)
+          for _, n in ipairs(M.get_nodes(win, m.pos)) do
+            -- don't highlight treesitter nodes. Use labels only
+            n.highlight = false
+            table.insert(matches, n)
+          end
+        end
+        return matches
+      end,
+      jump = { pos = "range" },
+    })
+  )
+  state:loop()
+  return state
+end
+
 return M

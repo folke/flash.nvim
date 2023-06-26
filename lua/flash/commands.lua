@@ -16,6 +16,11 @@ function M.treesitter(opts)
 end
 
 ---@param opts? Flash.State.Config
+function M.treesitter_search(opts)
+  return require("flash.plugins.treesitter").search(opts)
+end
+
+---@param opts? Flash.State.Config
 function M.remote(opts)
   local Config = require("flash.config")
   opts = Config.get({ mode = "remote" }, opts)

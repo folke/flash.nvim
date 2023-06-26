@@ -78,6 +78,7 @@ Install the plugin with your preferred package manager:
       "S",
       mode = { "n", "o", "x" },
       function()
+        -- show labeled treesitter nodes around the cursor
         require("flash").treesitter()
       end,
       desc = "Flash Treesitter",
@@ -86,10 +87,20 @@ Install the plugin with your preferred package manager:
       "r",
       mode = "o",
       function()
+        -- jump to a remote location to execute the operator
         require("flash").remote()
       end,
       desc = "Remote Flash",
     },
+    {
+      "R",
+      mode = { "n", "o", "x" },
+      function()
+        -- show labeled treesitter nodes around the search matches
+        require("flash").treesitter_search()
+      end,
+      desc = "Remote Flash",
+    }
   },
 }
 ```
@@ -296,6 +307,12 @@ Install the plugin with your preferred package manager:
   - You can also go to the next match with `;` or previous match with `,`
   - Any highlights clear automatically when moving, changing buffers,
     or pressing `<esc>`.
+- **Treesitter Search**: `require("flash").treesitter_search(opts?)` opens **flash** in **Treesitter Search** mode
+  - combination of **Treesitter** and **Search** modes
+  - do something like `yR`
+  - you can now start typing a search pattern.
+  - arround your matches, all the surrounding Treesitter nodes will be labeled.
+  - select a label to perform the operator on the new selection
 - **remote**: `require("flash").remote(opts?)` opens **flash** in **remote** mode
   - equivalent to:
     ```lua
