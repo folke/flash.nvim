@@ -105,7 +105,17 @@ function M.update(state)
   end
 
   local target = state.target
-  local label_idx = 0
+  local rainbow_count = 0
+  ---@type table<Flash.Match, string>
+  local rainbow = {}
+
+  local function rainbow_hl(match)
+    if not rainbow[match] then
+      rainbow_count = rainbow_count + 1
+      rainbow[match] = Rainbow.get(rainbow_count, state.opts.highlight.label.rainbow.shade)
+    end
+    return rainbow[match]
+  end
 
   ---@param match Flash.Match
   ---@param pos number[]
@@ -116,7 +126,7 @@ function M.update(state)
     local col = math.max(pos[2] + offset[2], 0)
     local hl_group = state.opts.highlight.groups.label
     if state.opts.highlight.label.rainbow.enabled then
-      hl_group = Rainbow.get(label_idx, state.opts.highlight.label.rainbow.shade)
+      hl_group = rainbow_hl(match)
     end
     local extmark = match.label == ""
         -- when empty label, highlight the position
@@ -155,15 +165,20 @@ function M.update(state)
         priority = state.opts.highlight.priority + 1,
       })
     end
+  end
 
-    if match.label then
-      label_idx = label_idx + 1
-      if after then
-        label(match, match.end_pos, after)
-      end
-      if before then
-        label(match, match.pos, before)
-      end
+  for _, match in ipairs(state.results) do
+    if match.label and before then
+      rainbow_count = rainbow_count + 1
+      label(match, match.pos, before)
+    end
+  end
+
+  for m = #state.results, 1, -1 do
+    local match = state.results[m]
+    if match.label and after then
+      rainbow_count = rainbow_count + 1
+      label(match, match.end_pos, after)
     end
   end
 end
