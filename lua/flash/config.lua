@@ -92,6 +92,13 @@ local defaults = {
       -- minimum pattern length to show labels
       -- Ignored for custom labelers.
       min_pattern_length = 0,
+      -- Enable this to use rainbow colors to highlight labels
+      -- Can be useful for visualizing Treesitter ranges.
+      rainbow = {
+        enabled = false,
+        -- number between 1 and 9
+        shade = 5,
+      },
     },
     -- show a backdrop with hl FlashBackdrop
     backdrop = true,
