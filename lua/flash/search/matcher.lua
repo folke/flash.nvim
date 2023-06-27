@@ -160,7 +160,7 @@ function M:set(matches)
     if a.pos ~= b.pos then
       return a.pos < b.pos
     end
-    return a.end_pos > b.end_pos
+    return a.end_pos < b.end_pos
   end)
   self.matches = matches
 end

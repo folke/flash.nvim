@@ -10,6 +10,7 @@ local Hacks = require("flash.hacks")
 local Pattern = require("flash.search.pattern")
 local Util = require("flash.util")
 local Prompt = require("flash.prompt")
+local Rainbow = require("flash.rainbow")
 
 ---@class Flash.State.Config: Flash.Config
 ---@field matcher? fun(win: window, state:Flash.State, pos: {from:Pos, to:Pos}): Flash.Match[]
@@ -31,6 +32,7 @@ local Prompt = require("flash.prompt")
 ---@field matcher fun(win: window, state:Flash.State): Flash.Matcher
 ---@field matchers Flash.Matcher[]
 ---@field restore_windows? fun()
+---@field rainbow? Flash.Rainbow
 ---@field ns number
 local M = {}
 M.__index = M
@@ -106,6 +108,9 @@ function M.new(opts)
   self.labeler = self.opts.labeler or require("flash.labeler").new(self):labeler()
   self.ns = vim.api.nvim_create_namespace(self.opts.ns or "flash")
   M._states[self] = true
+  if self.opts.highlight.label.rainbow.enabled then
+    self.rainbow = Rainbow.new(self)
+  end
   self:update()
   return self
 end

@@ -61,10 +61,11 @@ function M.get_nodes(win, pos)
     end
   end
 
-  for _, m in ipairs(ret) do
-    m.pos = Pos(m.pos)
-    m.end_pos = Pos(m.end_pos)
-    m.win = win
+  for m, match in ipairs(ret) do
+    match.pos = Pos(match.pos)
+    match.end_pos = Pos(match.end_pos)
+    match.win = win
+    match.depth = #ret - m
   end
   return ret
 end
