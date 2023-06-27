@@ -415,8 +415,8 @@ require("flash").jump({
     vim.api.nvim_win_call(match.win, function()
       vim.api.nvim_win_set_cursor(match.win, match.pos)
       vim.diagnostic.open_float()
-      vim.api.nvim_win_set_cursor(match.win, state.pos)
     end)
+    state:restore()
   end,
 })
 
@@ -435,8 +435,8 @@ require("flash").jump({
     vim.api.nvim_win_call(match.win, function()
       vim.api.nvim_win_set_cursor(match.win, match.pos)
       vim.diagnostic.open_float()
-      vim.api.nvim_win_set_cursor(match.win, state.pos)
     end)
+    state:restore()
   end,
 })
 ```
@@ -498,39 +498,6 @@ require("flash").jump({
   jump = { pos = "range" },
 })
 ```
-
-</details>
-
-<details><summary>Jump to a position, make a Treesitter selection and jump back</summary>
-
-This should be bound to a keymap like `<leader>t`.
-Then you could do `y<leader>t` to remotely yank a Treesitter selection.
-
-```lua
-vim.keymap.set({ "n", "x", "o" }, "<leader>t", function()
-  local win = vim.api.nvim_get_current_win()
-  local view = vim.fn.winsaveview()
-  require("flash").jump({
-    action = function(match, state)
-      state:hide()
-      vim.api.nvim_set_current_win(match.win)
-      vim.api.nvim_win_set_cursor(match.win, match.pos)
-      require("flash").treesitter()
-      vim.schedule(function()
-        vim.api.nvim_set_current_win(win)
-        vim.fn.winrestview(view)
-      end)
-    end,
-  })
-end)
-```
-
-Alternatively, this can be achieved using a remote action:
-
-- `yr` to start yank and remote
-- select a label
-- `S` to start Treesitter node selection
-- pick a Treesitter label
 
 </details>
 
