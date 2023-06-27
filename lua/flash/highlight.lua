@@ -79,6 +79,7 @@ end
 
 ---@param state Flash.State
 function M.update(state)
+  local Rainbow = require("flash.rainbow")
   M.clear(state.ns)
 
   M.cursor(state)
@@ -104,6 +105,7 @@ function M.update(state)
   end
 
   local target = state.target
+  local label_idx = 0
 
   ---@param match Flash.Match
   ---@param pos number[]
@@ -112,10 +114,14 @@ function M.update(state)
     local buf = vim.api.nvim_win_get_buf(match.win)
     local row = pos[1] - 1 + offset[1]
     local col = pos[2] + offset[2]
+    local hl_group = state.opts.highlight.groups.label
+    if state.opts.highlight.label.rainbow.enabled then
+      hl_group = Rainbow.get(label_idx, state.opts.highlight.label.rainbow.shade)
+    end
     local extmark = match.label == ""
         -- when empty label, highlight the position
         and {
-          hl_group = state.opts.highlight.groups.label,
+          hl_group = hl_group,
           end_row = row,
           end_col = col + 1,
           strict = false,
@@ -123,7 +129,7 @@ function M.update(state)
         }
       -- else highlight the label
       or {
-        virt_text = { { match.label, state.opts.highlight.groups.label } },
+        virt_text = { { match.label, hl_group } },
         virt_text_pos = style,
         strict = false,
         priority = state.opts.highlight.priority + 2,
@@ -151,6 +157,7 @@ function M.update(state)
     end
 
     if match.label then
+      label_idx = label_idx + 1
       if after then
         label(match, match.end_pos, after)
       end
