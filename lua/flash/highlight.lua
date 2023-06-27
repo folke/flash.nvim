@@ -113,7 +113,7 @@ function M.update(state)
   local function label(match, pos, offset)
     local buf = vim.api.nvim_win_get_buf(match.win)
     local row = pos[1] - 1 + offset[1]
-    local col = pos[2] + offset[2]
+    local col = math.max(pos[2] + offset[2], 0)
     local hl_group = state.opts.highlight.groups.label
     if state.opts.highlight.label.rainbow.enabled then
       hl_group = Rainbow.get(label_idx, state.opts.highlight.label.rainbow.shade)
