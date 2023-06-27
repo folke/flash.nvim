@@ -304,7 +304,7 @@ function M:update_target()
 end
 
 function M:step()
-  if self.opts.prompt.enabled then
+  if self.opts.prompt.enabled and not M.is_search() then
     Prompt.set(self.pattern())
   end
   local c = Util.get_char()
