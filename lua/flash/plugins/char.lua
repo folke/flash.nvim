@@ -14,9 +14,9 @@ M.state = nil ---@type Flash.State?
 
 ---@type table<Flash.Char.Motion, Flash.State.Config>
 M.motions = {
-  f = { highlight = { label = { after = { 0, 0 } } } },
+  f = { highlight = { label = { after = { 0, 0 }, before = false } } },
   t = {},
-  F = { search = { forward = false }, highlight = { label = { after = { 0, 0 } } } },
+  F = { search = { forward = false }, highlight = { label = { after = { 0, 0 }, before = false } } },
   T = { search = { forward = false }, highlight = { label = { before = true, after = false } } },
 }
 
