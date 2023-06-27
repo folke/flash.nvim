@@ -167,18 +167,18 @@ function M.update(state)
     end
   end
 
-  for _, match in ipairs(state.results) do
-    if match.label and before then
-      rainbow_count = rainbow_count + 1
-      label(match, match.pos, before)
-    end
-  end
-
   for m = #state.results, 1, -1 do
     local match = state.results[m]
     if match.label and after then
       rainbow_count = rainbow_count + 1
       label(match, match.end_pos, after)
+    end
+  end
+
+  for _, match in ipairs(state.results) do
+    if match.label and before then
+      rainbow_count = rainbow_count + 1
+      label(match, match.pos, before)
     end
   end
 end
