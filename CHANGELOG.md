@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.10.1](https://github.com/folke/flash.nvim/compare/v1.10.0...v1.10.1) (2023-06-27)
+
+
+### Bug Fixes
+
+* **highlight:** apply after labels and then before ([4439fca](https://github.com/folke/flash.nvim/commit/4439fca240a54ef4d4537102668285e9cbb6f23c))
+* **highlight:** correctly order after labels at the same column ([b096797](https://github.com/folke/flash.nvim/commit/b096797b64f56357c40222f5a3cff6f25ac3b5dc))
+* **highlight:** make sure col is not negative with label.before = true ([cbce7f9](https://github.com/folke/flash.nvim/commit/cbce7f923c74fb75be030273c0d49f6a3447a95f))
+* **prompt:** never show the prompt when in regular search ([51149ba](https://github.com/folke/flash.nvim/commit/51149ba2e6bcba0a28e67b9654450835437a2914))
+* **rainbow:** stable rainbow label highlight groups ([937df4f](https://github.com/folke/flash.nvim/commit/937df4f097781e3e91594bf69425f3e74044b711))
+
 ## [1.10.0](https://github.com/folke/flash.nvim/compare/v1.9.0...v1.10.0) (2023-06-27)
 
 
