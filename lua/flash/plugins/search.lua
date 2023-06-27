@@ -28,7 +28,7 @@ function M.setup()
       -- when doing // or ??, get the pattern from the search register
       -- See :h search-commands
       if pattern:sub(1, 1) == vim.fn.getcmdtype() then
-        pattern = vim.fn.getreg("/")
+        pattern = vim.fn.getreg("/") .. pattern:sub(2)
       end
       M.state:update({ pattern = pattern })
     end),
