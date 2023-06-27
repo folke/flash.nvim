@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.10.0](https://github.com/folke/flash.nvim/compare/v1.9.0...v1.10.0) (2023-06-27)
+
+
+### Features
+
+* **highlight:** added optional rainbow labels. Disabled by default. Useful for Treesitter ranges. ([#74](https://github.com/folke/flash.nvim/issues/74)) ([ffb865b](https://github.com/folke/flash.nvim/commit/ffb865b1a60732d9ce2c9bffe3fb6724e1004ebb))
+
+
+### Bug Fixes
+
+* **char:** force before=false with f, F motion ([#75](https://github.com/folke/flash.nvim/issues/75)) ([40313ec](https://github.com/folke/flash.nvim/commit/40313ecf3140264b6e9d9611a3832a32e5ab7a46))
+* **search:** fixup for search commmands ([0f2d53d](https://github.com/folke/flash.nvim/commit/0f2d53d63e9d90f7a310509fbf4e98fbe21be56e))
+
 ## [1.9.0](https://github.com/folke/flash.nvim/compare/v1.8.0...v1.9.0) (2023-06-26)
 
 
