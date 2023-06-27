@@ -79,7 +79,6 @@ end
 
 ---@param state Flash.State
 function M.update(state)
-  local Rainbow = require("flash.rainbow")
   M.clear(state.ns)
 
   M.cursor(state)
@@ -105,17 +104,9 @@ function M.update(state)
   end
 
   local target = state.target
-  local rainbow_count = 0
-  ---@type table<Flash.Match, string>
-  local rainbow = {}
 
-  local function rainbow_hl(match)
-    if not rainbow[match] then
-      rainbow_count = rainbow_count + 1
-      rainbow[match] = Rainbow.get(rainbow_count, state.opts.highlight.label.rainbow.shade)
-    end
-    return rainbow[match]
-  end
+  ---@type table<string, {buf: number, row: number, col: number, text:string[][]}>
+  local extmarks = {}
 
   ---@param match Flash.Match
   ---@param pos number[]
@@ -125,26 +116,24 @@ function M.update(state)
     local row = pos[1] - 1 + offset[1]
     local col = math.max(pos[2] + offset[2], 0)
     local hl_group = state.opts.highlight.groups.label
-    if state.opts.highlight.label.rainbow.enabled then
-      hl_group = rainbow_hl(match)
+    if state.rainbow then
+      hl_group = state.rainbow:get(match)
     end
-    local extmark = match.label == ""
-        -- when empty label, highlight the position
-        and {
-          hl_group = hl_group,
-          end_row = row,
-          end_col = col + 1,
-          strict = false,
-          priority = state.opts.highlight.priority + 2,
-        }
-      -- else highlight the label
-      or {
-        virt_text = { { match.label, hl_group } },
-        virt_text_pos = style,
+    if match.label == "" then
+      -- when empty label, highlight the position
+      vim.api.nvim_buf_set_extmark(buf, state.ns, row, col, {
+        hl_group = hl_group,
+        end_row = row,
+        end_col = col + 1,
         strict = false,
         priority = state.opts.highlight.priority + 2,
-      }
-    vim.api.nvim_buf_set_extmark(buf, state.ns, row, col, extmark)
+      })
+    else
+      -- else highlight the label
+      local key = buf .. ":" .. row .. ":" .. col
+      extmarks[key] = extmarks[key] or { buf = buf, row = row, col = col, text = {} }
+      table.insert(extmarks[key].text, 1, { match.label, hl_group })
+    end
   end
 
   for _, match in ipairs(state.results) do
@@ -167,19 +156,22 @@ function M.update(state)
     end
   end
 
-  for m = #state.results, 1, -1 do
-    local match = state.results[m]
+  for _, match in ipairs(state.results) do
     if match.label and after then
-      rainbow_count = rainbow_count + 1
       label(match, match.end_pos, after)
+    end
+    if match.label and before then
+      label(match, match.pos, before)
     end
   end
 
-  for _, match in ipairs(state.results) do
-    if match.label and before then
-      rainbow_count = rainbow_count + 1
-      label(match, match.pos, before)
-    end
+  for _, extmark in pairs(extmarks) do
+    vim.api.nvim_buf_set_extmark(extmark.buf, state.ns, extmark.row, extmark.col, {
+      virt_text = extmark.text,
+      virt_text_pos = style,
+      strict = false,
+      priority = state.opts.highlight.priority + 2,
+    })
   end
 end
 

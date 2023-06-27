@@ -1,3 +1,7 @@
+---@class Flash.Rainbow
+---@field cache table<string, string>
+---@field count number
+---@field shade number
 local M = {}
 
 ---@type table<string,true>
@@ -15,9 +19,33 @@ function M.setup()
   })
 end
 
+---@param state Flash.State
+function M.new(state)
+  local self = setmetatable({}, { __index = M })
+  self.cache = {}
+  self.count = 0
+  self.shade = state.opts.highlight.label.rainbow.shade
+  return self
+end
+
+---@param match Flash.Match
+function M:get(match)
+  local buf = vim.api.nvim_win_get_buf(match.win)
+  local id = match.pos:id(buf)
+  if match.depth then
+    id = id .. ":" .. tostring(match.depth)
+  end
+
+  if not self.cache[id] then
+    self.count = self.count + 1
+    self.cache[id] = M.get_color(self.count, self.shade)
+  end
+  return self.cache[id]
+end
+
 ---@param idx number
 ---@param shade number
-function M.get(idx, shade)
+function M.get_color(idx, shade)
   M.setup()
   idx = (idx - 1) % #M.rainbow + 1
   local color = M.rainbow[idx]
