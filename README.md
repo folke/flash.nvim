@@ -471,7 +471,7 @@ require("flash").jump({
 
 ```lua
 require("flash").jump({
-  search = { mode = "search" },
+  search = { mode = "search", max_length = 0 },
   highlight = { label = { after = { 0, 0 } } },
   pattern = "^"
 })
@@ -599,6 +599,45 @@ and `<c-s>` in insert mode, to jump to a label in Telescope results.
 
 ```lua
 require("flash").jump({continue = true})
+```
+
+</details>
+
+<details>
+  <summary>2-char jump like
+    <a href="https://github.com/echasnovski/mini.nvim/blob/main/readmes/mini-jump2d.md">
+      mini.jump2d
+    </a>
+    or
+    <a href="https://github.com/phaazon/hop.nvim">
+      hop.nvim
+    </a>
+  </summary>
+
+```lua
+Flash.jump({
+  search = { mode = "search" },
+  highlight = { label = { after = false, before = { 0, 0 }, uppercase = false } },
+  pattern = [[\<\|\>]],
+  action = function(match, state)
+    state:hide()
+    Flash.jump({
+      search = { max_length = 0 },
+      highlight = { label = { distance = false }, matches = false },
+      matcher = function(win)
+        return vim.tbl_filter(function(m)
+          return m.label == match.label and m.win == win
+        end, state.results)
+      end,
+    })
+  end,
+  labeler = function(matches, state)
+    local labels = state:labels()
+    for m, match in ipairs(matches) do
+      match.label = labels[math.floor((m - 1) / #labels) + 1]
+    end
+  end,
+})
 ```
 
 </details>
