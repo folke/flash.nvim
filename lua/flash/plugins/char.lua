@@ -78,10 +78,13 @@ function M.setup()
     end
   end
 
-  vim.api.nvim_create_autocmd({ "BufLeave", "CursorMoved", "InsertEnter" }, {
+  vim.api.nvim_create_autocmd({ "BufLeave", "CursorMoved", "InsertEnter", "TextYankPost" }, {
     group = vim.api.nvim_create_augroup("flash_char", { clear = true }),
     callback = function(event)
-      if (event.event == "InsertEnter" or not M.jumping) and M.state then
+      local hide = event.event == "InsertEnter"
+        or (event.event == "TextYankPost" and vim.v.operator == "y")
+        or not M.jumping
+      if hide and M.state then
         M.state:hide()
       end
     end,
