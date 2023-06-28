@@ -111,7 +111,8 @@ function M.update(state)
   ---@param match Flash.Match
   ---@param pos number[]
   ---@param offset number[]
-  local function label(match, pos, offset)
+  ---@param is_after boolean
+  local function label(match, pos, offset, is_after)
     local buf = vim.api.nvim_win_get_buf(match.win)
     local row = pos[1] - 1 + offset[1]
     local col = math.max(pos[2] + offset[2], 0)
@@ -132,7 +133,15 @@ function M.update(state)
       -- else highlight the label
       local key = buf .. ":" .. row .. ":" .. col
       extmarks[key] = extmarks[key] or { buf = buf, row = row, col = col, text = {} }
-      table.insert(extmarks[key].text, 1, { match.label, hl_group })
+      local text = state.opts.label.format({
+        state = state,
+        match = match,
+        hl_group = hl_group,
+        after = is_after,
+      })
+      for i = #text, 1, -1 do
+        table.insert(extmarks[key].text, 1, text[i])
+      end
     end
   end
 
@@ -158,10 +167,10 @@ function M.update(state)
 
   for _, match in ipairs(state.results) do
     if match.label and after then
-      label(match, match.end_pos, after)
+      label(match, match.end_pos, after, true)
     end
     if match.label and before then
-      label(match, match.pos, before)
+      label(match, match.pos, before, false)
     end
   end
 
