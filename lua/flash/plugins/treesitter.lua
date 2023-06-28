@@ -129,28 +129,33 @@ end
 
 ---@param opts? Flash.Config
 function M.search(opts)
-  local state = Repeat.get_state(
-    "treesitter-search",
-    Config.get({ mode = "treesitter_search" }, opts, {
-      matcher = function(win, _state, _opts)
-        local Search = require("flash.search")
-        local search = Search.new(win, _state)
-        local matches = {} ---@type Flash.Match[]
-        for _, m in ipairs(search:get(_opts)) do
-          -- don't add labels to the search results
-          m.label = false
-          table.insert(matches, m)
-          for _, n in ipairs(M.get_nodes(win, m.pos)) do
-            -- don't highlight treesitter nodes. Use labels only
-            n.highlight = false
-            table.insert(matches, n)
-          end
+  opts = Config.get({ mode = "treesitter_search" }, opts, {
+    matcher = function(win, _state, _opts)
+      local Search = require("flash.search")
+      local search = Search.new(win, _state)
+      local matches = {} ---@type Flash.Match[]
+      for _, m in ipairs(search:get(_opts)) do
+        -- don't add labels to the search results
+        m.label = false
+        table.insert(matches, m)
+        for _, n in ipairs(M.get_nodes(win, m.pos)) do
+          -- don't highlight treesitter nodes. Use labels only
+          n.highlight = false
+          table.insert(matches, n)
         end
-        return matches
-      end,
-      jump = { pos = "range" },
-    })
-  )
+      end
+      return matches
+    end,
+    jump = { pos = "range" },
+  })
+
+  opts.search.exclude = vim.deepcopy(opts.search.exclude)
+  table.insert(opts.search.exclude, function(win)
+    local buf = vim.api.nvim_win_get_buf(win)
+    return not pcall(vim.treesitter.get_parser, buf)
+  end)
+
+  local state = Repeat.get_state("treesitter-search", opts)
   state:loop()
   return state
 end
