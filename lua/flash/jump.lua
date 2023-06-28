@@ -47,8 +47,9 @@ end
 ---@param state Flash.State
 ---@return Flash.Match?
 function M.remote_op(match, state)
-  vim.api.nvim_feedkeys(Util.t("<Esc>"), "t", false)
-  -- schedul e this so that the  active operator is properly cancelled
+  vim.api.nvim_input(Util.t("<Esc>"))
+
+  -- schedule this so that the  active operator is properly cancelled
   vim.schedule(function()
     local motion = state.opts.remote_op.motion
     if motion == nil then
@@ -87,6 +88,9 @@ function M.remote_op(match, state)
         from = vim.api.nvim_buf_get_mark(0, "<")
         to = vim.api.nvim_buf_get_mark(0, ">")
       end
+
+      -- vim.api.nvim_buf_set_mark(0, "[", from[1], from[2], {})
+      -- vim.api.nvim_buf_set_mark(0, "]", to[1], to[2], {})
 
       -- select the range for the operator
       vim.api.nvim_win_set_cursor(0, from)
