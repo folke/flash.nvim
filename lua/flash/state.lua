@@ -183,6 +183,10 @@ end
 -- Checks if the given pattern is a jump label and jumps to it.
 ---@param pattern string
 function M:check_jump(pattern)
+  if not self.visible then
+    return
+  end
+
   if self.opts.search.trigger ~= "" and self.pattern():sub(-1) ~= self.opts.search.trigger then
     return
   end
@@ -197,14 +201,14 @@ function M:check_jump(pattern)
   end
 end
 
----@param opts? {pattern:string, force:boolean}
+---@param opts? {pattern:string, force:boolean, check_jump:boolean}
 ---@return boolean? abort `true` if the search was aborted
 function M:update(opts)
   opts = opts or {}
 
   if opts.pattern then
     -- abort if pattern is a jump label
-    if self:check_jump(opts.pattern) then
+    if opts.check_jump ~= false and self:check_jump(opts.pattern) then
       return true
     end
     self.pattern:set(opts.pattern)

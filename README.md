@@ -58,6 +58,8 @@ Install the plugin with your preferred package manager:
 
 [lazy.nvim](https://github.com/folke/lazy.nvim):
 
+<!-- setup:start -->
+
 ```lua
 {
   "folke/flash.nvim",
@@ -69,7 +71,6 @@ Install the plugin with your preferred package manager:
       "s",
       mode = { "n", "x", "o" },
       function()
-        -- default options: exact mode, multi window, all directions, with a backdrop
         require("flash").jump()
       end,
       desc = "Flash",
@@ -78,7 +79,6 @@ Install the plugin with your preferred package manager:
       "S",
       mode = { "n", "o", "x" },
       function()
-        -- show labeled treesitter nodes around the cursor
         require("flash").treesitter()
       end,
       desc = "Flash Treesitter",
@@ -87,23 +87,31 @@ Install the plugin with your preferred package manager:
       "r",
       mode = "o",
       function()
-        -- jump to a remote location to execute the operator
         require("flash").remote()
       end,
       desc = "Remote Flash",
     },
     {
       "R",
-      mode = { "n", "o", "x" },
+      mode = { "o", "x" },
       function()
-        -- show labeled treesitter nodes around the search matches
         require("flash").treesitter_search()
       end,
-      desc = "Treesitter Search",
-    }
+      desc = "Flash Treesitter Search",
+    },
+    {
+      "<c-s>",
+      mode = { "c" },
+      function()
+        require("flash").toggle()
+      end,
+      desc = "Toggle Flash Search",
+    },
   },
 }
 ```
+
+<!-- setup:end -->
 
 ## ⚙️ Configuration
 
@@ -248,7 +256,9 @@ Install the plugin with your preferred package manager:
     -- options used when flash is activated through
     -- a regular search with `/` or `?`
     search = {
-      enabled = true, -- enable flash for search
+      -- when `true`, flash will be activated during regular search by default.
+      -- You can always toggle when searching with `require("flash").toggle()`
+      enabled = true,
       highlight = { backdrop = false },
       jump = { history = true, register = true, nohlsearch = true },
       search = {
@@ -336,6 +346,8 @@ Install the plugin with your preferred package manager:
   - You can also go to the next match with `;` or previous match with `,`
   - Any highlights clear automatically when moving, changing buffers,
     or pressing `<esc>`.
+- **toggle Search**: `require("flash").toggle(boolean?)`
+  - toggles **flash** on or off while using regular search
 - **Treesitter Search**: `require("flash").treesitter_search(opts?)` opens **flash** in **Treesitter Search** mode
   - combination of **Treesitter** and **Search** modes
   - do something like `yR`

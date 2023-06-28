@@ -2,12 +2,72 @@ local require = require("flash.require")
 
 local Jump = require("flash.jump")
 local State = require("flash.state")
+local Util = require("flash.util")
+local Config = require("flash.config")
 
 local M = {}
 
 ---@type Flash.State?
 M.state = nil
 M.op = false
+M.enabled = true
+
+---@param enabled? boolean
+function M.toggle(enabled)
+  if enabled == nil then
+    enabled = not M.enabled
+  end
+
+  if M.enabled == enabled then
+    return M.enabled
+  end
+
+  M.enabled = enabled
+
+  if State.is_search() then
+    if M.enabled then
+      M.start()
+      M.update(false)
+    elseif M.state then
+      M.state:hide()
+      M.state = nil
+    end
+    -- redraw to show the change
+    vim.cmd("redraw")
+    -- trigger incsearch to update the matches
+    vim.api.nvim_feedkeys(" " .. Util.BS, "n", true)
+  end
+  return M.enabled
+end
+
+---@param check_jump? boolean
+function M.update(check_jump)
+  if not M.state then
+    return
+  end
+
+  local pattern = vim.fn.getcmdline()
+
+  -- when doing // or ??, get the pattern from the search register
+  -- See :h search-commands
+  if pattern:sub(1, 1) == vim.fn.getcmdtype() then
+    pattern = vim.fn.getreg("/") .. pattern:sub(2)
+  end
+  M.state:update({ pattern = pattern, check_jump = check_jump })
+end
+
+function M.start()
+  M.state = State.new({
+    mode = "search",
+    action = M.jump,
+    search = {
+      forward = vim.fn.getcmdtype() == "/",
+      mode = "search",
+      incremental = vim.go.incsearch,
+      multi_window = not M.op,
+    },
+  })
+end
 
 function M.setup()
   local group = vim.api.nvim_create_augroup("flash", { clear = true })
@@ -23,14 +83,7 @@ function M.setup()
   vim.api.nvim_create_autocmd("CmdlineChanged", {
     group = group,
     callback = wrap(function()
-      local pattern = vim.fn.getcmdline()
-
-      -- when doing // or ??, get the pattern from the search register
-      -- See :h search-commands
-      if pattern:sub(1, 1) == vim.fn.getcmdtype() then
-        pattern = vim.fn.getreg("/") .. pattern:sub(2)
-      end
-      M.state:update({ pattern = pattern })
+      M.update()
     end),
   })
 
@@ -44,16 +97,9 @@ function M.setup()
   vim.api.nvim_create_autocmd("CmdlineEnter", {
     group = group,
     callback = function()
-      if State.is_search() then
-        M.state = State.new({
-          mode = "search",
-          action = M.jump,
-          search = {
-            forward = vim.fn.getcmdtype() == "/",
-            mode = "search",
-            incremental = vim.go.incsearch,
-          },
-        })
+      M.enabled = Config.modes.search.enabled or false
+      if State.is_search() and M.enabled then
+        M.start()
         M.set_op(vim.fn.mode() == "v")
       end
     end,
@@ -62,9 +108,9 @@ function M.setup()
   vim.api.nvim_create_autocmd("ModeChanged", {
     pattern = "*:c",
     group = group,
-    callback = wrap(function()
+    callback = function()
       M.set_op(vim.v.event.old_mode:sub(1, 2) == "no" or vim.fn.mode() == "v")
-    end),
+    end,
   })
 end
 

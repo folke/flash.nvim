@@ -139,7 +139,9 @@ local defaults = {
     -- options used when flash is activated through
     -- a regular search with `/` or `?`
     search = {
-      enabled = true, -- enable flash for search
+      -- when `true`, flash will be activated during regular search by default.
+      -- You can always toggle when searching with `require("flash").toggle()`
+      enabled = true,
       highlight = { backdrop = false },
       jump = { history = true, register = true, nohlsearch = true },
       search = {
@@ -219,9 +221,7 @@ function M.setup(opts)
   options = {}
   options = M.get(opts)
 
-  if options.modes.search.enabled then
-    require("flash.plugins.search").setup()
-  end
+  require("flash.plugins.search").setup()
   if options.modes.char.enabled then
     require("flash.plugins.char").setup()
   end

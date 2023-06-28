@@ -27,4 +27,10 @@ function M.remote(opts)
   return M.jump(opts)
 end
 
+---@param enabled? boolean
+function M.toggle(enabled)
+  local Search = require("flash.plugins.search")
+  return Search.toggle(enabled)
+end
+
 return M
