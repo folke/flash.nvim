@@ -71,35 +71,35 @@ local defaults = {
     -- 1: when pos == "end" and pos < current position
     offset = nil, ---@type number
   },
-  highlight = {
-    label = {
-      -- allow uppercase labels
-      uppercase = true,
-      -- add a label for the first match in the current window.
-      -- you can always jump to the first match with `<CR>`
-      current = true,
-      -- show the label after the match
-      after = true, ---@type boolean|number[]
-      -- show the label before the match
-      before = false, ---@type boolean|number[]
-      -- position of the label extmark
-      style = "overlay", ---@type "eol" | "overlay" | "right_align" | "inline"
-      -- flash tries to re-use labels that were already assigned to a position,
-      -- when typing more characters. By default only lower-case labels are re-used.
-      reuse = "lowercase", ---@type "lowercase" | "all"
-      -- for the current window, label targets closer to the cursor first
-      distance = true,
-      -- minimum pattern length to show labels
-      -- Ignored for custom labelers.
-      min_pattern_length = 0,
-      -- Enable this to use rainbow colors to highlight labels
-      -- Can be useful for visualizing Treesitter ranges.
-      rainbow = {
-        enabled = false,
-        -- number between 1 and 9
-        shade = 5,
-      },
+  label = {
+    -- allow uppercase labels
+    uppercase = true,
+    -- add a label for the first match in the current window.
+    -- you can always jump to the first match with `<CR>`
+    current = true,
+    -- show the label after the match
+    after = true, ---@type boolean|number[]
+    -- show the label before the match
+    before = false, ---@type boolean|number[]
+    -- position of the label extmark
+    style = "overlay", ---@type "eol" | "overlay" | "right_align" | "inline"
+    -- flash tries to re-use labels that were already assigned to a position,
+    -- when typing more characters. By default only lower-case labels are re-used.
+    reuse = "lowercase", ---@type "lowercase" | "all"
+    -- for the current window, label targets closer to the cursor first
+    distance = true,
+    -- minimum pattern length to show labels
+    -- Ignored for custom labelers.
+    min_pattern_length = 0,
+    -- Enable this to use rainbow colors to highlight labels
+    -- Can be useful for visualizing Treesitter ranges.
+    rainbow = {
+      enabled = false,
+      -- number between 1 and 9
+      shade = 5,
     },
+  },
+  highlight = {
     -- show a backdrop with hl FlashBackdrop
     backdrop = true,
     -- Highlight the search matches
@@ -154,8 +154,8 @@ local defaults = {
       labels = "abcdefghijklmnopqrstuvwxyz",
       jump = { pos = "range" },
       search = { incremental = false },
+      label = { before = true, after = true, style = "inline" },
       highlight = {
-        label = { before = true, after = true, style = "inline" },
         backdrop = false,
         matches = false,
       },
@@ -164,9 +164,7 @@ local defaults = {
       jump = { pos = "range" },
       search = { multi_window = true, wrap = true, incremental = false },
       remote_op = { restore = true },
-      highlight = {
-        label = { before = true, after = true, style = "inline" },
-      },
+      label = { before = true, after = true, style = "inline" },
     },
     -- options used for remote flash
     remote = {
@@ -222,7 +220,7 @@ end
 ---@return Flash.State.Config
 function M.get(...)
   ---@type Flash.Config[]
-  local all = {}
+  local all = { {}, defaults, options or {} }
 
   ---@type table<string, boolean>
   local modes = {}
@@ -241,8 +239,19 @@ function M.get(...)
     end
   end
 
+  for _, o in ipairs(all) do
+    if o.highlight and o.highlight.label then
+      o.label = vim.tbl_deep_extend("force", o.label or {}, o.highlight.label)
+      o.highlight.label = nil
+      vim.notify_once(
+        "flash: `opts.highlight.label` is deprecated, use `opts.label` instead",
+        vim.log.levels.WARN
+      )
+    end
+  end
+
   ---@type Flash.State.Config
-  local ret = vim.tbl_deep_extend("force", {}, defaults, options or {}, unpack(all))
+  local ret = vim.tbl_deep_extend("force", unpack(all))
   if vim.g.vscode then
     ret.prompt.enabled = false
     ret.search.multi_window = false

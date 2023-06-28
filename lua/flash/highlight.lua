@@ -87,15 +87,15 @@ function M.update(state)
     M.backdrop(state)
   end
 
-  local style = state.opts.highlight.label.style
+  local style = state.opts.label.style
   if style == "inline" and vim.fn.has("nvim-0.10.0") == 0 then
     style = "overlay"
   end
 
-  local after = state.opts.highlight.label.after
+  local after = state.opts.label.after
   after = after == true and { 0, 1 } or after
   ---@cast after number[]
-  local before = state.opts.highlight.label.before
+  local before = state.opts.label.before
   before = before == true and { 0, -1 } or before
   ---@cast before number[]
 

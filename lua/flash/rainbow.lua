@@ -24,7 +24,7 @@ function M.new(state)
   local self = setmetatable({}, { __index = M })
   self.cache = {}
   self.count = 0
-  self.shade = state.opts.highlight.label.rainbow.shade
+  self.shade = state.opts.label.rainbow.shade
   return self
 end
 

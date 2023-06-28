@@ -23,7 +23,7 @@ end
 function M:update()
   self:reset()
 
-  if #self.state.pattern() < self.state.opts.highlight.label.min_pattern_length then
+  if #self.state.pattern() < self.state.opts.label.min_pattern_length then
     return
   end
 
@@ -90,7 +90,7 @@ function M:label(m, used)
   end
   if label and self:valid(label) then
     self:use(label)
-    if self.state.opts.highlight.label.reuse ~= "lowercase" or label:lower() == label then
+    if self.state.opts.label.reuse ~= "lowercase" or label:lower() == label then
       self.used[pos] = label
     end
     m.label = label
@@ -112,7 +112,7 @@ function M:filter()
     if
       not (
         (target and match.pos == target.pos)
-        and not self.state.opts.highlight.label.current
+        and not self.state.opts.label.current
         and match.win == self.state.win
       )
     then
@@ -122,7 +122,7 @@ function M:filter()
 
   -- sort by current win, other win, then by distance
   table.sort(ret, function(a, b)
-    local use_distance = self.state.opts.highlight.label.distance and a.win == self.state.win
+    local use_distance = self.state.opts.label.distance and a.win == self.state.win
 
     if a.win ~= b.win then
       local aw = a.win == self.state.win and 0 or a.win

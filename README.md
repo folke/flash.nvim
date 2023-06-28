@@ -111,6 +111,8 @@ Install the plugin with your preferred package manager:
 
 <details><summary>Default Settings</summary>
 
+<!-- config:start -->
+
 ```lua
 {
   -- labels = "abcdefghijklmnopqrstuvwxyz",
@@ -178,35 +180,35 @@ Install the plugin with your preferred package manager:
     -- 1: when pos == "end" and pos < current position
     offset = nil, ---@type number
   },
-  highlight = {
-    label = {
-      -- allow uppercase labels
-      uppercase = true,
-      -- add a label for the first match in the current window.
-      -- you can always jump to the first match with `<CR>`
-      current = true,
-      -- show the label after the match
-      after = true, ---@type boolean|number[]
-      -- show the label before the match
-      before = false, ---@type boolean|number[]
-      -- position of the label extmark
-      style = "overlay", ---@type "eol" | "overlay" | "right_align" | "inline"
-      -- flash tries to re-use labels that were already assigned to a position,
-      -- when typing more characters. By default only lower-case labels are re-used.
-      reuse = "lowercase", ---@type "lowercase" | "all"
-      -- for the current window, label targets closer to the cursor first
-      distance = true,
-      -- minimum pattern length to show labels
-      -- Ignored for custom labelers.
-      min_pattern_length = 0,
-      -- Enable this to use rainbow colors to highlight labels
-      -- Can be useful for visualizing Treesitter ranges.
-      rainbow = {
-        enabled = false,
-        -- number between 1 and 9
-        shade = 5,
-      },
+  label = {
+    -- allow uppercase labels
+    uppercase = true,
+    -- add a label for the first match in the current window.
+    -- you can always jump to the first match with `<CR>`
+    current = true,
+    -- show the label after the match
+    after = true, ---@type boolean|number[]
+    -- show the label before the match
+    before = false, ---@type boolean|number[]
+    -- position of the label extmark
+    style = "overlay", ---@type "eol" | "overlay" | "right_align" | "inline"
+    -- flash tries to re-use labels that were already assigned to a position,
+    -- when typing more characters. By default only lower-case labels are re-used.
+    reuse = "lowercase", ---@type "lowercase" | "all"
+    -- for the current window, label targets closer to the cursor first
+    distance = true,
+    -- minimum pattern length to show labels
+    -- Ignored for custom labelers.
+    min_pattern_length = 0,
+    -- Enable this to use rainbow colors to highlight labels
+    -- Can be useful for visualizing Treesitter ranges.
+    rainbow = {
+      enabled = false,
+      -- number between 1 and 9
+      shade = 5,
     },
+  },
+  highlight = {
     -- show a backdrop with hl FlashBackdrop
     backdrop = true,
     -- Highlight the search matches
@@ -260,11 +262,18 @@ Install the plugin with your preferred package manager:
     treesitter = {
       labels = "abcdefghijklmnopqrstuvwxyz",
       jump = { pos = "range" },
+      search = { incremental = false },
+      label = { before = true, after = true, style = "inline" },
       highlight = {
-        label = { before = true, after = true, style = "inline" },
         backdrop = false,
         matches = false,
       },
+    },
+    treesitter_search = {
+      jump = { pos = "range" },
+      search = { multi_window = true, wrap = true, incremental = false },
+      remote_op = { restore = true },
+      label = { before = true, after = true, style = "inline" },
     },
     -- options used for remote flash
     remote = {
@@ -298,6 +307,8 @@ Install the plugin with your preferred package manager:
   },
 }
 ```
+
+<!-- config:end -->
 
 </details>
 
@@ -472,7 +483,7 @@ require("flash").jump({
 ```lua
 require("flash").jump({
   search = { mode = "search", max_length = 0 },
-  highlight = { label = { after = { 0, 0 } } },
+  label = { after = { 0, 0 } },
   pattern = "^"
 })
 ```
@@ -535,7 +546,7 @@ and `<c-s>` in insert mode, to jump to a label in Telescope results.
       local function flash(prompt_bufnr)
         require("flash").jump({
           pattern = "^",
-          highlight = { label = { after = { 0, 0 } } },
+          label = { after = { 0, 0 } },
           search = {
             mode = "search",
             exclude = {
@@ -584,13 +595,14 @@ require("flash").jump({continue = true})
 ```lua
 Flash.jump({
   search = { mode = "search" },
-  highlight = { label = { after = false, before = { 0, 0 }, uppercase = false } },
+  label = { after = false, before = { 0, 0 }, uppercase = false },
   pattern = [[\<\|\>]],
   action = function(match, state)
     state:hide()
     Flash.jump({
       search = { max_length = 0 },
-      highlight = { label = { distance = false }, matches = false },
+      label = { distance = false },
+      highlight = { matches = false },
       matcher = function(win)
         return vim.tbl_filter(function(m)
           return m.label == match.label and m.win == win

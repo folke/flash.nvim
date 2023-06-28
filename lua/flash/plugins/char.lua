@@ -14,10 +14,10 @@ M.state = nil ---@type Flash.State?
 
 ---@type table<Flash.Char.Motion, Flash.State.Config>
 M.motions = {
-  f = { highlight = { label = { after = { 0, 0 }, before = false } } },
+  f = { label = { after = { 0, 0 }, before = false } },
   t = {},
-  F = { search = { forward = false }, highlight = { label = { after = { 0, 0 }, before = false } } },
-  T = { search = { forward = false }, highlight = { label = { before = true, after = false } } },
+  F = { search = { forward = false }, label = { after = { 0, 0 }, before = false } },
+  T = { search = { forward = false }, label = { before = true, after = false } },
 }
 
 function M.new()

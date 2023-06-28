@@ -68,7 +68,7 @@ end
 
 function M:labels()
   local labels = self.opts.labels
-  if self.opts.highlight.label.uppercase then
+  if self.opts.label.uppercase then
     labels = labels .. self.opts.labels:upper()
   end
   local list = vim.fn.split(labels, "\\zs")
@@ -108,7 +108,7 @@ function M.new(opts)
   self.labeler = self.opts.labeler or require("flash.labeler").new(self):labeler()
   self.ns = vim.api.nvim_create_namespace(self.opts.ns or "flash")
   M._states[self] = true
-  if self.opts.highlight.label.rainbow.enabled then
+  if self.opts.label.rainbow.enabled then
     self.rainbow = Rainbow.new(self)
   end
   self:update()
