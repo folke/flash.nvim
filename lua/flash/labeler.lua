@@ -179,7 +179,7 @@ function M:skip(win, labels)
         label_group = label_group:lower()
       end
 
-      local p = pattern .. "\\m\\zs[" .. label_group .. "]"
+      local p = "\\%(" .. pattern .. "\\)\\m\\zs[" .. label_group .. "]"
       local pos = vim.fn.searchpos(p, "cnw")
 
       -- not found, we're done
