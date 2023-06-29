@@ -24,10 +24,14 @@ end
 ---@param from Pos
 function M.get_end_pos(from)
   _ffi()
-  return Pos({
+  local ret = Pos({
     from[1] + C.search_match_lines,
     math.max(0, C.search_match_endcol - 1),
   })
+  local line = vim.api.nvim_buf_get_lines(0, ret[1] - 1, ret[1], false)[1]
+  local char_idx = vim.fn.charidx(line, ret[2])
+  ret[2] = vim.fn.byteidx(line, char_idx)
+  return ret
 end
 
 function M.save_incsearch_state()
