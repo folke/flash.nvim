@@ -176,7 +176,13 @@ function M:skip(win, labels)
       end
 
       local p = "\\%(" .. pattern .. "\\)\\m\\zs[" .. label_group .. "]"
-      local pos = vim.fn.searchpos(p, "cnw")
+      local pos
+      ok, pos = pcall(vim.fn.searchpos, p, "cnw")
+
+      if not ok then
+        labels = {}
+        break
+      end
 
       -- not found, we're done
       if pos[1] == 0 then
