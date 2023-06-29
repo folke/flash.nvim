@@ -3,11 +3,17 @@
 ---@field col number
 ---@field [1] number
 ---@field [2] number
----@overload fun(pos: { row: number, col: number }|number[]): Pos
+---@overload fun(pos?: number[] | { row: number, col: number } | number): Pos
 local P = {}
 
----@param pos number[] | { row: number, col: number }
+---@param pos? number[] | { row: number, col: number } | number
 function P.new(pos)
+  if pos == nil then
+    pos = vim.api.nvim_win_get_cursor(0)
+  elseif type(pos) == "number" then
+    pos = vim.api.nvim_win_get_cursor(pos)
+  end
+
   if getmetatable(pos) == P then
     return pos
   end

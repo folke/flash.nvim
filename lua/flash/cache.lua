@@ -41,7 +41,7 @@ function M:update()
   local win = vim.api.nvim_get_current_win()
   if self.state.win ~= win then
     self.state.win = win
-    self.state.pos = Pos(vim.api.nvim_win_get_cursor(win))
+    self.state.pos = Pos(win)
     self.state.restore_windows = Util.save_layout()
     M.cache = {}
     dirty = true

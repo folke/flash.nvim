@@ -168,7 +168,7 @@ function M._jump(match, state, opts)
         vim.cmd("normal! v")
       end
 
-      local current = Pos(vim.api.nvim_win_get_cursor(match.win))
+      local current = Pos(match.win)
       local offset = state.opts.jump.offset
 
       if not offset and state.opts.jump.pos == "end" and pos < current then
