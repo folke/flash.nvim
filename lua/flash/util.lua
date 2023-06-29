@@ -1,3 +1,6 @@
+local require = require("flash.require")
+local Hacks = require("flash.hacks")
+
 local M = {}
 
 function M.t(str)
@@ -11,6 +14,7 @@ M.LUA_CALLBACK = "\x80\253g"
 M.CMD = "\x80\253h"
 
 function M.get_char()
+  Hacks.setcursor()
   vim.cmd.redraw()
   local ok, ret = pcall(vim.fn.getcharstr)
   return ok and ret ~= M.ESC and ret or nil

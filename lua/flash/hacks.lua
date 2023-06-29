@@ -13,6 +13,7 @@ local function _ffi()
       int search_match_endcol;
       int no_mapping;
       unsigned int search_match_lines;
+      void setcursor_mayforce(bool force);
     ]])
     C = ffi.C
   end
@@ -40,6 +41,14 @@ end
 function M.mappings_enabled()
   _ffi()
   return C.no_mapping == 0
+end
+
+function M.setcursor(force)
+  if force == nil then
+    force = false
+  end
+  _ffi()
+  return C.setcursor_mayforce(force)
 end
 
 function M.restore_incsearch_state()
