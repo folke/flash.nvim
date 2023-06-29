@@ -2,7 +2,8 @@
   "neodev": {
     "library": {
       "plugins": [
-        "plenary.nvim"
+        "plenary.nvim",
+        "lazy.nvim"
       ]
     }
   }
