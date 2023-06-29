@@ -129,18 +129,14 @@ function M:filter()
       local bw = b.win == self.state.win and 0 or b.win
       return aw < bw
     end
-    if a.pos[1] ~= b.pos[1] then
-      if use_distance then
-        local da = math.abs(a.pos[1] - from[1])
-        local db = math.abs(b.pos[1] - from[1])
-        return da < db
-      end
-      return a.pos[1] < b.pos[1]
-    end
     if use_distance then
-      local da = math.abs(a.pos[2] - from[2])
-      local db = math.abs(b.pos[2] - from[2])
-      return da < db
+      local dfrom = from[1] * vim.go.columns + from[2]
+      local da = a.pos[1] * vim.go.columns + a.pos[2]
+      local db = b.pos[1] * vim.go.columns + b.pos[2]
+      return math.abs(dfrom - da) < math.abs(dfrom - db)
+    end
+    if a.pos[1] ~= b.pos[1] then
+      return a.pos[1] < b.pos[1]
     end
     return a.pos[2] < b.pos[2]
   end)
