@@ -47,7 +47,11 @@ end
 ---@param state Flash.State
 ---@return Flash.Match?
 function M.remote_op(match, state)
-  vim.api.nvim_input(Util.t("<Esc>"))
+  vim.api.nvim_input(Util.ESC)
+
+  local opfunc = vim.go.opfunc
+  -- use a dummy opfunc to cancel the operator
+  vim.go.opfunc = [[{x -> x}]] -- noop
 
   -- schedule this so that the  active operator is properly cancelled
   vim.schedule(function()
@@ -98,6 +102,8 @@ function M.remote_op(match, state)
       vim.api.nvim_win_set_cursor(0, to)
     end
 
+    -- restore the original opfunc
+    vim.go.opfunc = opfunc
     -- re-trigger the operator
     vim.api.nvim_input('"' .. vim.v.register .. vim.v.operator)
     if state.opts.remote_op.restore then
