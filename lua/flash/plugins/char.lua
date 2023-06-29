@@ -84,9 +84,15 @@ end
 function M.setup()
   Repeat.setup()
 
+  local keys = {}
+
+  for k, v in pairs(Config.modes.char.keys) do
+    keys[type(k) == "number" and v or k] = v
+  end
+
   for _, key in ipairs({ "f", "F", "t", "T", ";", "," }) do
-    if vim.tbl_contains(Config.modes.char.keys, key) then
-      vim.keymap.set({ "n", "x", "o" }, key, function()
+    if keys[key] then
+      vim.keymap.set({ "n", "x", "o" }, keys[key], function()
         M.jumping = true
         local autohide = Config.modes.char.autohide and Config.modes.char.autohide(key)
         if Repeat.is_repeat then

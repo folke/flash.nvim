@@ -175,6 +175,8 @@ local defaults = {
       label = { exclude = "hjkliardc" },
       -- by default all keymaps are enabled, but you can disable some of them,
       -- by removing them from the list.
+      -- If you rather use another key, you can map them
+      -- to something else, e.g., { [";"] = "L", [","] = H }
       keys = { "f", "F", "t", "T", ";", "," },
       search = { wrap = false },
       highlight = { backdrop = true },
