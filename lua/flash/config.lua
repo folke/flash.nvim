@@ -178,7 +178,6 @@ local defaults = {
       -- If you rather use another key, you can map them
       -- to something else, e.g., { [";"] = "L", [","] = H }
       keys = { "f", "F", "t", "T", ";", "," },
-      maps = {},
       search = { wrap = false },
       highlight = { backdrop = true },
       jump = { register = false },
