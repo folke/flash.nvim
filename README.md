@@ -281,9 +281,9 @@ Install the plugin with your preferred package manager:
       -- when to show jump labels
       jump_labels = function(motion)
         -- never show jump labels by default
-        -- return false
+        return false
         -- Always show jump labels for ftFT
-        return vim.v.count == 0 and motion:find("[ftFT]")
+        -- return vim.v.count == 0 and motion:find("[ftFT]")
         -- Show jump labels for ftFT in operator-pending mode
         -- return vim.v.count == 0 and motion:find("[ftFT]") and vim.fn.mode(true):find("o")
       end,
@@ -292,9 +292,9 @@ Install the plugin with your preferred package manager:
       label = { exclude = "hjkliardc" },
       -- by default all keymaps are enabled, but you can disable some of them,
       -- by removing them from the list.
+      -- If you rather use another key, you can map them
+      -- to something else, e.g., { [";"] = "L", [","] = H }
       keys = { "f", "F", "t", "T", ";", "," },
-      -- remap keys in keymap to something else, e.g., { [";"] = "L", [","] = H }
-      -- to remap ";" to "L" and "," to "H".
       maps = {},
       search = { wrap = false },
       highlight = { backdrop = true },
