@@ -113,8 +113,8 @@ function M.update(state)
   local function label(match, pos, offset, is_after)
     local buf = vim.api.nvim_win_get_buf(match.win)
     local cursor = vim.api.nvim_win_get_cursor(match.win)
-    local row = pos[1] - 1 + offset[1]
-    local col = math.max(pos[2] + offset[2], 0)
+    local pos2 = require('flash.util').offset_pos(buf, pos, offset)
+    local row, col = pos2[1], pos2[2]
     -- dont show the label if the cursor is on the same position
     -- in the same window
     -- and the label is not a range

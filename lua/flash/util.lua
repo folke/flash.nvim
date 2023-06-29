@@ -13,6 +13,30 @@ M.BS = M.t("<bs>")
 M.LUA_CALLBACK = "\x80\253g"
 M.CMD = "\x80\253h"
 
+---@param buf number
+---@param pos number[]
+---@param offset number[]
+---@return number[]
+function M.offset_pos(buf, pos, offset)
+  local row = pos[1] - 1 + offset[1]
+  local ok, lines = pcall(vim.api.nvim_buf_get_lines, buf, row, row + 1, true)
+  if not ok or lines == nil then
+    -- old behavior
+    return {row, math.max(pos[2] + offset[2], 0)}
+  end
+
+  local line = lines[1]
+  local charidx = vim.fn.charidx(line, pos[2])
+
+  local col = vim.fn.strlen(vim.fn.strcharpart(line, 0, charidx - 1)) + 1
+
+  local start = charidx + (offset[2] < 0 and offset[2] - 1 or 0)
+  local sign = offset[2] > 0 and 1 or -1
+  local coloffset = sign * vim.fn.strlen(vim.fn.strcharpart(line, start, sign * offset[2]))
+
+  return {row, math.max(col + coloffset, 0)}
+end
+
 function M.get_char()
   Hacks.setcursor()
   vim.cmd.redraw()
