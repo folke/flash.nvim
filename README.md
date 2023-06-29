@@ -191,6 +191,8 @@ Install the plugin with your preferred package manager:
   label = {
     -- allow uppercase labels
     uppercase = true,
+    -- add any labels with the correct case here, that you want to exclude
+    exclude = "",
     -- add a label for the first match in the current window.
     -- you can always jump to the first match with `<CR>`
     current = true,
@@ -271,6 +273,23 @@ Install the plugin with your preferred package manager:
     -- `f`, `F`, `t`, `T`, `;` and `,` motions
     char = {
       enabled = true,
+      -- when to hide flash
+      autohide = function(motion)
+        -- autohide flash when the operator is `y`
+        return vim.fn.mode(true):find("no") and vim.v.operator == "y"
+      end,
+      -- when to show jump labels
+      jump_labels = function(motion)
+        -- never show jump labels by default
+        -- return false
+        -- Always show jump labels for ftFT
+        return vim.v.count == 0 and motion:find("[ftFT]")
+        -- Show jump labels for ftFT in operator-pending mode
+        -- return vim.v.count == 0 and motion:find("[ftFT]") and vim.fn.mode(true):find("o")
+      end,
+      -- When using jump labels, don't use these keys
+      -- This allows using those keys directly after the motion
+      label = { exclude = "hjkliardc" },
       -- by default all keymaps are enabled, but you can disable some of them,
       -- by removing them from the list.
       keys = { "f", "F", "t", "T", ";", "," },

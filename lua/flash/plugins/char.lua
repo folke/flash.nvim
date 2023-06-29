@@ -3,6 +3,8 @@ local require = require("flash.require")
 local Util = require("flash.util")
 local Repeat = require("flash.repeat")
 local Config = require("flash.config")
+local Labeler = require("flash.labeler")
+local Pos = require("flash.search.pos")
 
 local M = {}
 
@@ -11,6 +13,7 @@ M.motion = nil ---@type Flash.Char.Motion?
 M.char = nil ---@type string?
 M.jumping = false
 M.state = nil ---@type Flash.State?
+M.jump_labels = false
 
 ---@type table<Flash.Char.Motion, Flash.State.Config>
 M.motions = {
@@ -22,19 +25,41 @@ M.motions = {
 
 function M.new()
   local State = require("flash.state")
-  return State.new(Config.get({
+  local opts = Config.get({
     mode = "char",
-    labeler = function(matches)
-      -- set to empty label, so that the character will just be highlighted
-      for _, m in ipairs(matches) do
-        m.label = ""
-      end
-    end,
+    labeler = M.labeler,
     search = {
       multi_window = false,
       mode = M.mode(M.motion),
+      max_length = 1,
     },
-  }, M.motions[M.motion]))
+    prompt = {
+      enabled = false,
+    },
+  }, M.motions[M.motion])
+
+  -- never show the current match label
+  opts.highlight.groups.current = M.motion:lower() == "f" and opts.highlight.groups.label
+    or opts.highlight.groups.match
+
+  -- exclude the motion labels so we can use them for next/prev
+  opts.labels = opts.labels:gsub(M.motion:lower(), "")
+  opts.labels = opts.labels:gsub(M.motion:upper(), "")
+  return State.new(opts)
+end
+
+function M.labeler(matches, state)
+  if M.jump_labels then
+    if not state._labeler then
+      state._labeler = Labeler.new(state)
+    end
+    state._labeler:update()
+  else
+    -- set to empty label, so that the character will just be highlighted
+    for _, m in ipairs(matches) do
+      m.label = ""
+    end
+  end
 end
 
 function M.mode(motion)
@@ -62,28 +87,31 @@ function M.setup()
   for _, key in ipairs({ "f", "F", "t", "T", ";", "," }) do
     if vim.tbl_contains(Config.modes.char.keys, key) then
       vim.keymap.set({ "n", "x", "o" }, key, function()
+        M.jumping = true
+        local autohide = Config.modes.char.autohide and Config.modes.char.autohide(key)
         if Repeat.is_repeat then
-          M.jumping = true
+          M.jump_labels = false -- never show jump labels when repeating
           M.state:jump({ count = vim.v.count1 })
           M.state:show()
-          vim.schedule(function()
-            M.jumping = false
-          end)
         else
           M.jump(key)
         end
+        vim.schedule(function()
+          M.jumping = false
+          if M.state and autohide then
+            M.state:hide()
+          end
+        end)
       end, {
         silent = true,
       })
     end
   end
 
-  vim.api.nvim_create_autocmd({ "BufLeave", "CursorMoved", "InsertEnter", "TextYankPost" }, {
+  vim.api.nvim_create_autocmd({ "BufLeave", "CursorMoved", "InsertEnter" }, {
     group = vim.api.nvim_create_augroup("flash_char", { clear = true }),
     callback = function(event)
-      local hide = event.event == "InsertEnter"
-        or (event.event == "TextYankPost" and vim.v.operator == "y")
-        or not M.jumping
+      local hide = event.event == "InsertEnter" or not M.jumping
       if hide and M.state then
         M.state:hide()
       end
@@ -91,7 +119,7 @@ function M.setup()
   })
 
   vim.on_key(function(key)
-    if M.state and key == Util.ESC and vim.fn.mode() == "n" then
+    if M.state and key == Util.ESC and (vim.fn.mode() == "n" or vim.fn.mode() == "v") then
       M.state:hide()
     end
   end)
@@ -99,6 +127,7 @@ end
 
 function M.parse(key)
   -- repeat last search when hitting the same key
+  -- don't repeat when executing a macro
   if M.visible() and vim.fn.reg_executing() == "" then
     if M.motion:lower() == key then
       key = ";"
@@ -122,9 +151,10 @@ function M.jump(key)
     return
   end
 
+  local is_op = vim.fn.mode(true):sub(1, 2) == "no"
+
   -- always re-calculate when not visible
   M.state = M.visible() and M.state or M.new()
-  M.jumping = true
 
   -- get a new target
   if M.motions[key] or not M.char then
@@ -141,25 +171,48 @@ function M.jump(key)
     M.state:update({ pattern = M.char })
   end
 
-  local forward = M.state.opts.search.forward
-  if key == "," then
-    forward = not forward
-    -- check if we should enable wrapping.
-    if not M.state.opts.search.wrap then
-      local before = M.state:find({ count = 1, forward = forward })
-      if before and (before.pos < M.state.pos) == M.state.opts.search.forward then
-        M.state.opts.search.wrap = true
-        M.state:update({ force = true })
-      end
-    end
+  local jump = key == "," and M.prev or M.next
+
+  M.jump_labels = Config.modes.char.jump_labels and Config.modes.char.jump_labels(key)
+  jump()
+  M.state:update({ force = true })
+
+  if M.jump_labels then
+    M.state:loop({
+      restore = is_op,
+      jump_on_max_length = false,
+      actions = {
+        [Util.CR] = function()
+          return false
+        end,
+        [";"] = M.next,
+        [","] = M.prev,
+        [M.motion:lower()] = M.next,
+        [M.motion:upper()] = M.prev,
+      },
+    })
   end
 
-  M.state:jump({ count = vim.v.count1, forward = forward })
-
-  vim.schedule(function()
-    M.jumping = false
-  end)
   return M.state
+end
+
+function M.next()
+  M.state:jump({ count = vim.v.count1, forward = M.state.opts.search.forward })
+  return true
+end
+
+function M.prev()
+  M.state:jump({ count = vim.v.count1, forward = not M.state.opts.search.forward })
+  -- check if we should enable wrapping.
+  if not M.state.opts.search.wrap then
+    local before = M.state:find({ count = 1, forward = false })
+    if before and (before.pos < M.state.pos) == M.state.opts.search.forward then
+      M.state.opts.search.wrap = true
+      M.state._labeler = nil
+      M.state:update({ force = true })
+    end
+  end
+  return true
 end
 
 return M
