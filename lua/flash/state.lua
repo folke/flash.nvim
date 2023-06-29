@@ -310,14 +310,29 @@ function M:update_target()
   end
 end
 
-function M:step()
+---@class Flash.Step.Options
+---@field actions? table<string, fun(state:Flash.State, char:string):boolean?>
+---@field restore? boolean
+---@field jump_on_max_length? boolean
+
+---@param opts? Flash.Step.Options
+function M:step(opts)
+  opts = opts or {}
   if self.opts.prompt.enabled and not M.is_search() then
     Prompt.set(self.pattern())
   end
   local c = Util.get_char()
   if c == nil then
-    self:restore()
+    if opts.restore ~= false then
+      self:restore()
+    end
     return
+  elseif opts.actions and opts.actions[c] then
+    local ret = opts.actions[c](self, c)
+    if ret == nil then
+      return true
+    end
+    return ret
     -- jump to first
   elseif c == Util.CR then
     self:jump()
@@ -335,7 +350,9 @@ function M:step()
   -- or input the last key and break
   if self.opts.search.max_length and #self.pattern() > self.opts.search.max_length then
     self:update({ pattern = orig })
-    self:jump()
+    if opts.jump_on_max_length ~= false then
+      self:jump()
+    end
     vim.api.nvim_input(c)
     return
   end
@@ -353,8 +370,9 @@ function M:step()
   return true
 end
 
-function M:loop()
-  while self:step() do
+---@param opts? Flash.Step.Options
+function M:loop(opts)
+  while self:step(opts) do
   end
   self:hide()
   Prompt.hide()
