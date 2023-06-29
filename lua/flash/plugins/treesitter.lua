@@ -10,14 +10,17 @@ local M = {}
 function M.get_nodes(win, pos)
   local buf = vim.api.nvim_win_get_buf(win)
   local line_count = vim.api.nvim_buf_line_count(buf)
+  pos = pos or Pos()
 
-  -- get all ranges of the current node and its parents
   local ranges = {} ---@type TSNode[]
 
-  local node = vim.treesitter.get_node({
-    bufnr = buf,
-    pos = pos and { pos[1] - 1, pos[2] } or nil,
-  })
+  local tree = vim.treesitter.get_parser(buf)
+  if not tree then
+    return {}
+  end
+
+  -- get all ranges of the current node and its parents
+  local node = tree:named_node_for_range({ pos[1] - 1, pos[2], pos[1] - 1, pos[2] })
 
   while node do
     local range = { node:range() }
