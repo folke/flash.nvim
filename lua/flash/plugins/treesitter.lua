@@ -107,7 +107,7 @@ function M.jump(opts)
   current = state:jump(current)
 
   while true do
-    local char = Util.get_char()
+    local char = state:get_char()
     if not char then
       vim.cmd([[normal! v]])
       state:restore()

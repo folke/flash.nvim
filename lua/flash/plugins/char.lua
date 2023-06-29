@@ -164,7 +164,7 @@ function M.jump(key)
 
   -- get a new target
   if M.motions[key] or not M.char then
-    local char = Util.get_char()
+    local char = M.state:get_char()
     if char then
       M.char = char
     else

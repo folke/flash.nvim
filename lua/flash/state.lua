@@ -34,6 +34,7 @@ local Rainbow = require("flash.rainbow")
 ---@field restore_windows? fun()
 ---@field rainbow? Flash.Rainbow
 ---@field ns number
+---@field langmap table<string, string>
 local M = {}
 M.__index = M
 
@@ -66,6 +67,16 @@ function M.setup()
   })
 end
 
+---@param char string
+function M:lmap(char)
+  return vim.bo.iminsert == 1 and self.langmap[char] or char
+end
+
+function M:get_char()
+  local ret = Util.get_char()
+  return ret and self:lmap(ret) or nil
+end
+
 function M:labels()
   local labels = self.opts.labels
   if self.opts.label.uppercase then
@@ -80,7 +91,7 @@ function M:labels()
   for _, l in ipairs(list) do
     if not added[l] then
       added[l] = true
-      ret[#ret + 1] = l
+      ret[#ret + 1] = self:lmap(l)
     end
   end
   return ret
@@ -96,6 +107,15 @@ function M.new(opts)
   M.setup()
   local self = setmetatable({}, M)
   self.opts = Config.get(opts)
+  self.langmap = {}
+  if vim.bo.iminsert == 1 then
+    local lmap = vim.api.nvim_buf_get_keymap(0, "l")
+    for _, m in ipairs(lmap) do
+      if m.lhs ~= "" then
+        self.langmap[m.lhs] = m.rhs
+      end
+    end
+  end
   self.results = {}
   self.matchers = {}
   self.wins = {}
@@ -114,6 +134,7 @@ function M.new(opts)
   if self.opts.label.rainbow.enabled then
     self.rainbow = Rainbow.new(self)
   end
+
   self:update()
   return self
 end
@@ -193,11 +214,12 @@ function M:check_jump(pattern)
   if self.opts.search.trigger ~= "" and self.pattern():sub(-1) ~= self.opts.search.trigger then
     return
   end
+  local chars = vim.fn.strchars(pattern)
   if
-    pattern:find(self.pattern(), 1, true) == 1
-    and vim.fn.strwidth(pattern) == vim.fn.strwidth(self.pattern()) + 1
+    pattern:find(self.pattern(), 1, true) == 1 and chars == vim.fn.strchars(self.pattern()) + 1
   then
-    local label = pattern:sub(-1)
+    local idx = vim.fn.byteidx(pattern, chars - 1) + 1
+    local label = pattern:sub(idx)
     if self:jump(label) then
       return true
     end
@@ -321,7 +343,7 @@ function M:step(opts)
   if self.opts.prompt.enabled and not M.is_search() then
     Prompt.set(self.pattern())
   end
-  local c = Util.get_char()
+  local c = self:get_char()
   if c == nil then
     if opts.restore ~= false then
       self:restore()
