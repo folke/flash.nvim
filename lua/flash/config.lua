@@ -176,6 +176,9 @@ local defaults = {
       -- by default all keymaps are enabled, but you can disable some of them,
       -- by removing them from the list.
       keys = { "f", "F", "t", "T", ";", "," },
+      -- remap keys in keymap to something else, e.g., { [";"] = "L", [","] = H }
+      -- to remap ";" to "L" and "," to "H".
+      maps = {},
       search = { wrap = false },
       highlight = { backdrop = true },
       jump = { register = false },
