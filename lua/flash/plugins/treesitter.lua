@@ -25,7 +25,7 @@ function M.get_nodes(win, pos)
   while node do
     local range = { node:range() }
     table.insert(ranges, range)
-    node = node:parent()
+    node = node:parent() ---@type TSNode
   end
 
   -- convert ranges to matches
@@ -57,7 +57,7 @@ function M.get_nodes(win, pos)
       match.end_pos[1] = match.end_pos[1] - 1
       match.end_pos[2] = #line
     end
-    local id = table.concat({ unpack(match.pos), unpack(match.end_pos) }, ".")
+    local id = table.concat(vim.tbl_flatten({ match.pos, match.end_pos }), ".")
     if not done[id] then
       done[id] = true
       ret[#ret + 1] = match
