@@ -71,7 +71,7 @@ function M.cursor(state)
     vim.api.nvim_buf_set_extmark(buf, state.ns, cursor[1] - 1, cursor[2], {
       hl_group = "Cursor",
       end_col = cursor[2] + 1,
-      priority = state.opts.highlight.priority + 1,
+      priority = state.opts.highlight.priority + 3,
       strict = false,
     })
   end
@@ -80,8 +80,6 @@ end
 ---@param state Flash.State
 function M.update(state)
   M.clear(state.ns)
-
-  M.cursor(state)
 
   if state.opts.highlight.backdrop then
     M.backdrop(state)
@@ -114,8 +112,12 @@ function M.update(state)
   ---@param is_after boolean
   local function label(match, pos, offset, is_after)
     local buf = vim.api.nvim_win_get_buf(match.win)
+    local cursor = vim.api.nvim_win_get_cursor(match.win)
     local row = pos[1] - 1 + offset[1]
     local col = math.max(pos[2] + offset[2], 0)
+    if cursor[1] == row + 1 and cursor[2] == col then
+      return
+    end
     local hl_group = state.opts.highlight.groups.label
     if state.rainbow then
       hl_group = state.rainbow:get(match)
@@ -185,6 +187,8 @@ function M.update(state)
       priority = state.opts.highlight.priority + 2,
     })
   end
+
+  M.cursor(state)
 end
 
 return M
