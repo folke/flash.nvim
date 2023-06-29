@@ -1,5 +1,34 @@
 # Changelog
 
+## [1.11.0](https://github.com/folke/flash.nvim/compare/v1.10.1...v1.11.0) (2023-06-29)
+
+
+### Features
+
+* **char:** hide flash when doing an ftFT search while yanking. Closes [#6](https://github.com/folke/flash.nvim/issues/6) ([feda1d5](https://github.com/folke/flash.nvim/commit/feda1d5a98a1705e86966e62a052661a7369b3c0))
+* **char:** optional jump labels for ftFT searches ([d2ad5e0](https://github.com/folke/flash.nvim/commit/d2ad5e0d776a89ee424a7e0cd4364ec5dbf11dc4))
+* **char:** support alternative f/F/t/T/;/, keymaps (fix [#96](https://github.com/folke/flash.nvim/issues/96)) ([#99](https://github.com/folke/flash.nvim/issues/99)) ([c0c006a](https://github.com/folke/flash.nvim/commit/c0c006a7bb694b4cec9a5f40e632f871b478e0d0))
+* **label:** added `opts.label.format` for formatting rendered labels. Closes [#84](https://github.com/folke/flash.nvim/issues/84) ([2d3e7b9](https://github.com/folke/flash.nvim/commit/2d3e7b90c568083e9857b100dc2570d269da0a0c))
+* **labeler:** allow excluding certain labels with a specific case ([6b255d3](https://github.com/folke/flash.nvim/commit/6b255d37505445da3db6fae5d79dff63529cd222))
+* **pos:** Pos can now be initialized with window or current window cursor ([7a05cd5](https://github.com/folke/flash.nvim/commit/7a05cd5dadb78b8d475526157e464f24d14ff5b2))
+* **search:** you can now `toggle` flash while using regular search ([e761182](https://github.com/folke/flash.nvim/commit/e761182f6c79ff5f88c877729465ece05b01c65a))
+* **state:** custom char actions ([4f44bb4](https://github.com/folke/flash.nvim/commit/4f44bb454df0c6f598e75cd8501a1eb8e1bd2df5))
+
+
+### Bug Fixes
+
+* **hacks:** make sure to render the cursor before getchar ([2b328d1](https://github.com/folke/flash.nvim/commit/2b328d121c2b56cf25e1eb9ba92c7459beb241be))
+* **highlight:** never put an extmark on the current cursor position ([8434130](https://github.com/folke/flash.nvim/commit/843413028843d1c3ce29449fe9ff62af8f642540))
+* **highlight:** use current hl if pos == label pos ([56531ee](https://github.com/folke/flash.nvim/commit/56531ee85d919e787dbb247aabedb5d3dd0b7bd1))
+* **jump:** replace opfunc by noop to properly cancel custom operators. Fixes [#93](https://github.com/folke/flash.nvim/issues/93) ([40b2bcb](https://github.com/folke/flash.nvim/commit/40b2bcbb05f1452f2ee7d21b79ce8ba77ea6cc94))
+* **jump:** temporarily set selection=inclusive. Closes [#81](https://github.com/folke/flash.nvim/issues/81) ([5c9505a](https://github.com/folke/flash.nvim/commit/5c9505a19edcbb236d367282584ed5f02ccd4fb4))
+* **labeler:** fixed label distance calculation ([1d941de](https://github.com/folke/flash.nvim/commit/1d941de722564a8ac2f07c2df262a48c49c1cdb9))
+* **labeler:** put original pattern in a `\%()` group. Fixes some skip label issues ([6102a7c](https://github.com/folke/flash.nvim/commit/6102a7c0e93dbcf592a7ed2b7a2a5c2a84c5033e))
+* **labeler:** skip all labels on invalid regex. Fixes [#94](https://github.com/folke/flash.nvim/issues/94) ([1fff746](https://github.com/folke/flash.nvim/commit/1fff746049253b10a008d60e1752065a98fd8614))
+* **remote:** use nvim_input instead of nvim_feedkeys for clearing op mode ([c90eae5](https://github.com/folke/flash.nvim/commit/c90eae5172a00551d51883cf8b67306a812a713f))
+* **search:** correctly set match end pos for multi byte characters. Fixes [#90](https://github.com/folke/flash.nvim/issues/90) ([0193d52](https://github.com/folke/flash.nvim/commit/0193d52af38d228b79569c62e06ee36b77a1a85e))
+* **treesitter:** ignore windows without ts parser. Fixes [#91](https://github.com/folke/flash.nvim/issues/91) ([13022c0](https://github.com/folke/flash.nvim/commit/13022c09fa30fb03d14110a380238f6a75b42ab4))
+
 ## [1.10.1](https://github.com/folke/flash.nvim/compare/v1.10.0...v1.10.1) (2023-06-27)
 
 
