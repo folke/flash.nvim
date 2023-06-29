@@ -41,6 +41,14 @@ function M.jump(match, state)
   M._jump(match, state, { op = is_op })
 end
 
+function M.fix_selection()
+  local selection = vim.go.selection
+  vim.go.selection = "inclusive"
+  vim.schedule(function()
+    vim.go.selection = selection
+  end)
+end
+
 -- Remote operator pending mode.Cancel the operator and
 -- re-trigger the operator in the remote window.
 ---@param match Flash.Match
@@ -156,6 +164,7 @@ end
 ---@return Flash.Match?
 function M._jump(match, state, opts)
   opts = opts or {}
+  M.fix_selection()
   -- select range
   if state.opts.jump.pos == "range" then
     if vim.fn.mode() == "v" then
