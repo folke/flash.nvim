@@ -74,6 +74,9 @@ function M:labels()
   local list = vim.fn.split(labels, "\\zs")
   local ret = {} ---@type string[]
   local added = {} ---@type table<string, boolean>
+  for _, l in ipairs(vim.fn.split(self.opts.label.exclude, "\\zs")) do
+    added[l] = true
+  end
   for _, l in ipairs(list) do
     if not added[l] then
       added[l] = true

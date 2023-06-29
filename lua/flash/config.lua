@@ -74,6 +74,8 @@ local defaults = {
   label = {
     -- allow uppercase labels
     uppercase = true,
+    -- add any labels with the correct case here, that you want to exclude
+    exclude = "",
     -- add a label for the first match in the current window.
     -- you can always jump to the first match with `<CR>`
     current = true,
