@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.12.0](https://github.com/folke/flash.nvim/compare/v1.11.0...v1.12.0) (2023-06-30)
+
+
+### Features
+
+* **state:** added support for custom keymaps and lmap. See [#66](https://github.com/folke/flash.nvim/issues/66) ([9aa7805](https://github.com/folke/flash.nvim/commit/9aa78057cf13dde3d39bf25cfe5caf092083cc0c))
+
+
+### Bug Fixes
+
+* **labeler:** fixed calculating skip labels for mbyte keymaps. See [#66](https://github.com/folke/flash.nvim/issues/66) ([2da635f](https://github.com/folke/flash.nvim/commit/2da635f54b81538a1e12b4859bc292d7d3e5f1b9))
+* **treesitter:** added support for Nvim 0.8.0. Fixes [#100](https://github.com/folke/flash.nvim/issues/100) ([67ed44d](https://github.com/folke/flash.nvim/commit/67ed44d5efd2d05b49af861859740eedf3a076b6))
+* **treesitter:** some nodes were missing ([7f4e25f](https://github.com/folke/flash.nvim/commit/7f4e25fae0fa1d3adfeb3e3e87fba9ff914032a0))
+
 ## [1.11.0](https://github.com/folke/flash.nvim/compare/v1.10.1...v1.11.0) (2023-06-29)
 
 
