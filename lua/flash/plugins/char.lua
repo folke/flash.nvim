@@ -4,12 +4,11 @@ local Util = require("flash.util")
 local Repeat = require("flash.repeat")
 local Config = require("flash.config")
 local Labeler = require("flash.labeler")
-local Pos = require("flash.search.pos")
 
 local M = {}
 
 ---@alias Flash.Char.Motion "'f'" | "'F'" | "'t'" | "'T'"
-M.motion = nil ---@type Flash.Char.Motion?
+M.motion = "f" ---@type Flash.Char.Motion
 M.char = nil ---@type string?
 M.jumping = false
 M.state = nil ---@type Flash.State?
@@ -94,7 +93,7 @@ function M.setup()
     if keys[key] then
       vim.keymap.set({ "n", "x", "o" }, keys[key], function()
         M.jumping = true
-        local autohide = Config.modes.char.autohide and Config.modes.char.autohide(key)
+        local autohide = Config.get("char").autohide
         if Repeat.is_repeat then
           M.jump_labels = false -- never show jump labels when repeating
           M.state:jump({ count = vim.v.count1 })
@@ -179,7 +178,7 @@ function M.jump(key)
 
   local jump = key == "," and M.prev or M.next
 
-  M.jump_labels = Config.modes.char.jump_labels and Config.modes.char.jump_labels(key)
+  M.jump_labels = Config.get("char").jump_labels
   jump()
   M.state:update({ force = true })
 

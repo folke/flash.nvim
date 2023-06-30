@@ -5,6 +5,7 @@ local M = {}
 ---@field mode? string
 ---@field enabled? boolean
 ---@field ns? string
+---@field config? fun(opts:Flash.Config)
 local defaults = {
   -- labels = "abcdefghijklmnopqrstuvwxyz",
   labels = "asdfghjklqwertyuiopzxcvbnm",
@@ -134,6 +135,8 @@ local defaults = {
   pattern = "",
   -- When `true`, flash will try to continue the last search
   continue = false,
+  -- Set config to a function to dynamically change the config
+  config = nil, ---@type fun(opts:Flash.Config)|nil
   -- You can override the default options for a specific mode.
   -- Use it with `require("flash").jump({mode = "forward"})`
   ---@type table<string, Flash.Config>
@@ -156,20 +159,21 @@ local defaults = {
     -- `f`, `F`, `t`, `T`, `;` and `,` motions
     char = {
       enabled = true,
-      -- when to hide flash
-      autohide = function(motion)
-        -- autohide flash when the operator is `y`
-        return vim.fn.mode(true):find("no") and vim.v.operator == "y"
+      -- dynamic configuration for ftFT motions
+      config = function(opts)
+        -- autohide flash when in operator-pending mode
+        opts.autohide = vim.fn.mode(true):find("no") and vim.v.operator == "y"
+
+        -- disable jump labels when enabled and when using a count
+        opts.jump_labels = opts.jump_labels and vim.v.count == 0
+
+        -- Show jump labels only in operator-pending mode
+        -- opts.jump_labels = vim.v.count == 0 and vim.fn.mode(true):find("o")
       end,
-      -- when to show jump labels
-      jump_labels = function(motion)
-        -- never show jump labels by default
-        return false
-        -- Always show jump labels for ftFT
-        -- return vim.v.count == 0 and motion:find("[ftFT]")
-        -- Show jump labels for ftFT in operator-pending mode
-        -- return vim.v.count == 0 and motion:find("[ftFT]") and vim.fn.mode(true):find("o")
-      end,
+      -- hide after jump when not using jump labels
+      autohide = false,
+      -- show jump labels
+      jump_labels = true,
       -- When using jump labels, don't use these keys
       -- This allows using those keys directly after the motion
       label = { exclude = "hjkliardc" },
@@ -260,30 +264,47 @@ function M.get(...)
   for i = 1, select("#", ...) do
     ---@type Flash.Config?
     local opts = select(i, ...)
+    if type(opts) == "string" then
+      opts = options.modes[opts]
+    end
     if opts then
       table.insert(all, opts)
       local idx = #all
       while opts.mode and not modes[opts.mode] do
-        modes[opts.mode] = true
+        modes[opts.mode or ""] = true
         opts = options.modes[opts.mode] or {}
         table.insert(all, idx, opts)
       end
     end
   end
 
+  -- backward compatibility
   for _, o in ipairs(all) do
     if o.highlight and o.highlight.label then
       o.label = vim.tbl_deep_extend("force", o.label or {}, o.highlight.label)
+      ---@diagnostic disable-next-line: no-unknown
       o.highlight.label = nil
       vim.notify_once(
         "flash: `opts.highlight.label` is deprecated, use `opts.label` instead",
         vim.log.levels.WARN
       )
     end
+    for _, field in ipairs({ "autohide", "jump_labels" }) do
+      if type(o[field]) == "function" then
+        local motion = require("flash.plugins.char").motion
+        ---@diagnostic disable-next-line: no-unknown
+        o[field] = o[field](motion)
+      end
+    end
   end
 
-  ---@type Flash.State.Config
   local ret = vim.tbl_deep_extend("force", unpack(all))
+  ---@cast ret Flash.State.Config
+
+  if type(ret.config) == "function" then
+    ret.config(ret)
+  end
+
   if vim.g.vscode then
     ret.prompt.enabled = false
     ret.search.multi_window = false
