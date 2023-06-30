@@ -251,6 +251,8 @@ Install the plugin with your preferred package manager:
   pattern = "",
   -- When `true`, flash will try to continue the last search
   continue = false,
+  -- Set config to a function to dynamically change the config
+  config = nil, ---@type fun(opts:Flash.Config)|nil
   -- You can override the default options for a specific mode.
   -- Use it with `require("flash").jump({mode = "forward"})`
   ---@type table<string, Flash.Config>
@@ -273,20 +275,21 @@ Install the plugin with your preferred package manager:
     -- `f`, `F`, `t`, `T`, `;` and `,` motions
     char = {
       enabled = true,
-      -- when to hide flash
-      autohide = function(motion)
-        -- autohide flash when the operator is `y`
-        return vim.fn.mode(true):find("no") and vim.v.operator == "y"
+      -- dynamic configuration for ftFT motions
+      config = function(opts)
+        -- autohide flash when in operator-pending mode
+        opts.autohide = vim.fn.mode(true):find("no") and vim.v.operator == "y"
+
+        -- disable jump labels when enabled and when using a count
+        opts.jump_labels = opts.jump_labels and vim.v.count == 0
+
+        -- Show jump labels only in operator-pending mode
+        -- opts.jump_labels = vim.v.count == 0 and vim.fn.mode(true):find("o")
       end,
-      -- when to show jump labels
-      jump_labels = function(motion)
-        -- never show jump labels by default
-        return false
-        -- Always show jump labels for ftFT
-        -- return vim.v.count == 0 and motion:find("[ftFT]")
-        -- Show jump labels for ftFT in operator-pending mode
-        -- return vim.v.count == 0 and motion:find("[ftFT]") and vim.fn.mode(true):find("o")
-      end,
+      -- hide after jump when not using jump labels
+      autohide = false,
+      -- show jump labels
+      jump_labels = true,
       -- When using jump labels, don't use these keys
       -- This allows using those keys directly after the motion
       label = { exclude = "hjkliardc" },
