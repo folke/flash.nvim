@@ -189,7 +189,8 @@ function M:skip(win, labels)
         return
       end
 
-      local char = vim.api.nvim_buf_get_lines(0, pos[1] - 1, pos[1], false)[1]:sub(pos[2], pos[2])
+      local line = vim.api.nvim_buf_get_lines(0, pos[1] - 1, pos[1], false)[1]
+      local char = vim.fn.strpart(line, pos[2] - 1, 1, true)
 
       local label_count = #labels
       labels = vim.tbl_filter(function(c)
