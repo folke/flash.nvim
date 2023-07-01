@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.13.0](https://github.com/folke/flash.nvim/compare/v1.12.0...v1.13.0) (2023-07-01)
+
+
+### Features
+
+* **config:** added `opts.config` for dynamically configuring flash. Closes [#103](https://github.com/folke/flash.nvim/issues/103) ([3829d81](https://github.com/folke/flash.nvim/commit/3829d81fd6f5f6ca784bb9628a1b99298b88a3af))
+
+
+### Bug Fixes
+
+* **state:** use strchars instead of strcharlen for compat 0.8.2. Fixes [#105](https://github.com/folke/flash.nvim/issues/105) ([33e0793](https://github.com/folke/flash.nvim/commit/33e0793a614735a3fffb93763c4c9bd81b55433b))
+
 ## [1.12.0](https://github.com/folke/flash.nvim/compare/v1.11.0...v1.12.0) (2023-06-30)
 
 
