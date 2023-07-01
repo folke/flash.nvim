@@ -214,9 +214,9 @@ function M:check_jump(pattern)
   if self.opts.search.trigger ~= "" and self.pattern():sub(-1) ~= self.opts.search.trigger then
     return
   end
-  local chars = vim.fn.strcharlen(pattern)
+  local chars = vim.fn.strchars(pattern)
   if
-    pattern:find(self.pattern(), 1, true) == 1 and chars == vim.fn.strcharlen(self.pattern()) + 1
+    pattern:find(self.pattern(), 1, true) == 1 and chars == vim.fn.strchars(self.pattern()) + 1
   then
     local label = vim.fn.strcharpart(pattern, chars - 1, 1)
     if self:jump(label) then
