@@ -130,7 +130,7 @@ function M.update(state)
     if state.rainbow then
       hl_group = state.rainbow:get(match)
     end
-    if target and target.pos[1] == row + 1 and target.pos[2] == col then
+    if target and target.pos[1] == row + 1 and target.pos[2] == col and not state.rainbow then
       hl_group = state.opts.highlight.groups.current
     end
     if match.label == "" then
