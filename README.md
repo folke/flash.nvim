@@ -289,7 +289,7 @@ Install the plugin with your preferred package manager:
       -- hide after jump when not using jump labels
       autohide = false,
       -- show jump labels
-      jump_labels = true,
+      jump_labels = false,
       -- When using jump labels, don't use these keys
       -- This allows using those keys directly after the motion
       label = { exclude = "hjkliardc" },
