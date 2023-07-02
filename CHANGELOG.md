@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.13.1](https://github.com/folke/flash.nvim/compare/v1.13.0...v1.13.1) (2023-07-02)
+
+
+### Bug Fixes
+
+* **config:** dont show jumpt labels by default! Fixup. See [#103](https://github.com/folke/flash.nvim/issues/103) ([7bb89b2](https://github.com/folke/flash.nvim/commit/7bb89b20fd42037c1cd7ed8d3193081d86f8c39b))
+* **highlight:** don't show the label when at cursor in same window and not a range. See [#74](https://github.com/folke/flash.nvim/issues/74) ([7a8e07e](https://github.com/folke/flash.nvim/commit/7a8e07e62ad1a378d6eca958aad90fc071d14e9c))
+* **labeler:** don't label folded lines. Fixes [#39](https://github.com/folke/flash.nvim/issues/39). See [#106](https://github.com/folke/flash.nvim/issues/106) ([8af3773](https://github.com/folke/flash.nvim/commit/8af3773b7b960b053038868ea18867b94abae9c8))
+
 ## [1.13.0](https://github.com/folke/flash.nvim/compare/v1.12.0...v1.13.0) (2023-07-01)
 
 
