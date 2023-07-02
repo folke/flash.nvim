@@ -107,15 +107,21 @@ function M:filter()
   local from = vim.api.nvim_win_get_cursor(self.state.win)
 
   -- only label visible matches
-  -- and don't label the first match in the current window
   for _, match in ipairs(self.state.results) do
-    if
-      not (
-        (target and match.pos == target.pos)
-        and not self.state.opts.label.current
-        and match.win == self.state.win
-      )
-    then
+    -- and don't label the first match in the current window
+    local skip = (target and match.pos == target.pos)
+      and not self.state.opts.label.current
+      and match.win == self.state.win
+
+    -- dont label folded lines
+    if not skip then
+      vim.api.nvim_win_call(match.win, function()
+        local fold = vim.fn.foldclosed(match.pos[1])
+        skip = not (fold == -1 or fold == match.pos[1])
+      end)
+    end
+
+    if not skip then
       table.insert(ret, match)
     end
   end
