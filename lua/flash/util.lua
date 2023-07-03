@@ -77,4 +77,15 @@ function M.on_done(done, on_done)
   check:start(vim.schedule_wrap(fn))
 end
 
+---@param value string
+---@param list table
+M.is_in_list = function(value, list)
+  for _, v in pairs(list) do
+    if v == value then
+      return true
+    end
+  end
+  return false
+end
+
 return M

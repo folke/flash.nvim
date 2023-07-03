@@ -22,9 +22,13 @@ function M.get_nodes(win, pos)
   -- get all ranges of the current node and its parents
   local node = tree:named_node_for_range({ pos[1] - 1, pos[2], pos[1] - 1, pos[2] })
 
+  local exs = Config.get({ mode = "treesitter" }).exclude
   while node do
     local range = { node:range() }
-    table.insert(ranges, range)
+    -- check if node is to be excluded
+    if not Util.is_in_list(node:type(), exs) then
+      table.insert(ranges, range)
+    end
     node = node:parent() ---@type TSNode
   end
 
