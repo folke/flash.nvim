@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.13.2](https://github.com/folke/flash.nvim/compare/v1.13.1...v1.13.2) (2023-07-02)
+
+
+### Bug Fixes
+
+* **highlight:** dont use current when rainbow is used and match == target. Fixes [#109](https://github.com/folke/flash.nvim/issues/109) ([edb82f7](https://github.com/folke/flash.nvim/commit/edb82f763ac2b63006154e9da8b6629b570de551))
+
 ## [1.13.1](https://github.com/folke/flash.nvim/compare/v1.13.0...v1.13.1) (2023-07-02)
 
 
