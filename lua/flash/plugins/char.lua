@@ -72,6 +72,11 @@ function M.mode(motion)
     else
       pattern = "\\V" .. c
     end
+    if not Config.get("char").multi_line then
+      local pos = vim.api.nvim_win_get_cursor(0)
+      pattern = ("\\%%%dl"):format(pos[1]) .. pattern
+    end
+
     return pattern
   end
 end
