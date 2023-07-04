@@ -7,7 +7,7 @@ local M = {}
 
 ---@class Flash.Match.TS: Flash.Match
 ---@field node TSNode
----@field first? boolean
+---@field depth? number
 
 ---@param win window
 ---@param pos? Pos
@@ -107,7 +107,7 @@ function M.jump(opts)
   local current
   for _, m in ipairs(state.results) do
     ---@cast m Flash.Match.TS
-    if m.first then
+    if not current or m.depth > current.depth then
       current = m
     end
   end
