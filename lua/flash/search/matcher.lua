@@ -30,10 +30,15 @@ end
 
 ---@param fn fun(win: window, state:Flash.State, opts: {from:Pos, to:Pos}): Flash.Match[]
 function M.from(fn)
+  ---@param win window
+  ---@param state Flash.State
   return function(win, state)
     local ret = M.new(win)
     ret.get = function(self, opts)
       local matches = fn(win, state, opts)
+      if state.opts.filter then
+        matches = state.opts.filter(matches, state) or matches
+      end
       self:set(matches)
       return M.get(self, opts)
     end
