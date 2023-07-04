@@ -16,6 +16,7 @@ local Rainbow = require("flash.rainbow")
 ---@field matcher? fun(win: window, state:Flash.State, pos: {from:Pos, to:Pos}): Flash.Match[]
 ---@field pattern? string
 ---@field labeler? fun(matches:Flash.Match[], state:Flash.State)
+---@field actions? table<string, fun(state:Flash.State, char:string):boolean?>
 
 ---@class Flash.State
 ---@field win window
@@ -334,6 +335,7 @@ end
 ---@class Flash.Step.Options
 ---@field actions? table<string, fun(state:Flash.State, char:string):boolean?>
 ---@field restore? boolean
+---@field abort? fun()
 ---@field jump_on_max_length? boolean
 
 ---@param opts? Flash.Step.Options
@@ -342,13 +344,17 @@ function M:step(opts)
   if self.opts.prompt.enabled and not M.is_search() then
     Prompt.set(self.pattern())
   end
+  local actions = opts.actions or self.opts.actions or {}
   local c = self:get_char()
   if c == nil then
     if opts.restore ~= false then
       self:restore()
     end
+    if opts.abort then
+      opts.abort()
+    end
     return
-  elseif opts.actions and opts.actions[c] then
+  elseif actions[c] then
     local ret = opts.actions[c](self, c)
     if ret == nil then
       return true

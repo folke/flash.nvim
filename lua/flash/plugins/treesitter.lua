@@ -99,7 +99,7 @@ function M.jump(opts)
     Config.get({ mode = "treesitter" }, opts, {
       matcher = M.matcher,
       labeler = function() end,
-      search = { multi_window = false, wrap = true, incremental = false },
+      search = { multi_window = false, wrap = true, incremental = false, max_length = 0 },
     })
   )
 
@@ -113,27 +113,25 @@ function M.jump(opts)
   end
   current = state:jump(current)
 
-  while true do
-    local char = state:get_char()
-    if not char then
+  state:loop({
+    abort = function()
       vim.cmd([[normal! v]])
-      state:restore()
-      break
-    elseif char == ";" then
-      current = state:jump({ match = current, forward = false })
-    elseif char == "," then
-      current = state:jump({ forward = true, match = current })
-    elseif char == Util.CR then
-      state:jump(current and current.label or nil)
-      break
-    else
-      if not state:jump(char) then
-        vim.api.nvim_input(char)
-      end
-      break
-    end
-  end
-  state:hide()
+    end,
+    actions = {
+      [";"] = function()
+        current = state:jump({ match = current, forward = false })
+      end,
+      [","] = function()
+        current = state:jump({ forward = true, match = current })
+      end,
+      [Util.CR] = function()
+        state:jump(current and current.label or nil)
+        return false
+      end,
+    },
+    jump_on_max_length = false,
+  })
+
   return state
 end
 
