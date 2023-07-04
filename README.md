@@ -648,8 +648,8 @@ local Flash = require("flash")
 local function format(opts)
   -- always show first and second label
   return {
-    { opts.match.label1, opts.hl_group },
-    { opts.match.label2, "Search" },
+    { opts.match.label1, "FlashMatch" },
+    { opts.match.label2, "FlashLabel" },
   }
 end
 
