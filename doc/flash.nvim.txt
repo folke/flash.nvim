@@ -1,4 +1,4 @@
-*flash.nvim.txt*         For Neovim >= 0.8.0         Last change: 2023 July 03
+*flash.nvim.txt*         For Neovim >= 0.8.0         Last change: 2023 July 04
 
 ==============================================================================
 Table of Contents                               *flash.nvim-table-of-contents*
@@ -279,6 +279,8 @@ Default Settings ~
           autohide = false,
           -- show jump labels
           jump_labels = false,
+          -- set to `false` to use the current line only
+          multi_line = true,
           -- When using jump labels, don't use these keys
           -- This allows using those keys directly after the motion
           label = { exclude = "hjkliardc" },
