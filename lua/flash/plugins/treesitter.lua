@@ -5,6 +5,10 @@ local Pos = require("flash.search.pos")
 
 local M = {}
 
+---@class Flash.Match.TS: Flash.Match
+---@field node TSNode
+---@field first? boolean
+
 ---@param win window
 ---@param pos? Pos
 function M.get_nodes(win, pos)
@@ -12,31 +16,34 @@ function M.get_nodes(win, pos)
   local line_count = vim.api.nvim_buf_line_count(buf)
   pos = pos or Pos()
 
-  local ranges = {} ---@type TSNode[]
+  local nodes = {} ---@type TSNode[]
 
   local tree = vim.treesitter.get_parser(buf)
   if not tree then
     return {}
   end
 
-  -- get all ranges of the current node and its parents
-  local node = tree:named_node_for_range({ pos[1] - 1, pos[2], pos[1] - 1, pos[2] })
+  do
+    -- get all ranges of the current node and its parents
+    local node = tree:named_node_for_range({ pos[1] - 1, pos[2], pos[1] - 1, pos[2] })
 
-  while node do
-    local range = { node:range() }
-    table.insert(ranges, range)
-    node = node:parent() ---@type TSNode
+    while node do
+      nodes[#nodes + 1] = node
+      node = node:parent() ---@type TSNode
+    end
   end
 
   -- convert ranges to matches
-  ---@type Flash.Match[]
+  ---@type Flash.Match.TS[]
   local ret = {}
   local first = true
   ---@type table<string,boolean>
   local done = {}
-  for _, range in ipairs(ranges) do
-    ---@type Flash.Match
+  for _, node in ipairs(nodes) do
+    local range = { node:range() }
+    ---@type Flash.Match.TS
     local match = {
+      node = node,
       pos = { range[1] + 1, range[2] },
       end_pos = { range[3] + 1, range[4] - 1 },
       first = first,
@@ -99,7 +106,7 @@ function M.jump(opts)
   ---@type Flash.Match?
   local current
   for _, m in ipairs(state.results) do
-    ---@cast m Flash.Match | {first?:boolean}
+    ---@cast m Flash.Match.TS
     if m.first then
       current = m
     end
