@@ -182,17 +182,18 @@ function M._jump(match, state, opts)
       if state.opts.jump.inclusive ~= false then
         vim.cmd("normal! v")
       end
-
-      local current = Pos(match.win)
-      local offset = state.opts.jump.offset
-
-      if not offset and state.opts.jump.pos == "end" and pos < current then
-        offset = 1
-      end
-
-      pos = Pos(require('flash.util').offset_pos(vim.api.nvim_win_get_buf(match.win), pos, { 0, offset or 0}))
-      pos[2] = math.max(0, pos[2])
     end
+    local current = Pos(match.win)
+    local offset = state.opts.jump.offset
+
+    if not offset and state.opts.jump.pos == "end" and pos < current then
+      offset = 1
+    end
+
+    pos = Pos(
+      require("flash.util").offset_pos(vim.api.nvim_win_get_buf(match.win), pos, { 0, offset or 0 })
+    )
+    pos[2] = math.max(0, pos[2])
 
     vim.api.nvim_win_set_cursor(match.win, pos)
   end
