@@ -27,14 +27,9 @@ function M.offset_pos(buf, pos, offset)
 
   local line = lines[1]
   local charidx = vim.fn.charidx(line, pos[2])
+  local col = vim.fn.byteidx(line, charidx + offset[2])
 
-  local col = vim.fn.strlen(vim.fn.strcharpart(line, 0, charidx - 1)) + 1
-
-  local start = charidx + (offset[2] < 0 and offset[2] - 1 or 0)
-  local sign = offset[2] > 0 and 1 or -1
-  local coloffset = sign * vim.fn.strlen(vim.fn.strcharpart(line, start, sign * offset[2]))
-
-  return {row + 1, math.max(col + coloffset, 0)}
+  return {row + 1, math.max(col, 0)}
 end
 
 function M.get_char()
