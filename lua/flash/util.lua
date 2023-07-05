@@ -18,18 +18,18 @@ M.CMD = "\x80\253h"
 ---@param offset number[]
 ---@return number[] (1,0)-indexed position
 function M.offset_pos(buf, pos, offset)
-  local row = pos[1] - 1 + offset[1]
-  local ok, lines = pcall(vim.api.nvim_buf_get_lines, buf, row, row + 1, true)
+  local row = pos[1] + offset[1]
+  local ok, lines = pcall(vim.api.nvim_buf_get_lines, buf, row - 1, row, true)
   if not ok or lines == nil then
     -- fallback to old behavior if anything wrong happens
-    return {row + 1, math.max(pos[2] + offset[2], 0)}
+    return {row, math.max(pos[2] + offset[2], 0)}
   end
 
   local line = lines[1]
   local charidx = vim.fn.charidx(line, pos[2])
   local col = vim.fn.byteidx(line, charidx + offset[2])
 
-  return {row + 1, math.max(col, 0)}
+  return {row, math.max(col, 0)}
 end
 
 function M.get_char()
