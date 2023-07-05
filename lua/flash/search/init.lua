@@ -93,7 +93,7 @@ function M:find(opts)
   opts = Matcher.defaults(opts)
   local flags = (opts.forward and "" or "b")
     .. (opts.wrap and "w" or "W")
-    .. (opts.count == 0 and "c" or "")
+    .. (opts.count == 0 or opts.current and "c" or "")
   if opts.match then
     opts.pos = opts.match.pos
   end

@@ -7,7 +7,7 @@ local Pos = require("flash.search.pos")
 ---@field label? string|false -- set to false to disable label
 ---@field highlight? boolean
 
----@alias Flash.Match.Find {forward?:boolean, wrap?:boolean, count?:number, pos?: Pos, match?:Flash.Match}
+---@alias Flash.Match.Find {forward?:boolean, wrap?:boolean, count?:number, pos?: Pos, match?:Flash.Match, current?:boolean}
 
 ---@class Flash.Matcher
 ---@field win window
