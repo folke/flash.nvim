@@ -61,7 +61,9 @@ function M.labeler(matches, state)
   end
 end
 
+---@param motion Flash.Char.Motion
 function M.mode(motion)
+  ---@param c string
   return function(c)
     c = c:gsub("\\", "\\\\")
     local pattern ---@type string
@@ -136,15 +138,20 @@ function M.setup()
 end
 
 function M.parse(key)
+  ---@class Flash.Char.Parse
+  local ret = {
+    jump = M.next,
+    actions = {}, ---@type table<string, fun()>
+    getchar = false,
+  }
   -- repeat last search when hitting the same key
   -- don't repeat when executing a macro
-  if M.visible() and vim.fn.reg_executing() == "" then
-    if M.motion:lower() == key then
-      key = ";"
-    elseif M.motion:upper() == key then
-      key = ","
-    end
+  if M.visible() and vim.fn.reg_executing() == "" and M.motion:lower() == key:lower() then
+    ret.actions = M.actions(M.motion)
+    ret.jump = ret.actions[key] or M.next
+    return ret
   end
+
   -- different motion, clear the state
   if M.motions[key] and M.motion ~= key then
     if M.state then
@@ -152,11 +159,30 @@ function M.parse(key)
     end
     M.motion = key
   end
-  return key
+
+  ret.actions = M.actions(M.motion)
+
+  if M.motions[key] then
+    ret.getchar = true
+  else -- ;,
+    ret.jump = ret.actions[key] or M.next
+  end
+
+  return ret
+end
+
+---@param motion Flash.Char.Motion
+---@return table<string, fun()>
+function M.actions(motion)
+  local ret = Config.get("char").char_actions(motion)
+  for key, value in pairs(ret) do
+    ret[key] = M[value]
+  end
+  return ret
 end
 
 function M.jump(key)
-  key = M.parse(key)
+  local parsed = M.parse(key)
   if not M.motion then
     return
   end
@@ -167,7 +193,7 @@ function M.jump(key)
   M.state = M.visible() and M.state or M.new()
 
   -- get a new target
-  if M.motions[key] or not M.char then
+  if parsed.getchar or not M.char then
     local char = M.state:get_char()
     if char then
       M.char = char
@@ -181,29 +207,32 @@ function M.jump(key)
     M.state:update({ pattern = M.char })
   end
 
-  local jump = key == "," and M.prev or M.next
+  local jump = parsed.jump
 
   M.jump_labels = Config.get("char").jump_labels
   jump()
   M.state:update({ force = true })
 
   if M.jump_labels then
+    parsed.actions[Util.CR] = function()
+      return false
+    end
     M.state:loop({
       restore = is_op,
       jump_on_max_length = false,
-      actions = {
-        [Util.CR] = function()
-          return false
-        end,
-        [";"] = M.next,
-        [","] = M.prev,
-        [M.motion:lower()] = M.next,
-        [M.motion:upper()] = M.prev,
-      },
+      actions = parsed.actions,
     })
   end
 
   return M.state
+end
+
+function M.right()
+  return M.state.opts.search.forward and M.next() or M.prev()
+end
+
+function M.left()
+  return M.state.opts.search.forward and M.prev() or M.next()
 end
 
 function M.next()
