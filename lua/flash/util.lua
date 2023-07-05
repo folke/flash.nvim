@@ -14,15 +14,15 @@ M.LUA_CALLBACK = "\x80\253g"
 M.CMD = "\x80\253h"
 
 ---@param buf number
----@param pos number[]
+---@param pos number[] (1,0)-indexed position
 ---@param offset number[]
----@return number[]
+---@return number[] (1,0)-indexed position
 function M.offset_pos(buf, pos, offset)
   local row = pos[1] - 1 + offset[1]
   local ok, lines = pcall(vim.api.nvim_buf_get_lines, buf, row, row + 1, true)
   if not ok or lines == nil then
-    -- old behavior
-    return {row, math.max(pos[2] + offset[2], 0)}
+    -- fallback to old behavior if anything wrong happens
+    return {row + 1, math.max(pos[2] + offset[2], 0)}
   end
 
   local line = lines[1]
@@ -34,7 +34,7 @@ function M.offset_pos(buf, pos, offset)
   local sign = offset[2] > 0 and 1 or -1
   local coloffset = sign * vim.fn.strlen(vim.fn.strcharpart(line, start, sign * offset[2]))
 
-  return {row, math.max(col + coloffset, 0)}
+  return {row + 1, math.max(col + coloffset, 0)}
 end
 
 function M.get_char()
