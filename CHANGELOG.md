@@ -1,5 +1,24 @@
 # Changelog
 
+## [1.14.0](https://github.com/folke/flash.nvim/compare/v1.13.2...v1.14.0) (2023-07-05)
+
+
+### Features
+
+* **char:** added optional multi_line=false for ftFT motions. See [#102](https://github.com/folke/flash.nvim/issues/102) ([2f92418](https://github.com/folke/flash.nvim/commit/2f924186255a56cab4cf22e13b0bc1fb906b11fa))
+* **char:** option for behavior of ;, and char repeats. Closes [#124](https://github.com/folke/flash.nvim/issues/124) ([97eba7d](https://github.com/folke/flash.nvim/commit/97eba7df4454097c1f6cc447de2a4e9230831ffb))
+* **search:** allow finding current ([6659a94](https://github.com/folke/flash.nvim/commit/6659a94a033c2f6fec1e142451aa264f03e5da90))
+* **state:** added optional `filter` for matches by non-search matcher. See [#118](https://github.com/folke/flash.nvim/issues/118) ([780ad57](https://github.com/folke/flash.nvim/commit/780ad57dedb464bfe8361356959b3ac5aaed533d))
+* **treesitter:** added `node:TSNode` to ts `Flash.Match.TS` ([1cbaff4](https://github.com/folke/flash.nvim/commit/1cbaff4a7f074c1121c89207210e4588321acd40))
+
+
+### Bug Fixes
+
+* **char:** fixed tT at current. Fixes [#128](https://github.com/folke/flash.nvim/issues/128) ([a1c8aa6](https://github.com/folke/flash.nvim/commit/a1c8aa62204d5eb2036e819f5b919b1fe4b88918))
+* **jump:** move offset calc outside op mode ([69141ea](https://github.com/folke/flash.nvim/commit/69141ea571602a9202ad51fae1cfe7c1894fe036))
+* **search:** count=0 ([6d1d066](https://github.com/folke/flash.nvim/commit/6d1d066e6b5fcc2ed3ca446d229c0a0d306acf17))
+* take into count of multi-width characters on offset of highlights and jump ([#125](https://github.com/folke/flash.nvim/issues/125)) ([41c09fa](https://github.com/folke/flash.nvim/commit/41c09faf8588887c7c15d8ca63c9ede805437da2))
+
 ## [1.13.2](https://github.com/folke/flash.nvim/compare/v1.13.1...v1.13.2) (2023-07-02)
 
 
