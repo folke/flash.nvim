@@ -236,12 +236,20 @@ function M.left()
 end
 
 function M.next()
-  M.state:jump({ count = vim.v.count1, forward = M.state.opts.search.forward })
+  M.state:jump({
+    count = vim.v.count1,
+    forward = M.state.opts.search.forward,
+    current = M.motion:lower() == "t",
+  })
   return true
 end
 
 function M.prev()
-  M.state:jump({ count = vim.v.count1, forward = not M.state.opts.search.forward })
+  M.state:jump({
+    count = vim.v.count1,
+    forward = not M.state.opts.search.forward,
+    current = M.motion:lower() == "t",
+  })
   -- check if we should enable wrapping.
   if not M.state.opts.search.wrap then
     local before = M.state:find({ count = 1, forward = false })
