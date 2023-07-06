@@ -71,6 +71,7 @@ end
 
 function M.setup()
   local group = vim.api.nvim_create_augroup("flash", { clear = true })
+  M.enabled = Config.modes.search.enabled or false
 
   local function wrap(fn)
     return function(...)
@@ -97,7 +98,9 @@ function M.setup()
   vim.api.nvim_create_autocmd("CmdlineEnter", {
     group = group,
     callback = function()
-      M.enabled = Config.modes.search.enabled or false
+      if Config.modes.search.re_enable_on_search and Config.modes.search.enabled then
+        M.enabled = true
+      end
       if State.is_search() and M.enabled then
         M.start()
         M.set_op(vim.fn.mode() == "v")

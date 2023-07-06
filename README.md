@@ -165,6 +165,8 @@ Install the plugin with your preferred package manager:
     -- labels will no longer be skipped. When it exceeds this length
     -- it will either end in a jump or terminate the search
     max_length = nil, ---@type number?
+    -- Re enable flash on search
+    re_enable_on_search = true,
   },
   jump = {
     -- save location in the jumplist
