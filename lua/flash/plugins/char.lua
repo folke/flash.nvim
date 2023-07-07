@@ -202,6 +202,10 @@ function M.jump(key)
     end
   end
 
+  -- HACK: When the motion is t or T, we need to set the current position as a valid target
+  -- but only when we are not repeating
+  M.current = M.motion:lower() == "t" and parsed.getchar
+
   -- update the state when needed
   if M.state.pattern:empty() then
     M.state:update({ pattern = M.char })
@@ -227,6 +231,8 @@ function M.jump(key)
   return M.state
 end
 
+M.current = false
+
 function M.right()
   return M.state.opts.search.forward and M.next() or M.prev()
 end
@@ -239,7 +245,7 @@ function M.next()
   M.state:jump({
     count = vim.v.count1,
     forward = M.state.opts.search.forward,
-    current = M.motion:lower() == "t",
+    current = M.current,
   })
   return true
 end
@@ -248,7 +254,7 @@ function M.prev()
   M.state:jump({
     count = vim.v.count1,
     forward = not M.state.opts.search.forward,
-    current = M.motion:lower() == "t",
+    current = M.current,
   })
   -- check if we should enable wrapping.
   if not M.state.opts.search.wrap then
