@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.15.0](https://github.com/folke/flash.nvim/compare/v1.14.0...v1.15.0) (2023-07-07)
+
+
+### Features
+
+* **search:** flash toggle in search is now permanent until you toggle again. Closes [#134](https://github.com/folke/flash.nvim/issues/134) ([7ceee0d](https://github.com/folke/flash.nvim/commit/7ceee0de7e96c7453d5f82dcfc938f08d8029703))
+
+
+### Bug Fixes
+
+* **char:** special handling for t/T at current position. Fixes [#137](https://github.com/folke/flash.nvim/issues/137) ([268bffe](https://github.com/folke/flash.nvim/commit/268bffe7b9b1b9a3a4bb64a5bc8ac0627b4b7c14))
+
 ## [1.14.0](https://github.com/folke/flash.nvim/compare/v1.13.2...v1.14.0) (2023-07-05)
 
 
