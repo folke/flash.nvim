@@ -216,6 +216,9 @@ function M.on_jump(state)
   -- clear the highlight
   if state.opts.jump.nohlsearch then
     vim.cmd.nohlsearch()
+  elseif state.opts.jump.register then
+    -- this will show the search matches again
+    vim.cmd("set hlsearch")
   end
 end
 
