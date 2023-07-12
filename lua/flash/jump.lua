@@ -165,6 +165,7 @@ end
 function M._jump(match, state, opts)
   opts = opts or {}
   M.fix_selection()
+  M.open_folds(match)
   -- select range
   if state.opts.jump.pos == "range" then
     if vim.fn.mode() == "v" then
@@ -196,6 +197,28 @@ function M._jump(match, state, opts)
     pos[2] = math.max(0, pos[2])
 
     vim.api.nvim_win_set_cursor(match.win, pos)
+  end
+end
+
+---@param match Flash.Match
+function M.open_folds(match)
+  local cursor = vim.api.nvim_win_get_cursor(match.win)
+  local from = math.min(match.pos[1], cursor[1])
+  local to = math.max(match.end_pos[1], cursor[1])
+  local is_visual = vim.fn.mode(true):find("v")
+  local opened = false
+  for line = from, to do
+    if vim.fn.foldclosed(line) ~= -1 then
+      vim.api.nvim_win_set_cursor(match.win, { line, 0 })
+      vim.cmd("normal! zO")
+      opened = true
+    end
+  end
+  if opened then
+    vim.api.nvim_win_set_cursor(match.win, cursor)
+    if is_visual then
+      vim.cmd("normal! v")
+    end
   end
 end
 
