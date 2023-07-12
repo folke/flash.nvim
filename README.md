@@ -578,21 +578,16 @@ require("flash").jump({
 
 <details><summary><code>f</code>, <code>t</code>, <code>F</code>, <code>T</code> with labels</summary>
 
+Use the options below:
+
 ```lua
--- to use this, make sure to set `opts.modes.char.enabled = false`
-local Config = require("flash.config")
-local Char = require("flash.plugins.char")
-for _, motion in ipairs({ "f", "t", "F", "T" }) do
-  vim.keymap.set({ "n", "x", "o" }, motion, function()
-    require("flash").jump(Config.get({
-      mode = "char",
-      search = {
-        mode = Char.mode(motion),
-        max_length = 1,
-      },
-    }, Char.motions[motion]))
-  end)
-end
+{
+  modes = {
+    char = {
+      jump_labels = true
+    }
+  }
+}
 ```
 
 </details>
