@@ -103,6 +103,11 @@ lazy.nvim <https://github.com/folke/lazy.nvim>
 <
 
 
+  When creating the keymaps manually either use a lua function like `function()
+  require("flash").jump() end` as the **rhs**, or a string like `<cmd>lua
+  require("flash").jump()<cr>`. **DO NOT** use `:lua`, since that will break
+  **dot-repeat**
+
 CONFIGURATION                            *flash.nvim-flash.nvim-configuration*
 
 **flash.nvim** is highly configurable. Please refer to the default settings
@@ -550,21 +555,16 @@ Select any word ~
 
 f, t, F, T with labels ~
 
+Use the options below:
+
 >lua
-    -- to use this, make sure to set `opts.modes.char.enabled = false`
-    local Config = require("flash.config")
-    local Char = require("flash.plugins.char")
-    for _, motion in ipairs({ "f", "t", "F", "T" }) do
-      vim.keymap.set({ "n", "x", "o" }, motion, function()
-        require("flash").jump(Config.get({
-          mode = "char",
-          search = {
-            mode = Char.mode(motion),
-            max_length = 1,
-          },
-        }, Char.motions[motion]))
-      end)
-    end
+    {
+      modes = {
+        char = {
+          jump_labels = true
+        }
+      }
+    }
 <
 
 Telescope integration ~
