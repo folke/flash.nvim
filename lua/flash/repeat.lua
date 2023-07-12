@@ -27,7 +27,7 @@ function M.setup()
   end
   M._did_setup = true
   vim.on_key(function(key)
-    if key == "." then
+    if key == "." and vim.fn.reg_executing() == "" and vim.fn.reg_recording() == "" then
       M.is_repeat = true
       vim.schedule(function()
         M.is_repeat = false
