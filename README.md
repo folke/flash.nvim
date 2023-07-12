@@ -113,6 +113,11 @@ Install the plugin with your preferred package manager:
 
 <!-- setup:end -->
 
+> ⚠️ When creating the keymaps manually either use a lua function like
+> `function() require("flash").jump() end` as the **rhs**, or a string
+> like `<cmd>lua require("flash").jump()<cr>`.
+> **DO NOT** use `:lua`, since that will break **_dot-repeat_**
+
 ## ⚙️ Configuration
 
 **flash.nvim** is highly configurable. Please refer to the default settings below.
