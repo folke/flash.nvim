@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.16.0](https://github.com/folke/flash.nvim/compare/v1.15.0...v1.16.0) (2023-07-12)
+
+
+### Features
+
+* **fold:** show first label inside a fold on the folded text line. Fixes [#39](https://github.com/folke/flash.nvim/issues/39) ([2846324](https://github.com/folke/flash.nvim/commit/28463247f21a6e0b5486dc6d31c7ace0e43a4877))
+* **jump:** open folds when jumping to a folded position. See [#39](https://github.com/folke/flash.nvim/issues/39) ([dcb494c](https://github.com/folke/flash.nvim/commit/dcb494cfa79aae32e17a44026591564793b75434))
+* **search:** when nohlsearch=false, matches will now be shown after jump. Fixes [#142](https://github.com/folke/flash.nvim/issues/142) ([6e7d6c2](https://github.com/folke/flash.nvim/commit/6e7d6c26a4528a8d6a17e2d23c3f5738491d736d))
+
+
+### Bug Fixes
+
+* **repeat:** no dot repeat inside macros. Fixes [#143](https://github.com/folke/flash.nvim/issues/143) ([f7218c2](https://github.com/folke/flash.nvim/commit/f7218c2d44a8d67c5c4b40edd569c55f95754354))
+
 ## [1.15.0](https://github.com/folke/flash.nvim/compare/v1.14.0...v1.15.0) (2023-07-07)
 
 
