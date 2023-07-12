@@ -113,7 +113,7 @@ function M.update(state)
   local function label(match, pos, offset, is_after)
     local buf = vim.api.nvim_win_get_buf(match.win)
     local cursor = vim.api.nvim_win_get_cursor(match.win)
-    local pos2 = require('flash.util').offset_pos(buf, pos, offset)
+    local pos2 = require("flash.util").offset_pos(buf, pos, offset)
     local row, col = pos2[1] - 1, pos2[2]
     -- dont show the label if the cursor is on the same position
     -- in the same window
@@ -126,6 +126,12 @@ function M.update(state)
     then
       return
     end
+    if match.fold then
+      -- set the row to the fold start
+      row = match.fold - 1
+      col = 0
+    end
+
     local hl_group = state.opts.highlight.groups.label
     if state.rainbow then
       hl_group = state.rainbow:get(match)

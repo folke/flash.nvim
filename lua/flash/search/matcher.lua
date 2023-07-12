@@ -6,6 +6,7 @@ local Pos = require("flash.search.pos")
 ---@field end_pos Pos -- (1,0) indexed
 ---@field label? string|false -- set to false to disable label
 ---@field highlight? boolean
+---@field fold? number
 
 ---@alias Flash.Match.Find {forward?:boolean, wrap?:boolean, count?:number, pos?: Pos, match?:Flash.Match, current?:boolean}
 

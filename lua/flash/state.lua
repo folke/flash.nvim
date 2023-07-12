@@ -291,6 +291,13 @@ function M:_update()
   end
   self.matchers = matchers
 
+  for _, match in ipairs(self.results) do
+    vim.api.nvim_win_call(match.win, function()
+      local fold = vim.fn.foldclosed(match.pos[1])
+      match.fold = fold ~= -1 and fold or nil
+    end)
+  end
+
   self:update_target()
   self.labeler(self.results, self)
 

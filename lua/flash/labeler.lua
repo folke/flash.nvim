@@ -105,6 +105,8 @@ function M:filter()
   local target = self.state.target
 
   local from = vim.api.nvim_win_get_cursor(self.state.win)
+  ---@type table<number, boolean>
+  local folds = {}
 
   -- only label visible matches
   for _, match in ipairs(self.state.results) do
@@ -113,12 +115,13 @@ function M:filter()
       and not self.state.opts.label.current
       and match.win == self.state.win
 
-    -- dont label folded lines
-    if not skip then
-      vim.api.nvim_win_call(match.win, function()
-        local fold = vim.fn.foldclosed(match.pos[1])
-        skip = not (fold == -1 or fold == match.pos[1])
-      end)
+    -- Only label the first match in each fold
+    if not skip and match.fold then
+      if folds[match.fold] then
+        skip = true
+      else
+        folds[match.fold] = true
+      end
     end
 
     if not skip then
