@@ -90,7 +90,10 @@ function M:label(m, used)
   end
   if label and self:valid(label) then
     self:use(label)
-    if self.state.opts.label.reuse ~= "lowercase" or label:lower() == label then
+    local reuse = self.state.opts.label.reuse == "all"
+      or (self.state.opts.label.reuse == "lowercase" and label:lower() == label)
+
+    if reuse then
       self.used[pos] = label
     end
     m.label = label
