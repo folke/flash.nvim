@@ -10,8 +10,14 @@ end
 M.CR = M.t("<cr>")
 M.ESC = M.t("<esc>")
 M.BS = M.t("<bs>")
+M.EXIT = M.t("<C-\\><C-n>")
 M.LUA_CALLBACK = "\x80\253g"
 M.CMD = "\x80\253h"
+
+function M.exit()
+  vim.api.nvim_feedkeys(M.EXIT, "nx", false)
+  vim.api.nvim_feedkeys(M.ESC, "n", false)
+end
 
 ---@param buf number
 ---@param pos number[] (1,0)-indexed position

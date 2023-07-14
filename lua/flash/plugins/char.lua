@@ -231,6 +231,9 @@ function M.jump(key)
     end
     M.state:loop({
       restore = is_op,
+      abort = function()
+        Util.exit()
+      end,
       jump_on_max_length = false,
       actions = parsed.actions,
     })
