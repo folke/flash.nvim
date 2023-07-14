@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.17.0](https://github.com/folke/flash.nvim/compare/v1.16.0...v1.17.0) (2023-07-14)
+
+
+### Features
+
+* **labels:** allow disabling reusing labels. Closes [#147](https://github.com/folke/flash.nvim/issues/147) ([4b73e61](https://github.com/folke/flash.nvim/commit/4b73e6124f4e9b44713cb85ec5db3809923d2374))
+
+
+### Bug Fixes
+
+* **char:** properly exit op mode when doing esc with ftFT and jump labels ([4731cc4](https://github.com/folke/flash.nvim/commit/4731cc47459f66f9a73d19e11ea157e105384fd6))
+* **char:** set inclusive=false for FT. Fixes [#149](https://github.com/folke/flash.nvim/issues/149) ([b1af2b7](https://github.com/folke/flash.nvim/commit/b1af2b78b30e814c08840a5bb7f7ccef726ea771))
+* **jump:** better way to cancel operator pending mode ([4a980ea](https://github.com/folke/flash.nvim/commit/4a980ea7fedf20c902375fe7aa1141d671b0ffa7))
+
 ## [1.16.0](https://github.com/folke/flash.nvim/compare/v1.15.0...v1.16.0) (2023-07-12)
 
 
