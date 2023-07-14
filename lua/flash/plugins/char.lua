@@ -18,8 +18,16 @@ M.jump_labels = false
 M.motions = {
   f = { label = { after = { 0, 0 }, before = false } },
   t = {},
-  F = { search = { forward = false }, label = { after = { 0, 0 }, before = false } },
-  T = { search = { forward = false }, label = { before = true, after = false } },
+  F = {
+    jump = { inclusive = false },
+    search = { forward = false },
+    label = { after = { 0, 0 }, before = false },
+  },
+  T = {
+    jump = { inclusive = false },
+    search = { forward = false },
+    label = { before = true, after = false },
+  },
 }
 
 function M.new()

@@ -22,19 +22,19 @@ function M.offset_pos(buf, pos, offset)
   local ok, lines = pcall(vim.api.nvim_buf_get_lines, buf, row - 1, row, true)
   if not ok or lines == nil then
     -- fallback to old behavior if anything wrong happens
-    return {row, math.max(pos[2] + offset[2], 0)}
+    return { row, math.max(pos[2] + offset[2], 0) }
   end
 
   local line = lines[1]
   local charidx = vim.fn.charidx(line, pos[2])
   local col = vim.fn.byteidx(line, charidx + offset[2])
 
-  return {row, math.max(col, 0)}
+  return { row, math.max(col, 0) }
 end
 
 function M.get_char()
   Hacks.setcursor()
-  vim.cmd.redraw()
+  vim.cmd("redraw")
   local ok, ret = pcall(vim.fn.getcharstr)
   return ok and ret ~= M.ESC and ret or nil
 end
