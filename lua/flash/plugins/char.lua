@@ -260,6 +260,7 @@ function M.next()
     forward = M.state.opts.search.forward,
     current = M.current,
   })
+  M.current = false
   return true
 end
 
@@ -269,6 +270,7 @@ function M.prev()
     forward = not M.state.opts.search.forward,
     current = M.current,
   })
+  M.current = false
   -- check if we should enable wrapping.
   if not M.state.opts.search.wrap then
     local before = M.state:find({ count = 1, forward = false })
