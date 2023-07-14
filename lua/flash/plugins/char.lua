@@ -101,7 +101,9 @@ function M.setup()
   local keys = {}
 
   for k, v in pairs(Config.modes.char.keys) do
-    keys[type(k) == "number" and v or k] = v
+    if vim.g.mapleader ~= v and vim.g.maplocalleader ~= v then
+      keys[type(k) == "number" and v or k] = v
+    end
   end
 
   for _, key in ipairs({ "f", "F", "t", "T", ";", "," }) do
