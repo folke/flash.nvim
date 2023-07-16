@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.17.1](https://github.com/folke/flash.nvim/compare/v1.17.0...v1.17.1) (2023-07-16)
+
+
+### Bug Fixes
+
+* **char:** fix current for tT when count=0. Fixes [#159](https://github.com/folke/flash.nvim/issues/159) ([8604b56](https://github.com/folke/flash.nvim/commit/8604b562d919772dc161ac831dd7bfa948833fdd))
+* **char:** never add mappings for mapleader and maplocalleader ([6e3dab6](https://github.com/folke/flash.nvim/commit/6e3dab6b011bb7661b16e14dd4aa4215894c9291))
+* **char:** never overwrite existing mappings for ; and , ([abda6b8](https://github.com/folke/flash.nvim/commit/abda6b848bb11051e6a789f8a8572da3d3840bf1))
+* **char:** reset including current for tT searches. Fixes [#152](https://github.com/folke/flash.nvim/issues/152) ([9c53dad](https://github.com/folke/flash.nvim/commit/9c53dad391801acb9ce9aa49820f15f6692aec91))
+* **highlight:** set hl of target to current if it's a single character only. See [#158](https://github.com/folke/flash.nvim/issues/158) ([47d147b](https://github.com/folke/flash.nvim/commit/47d147b9527025b2ee73631b098edb5798afef4b))
+* **remote:** properly pass register for remote ops. Fixes [#156](https://github.com/folke/flash.nvim/issues/156) ([34cf6f6](https://github.com/folke/flash.nvim/commit/34cf6f685d2eabc8de438fdbaa41c8c17e9da459))
+
 ## [1.17.0](https://github.com/folke/flash.nvim/compare/v1.16.0...v1.17.0) (2023-07-14)
 
 
