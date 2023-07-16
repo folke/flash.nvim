@@ -7,6 +7,7 @@ local M = {}
 ---@param state Flash.State
 ---@return Flash.Match?
 function M.jump(match, state)
+  local register = vim.v.register
   -- add to jump list
   if state.opts.jump.jumplist then
     vim.cmd("normal! m'")
@@ -18,7 +19,7 @@ function M.jump(match, state)
 
   if is_op and (state.opts.remote_op.motion or match.win ~= vim.api.nvim_get_current_win()) then
     -- use our special logic for remote operator pending mode
-    return M.remote_op(match, state)
+    return M.remote_op(match, state, register)
   end
 
   -- change window if needed
@@ -53,8 +54,9 @@ end
 -- re-trigger the operator in the remote window.
 ---@param match Flash.Match
 ---@param state Flash.State
+---@param register string
 ---@return Flash.Match?
-function M.remote_op(match, state)
+function M.remote_op(match, state, register)
   Util.exit()
 
   -- schedule this so that the  active operator is properly cancelled
@@ -107,7 +109,7 @@ function M.remote_op(match, state)
     end
 
     -- re-trigger the operator
-    vim.api.nvim_input('"' .. vim.v.register .. vim.v.operator)
+    vim.api.nvim_input('"' .. register .. vim.v.operator)
     if state.opts.remote_op.restore then
       vim.schedule(function()
         M.restore_remote(state)
