@@ -222,7 +222,7 @@ function M.jump(key)
 
   -- HACK: When the motion is t or T, we need to set the current position as a valid target
   -- but only when we are not repeating
-  M.current = M.motion:lower() == "t" and parsed.getchar and vim.v.count == 0
+  M.current = M.motion:lower() == "t" and parsed.getchar
 
   -- update the state when needed
   if M.state.pattern:empty() then

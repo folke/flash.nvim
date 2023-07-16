@@ -104,6 +104,7 @@ function M:find(opts)
   self:_call(opts.pos, function()
     for _ = 1, math.max(opts.count, 1) do
       ret = self:_next(flags)
+      flags = flags:gsub("c", "")
     end
   end)
 
