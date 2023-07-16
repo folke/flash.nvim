@@ -1,4 +1,5 @@
 local assert = require("luassert")
+local Char = require("flash.plugins.char")
 require("flash").setup()
 
 describe("char", function()
@@ -61,5 +62,29 @@ describe("char", function()
       vim.cmd("norm " .. test.motion)
       assert.same(test.result, get())
     end)
+  end
+
+  local input = "abcd1abcd2abcd"
+  for _, motion in ipairs({ "f", "t", "F", "T" }) do
+    for col = 0, #input - 1 do
+      for count = -1, 3 do
+        count = count == -1 and "" or count
+        for _, char in ipairs({ "a", "b", "c", "d" }) do
+          local cmd = count .. "d" .. motion .. char
+          local pos = { 1, col }
+          it("works with " .. cmd .. " at " .. col, function()
+            set(input, pos)
+            vim.cmd("norm! " .. cmd)
+            local ret = get()
+            set(input, pos)
+            if Char.state then
+              Char.state:hide()
+            end
+            vim.cmd("norm " .. cmd)
+            assert.same(ret, get())
+          end)
+        end
+      end
+    end
   end
 end)
