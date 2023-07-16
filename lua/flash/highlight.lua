@@ -135,8 +135,14 @@ function M.update(state)
     local hl_group = state.opts.highlight.groups.label
     if state.rainbow then
       hl_group = state.rainbow:get(match)
-    end
-    if target and target.pos[1] == row + 1 and target.pos[2] == col and not state.rainbow then
+    elseif
+      -- set hl_group to current if the match is the current target
+      -- and the target is a single character
+      target
+      and target.pos[1] == row + 1
+      and target.pos[2] == col
+      and target.pos == target.end_pos
+    then
       hl_group = state.opts.highlight.groups.current
     end
     if match.label == "" then
