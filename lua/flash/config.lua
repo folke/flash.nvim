@@ -272,6 +272,9 @@ end
 ---@param ... Flash.Config|Flash.State.Config|nil
 ---@return Flash.State.Config
 function M.get(...)
+  if options == nil then
+    M.setup()
+  end
   ---@type Flash.Config[]
   local all = { {}, defaults, options or {} }
 
@@ -332,7 +335,7 @@ end
 return setmetatable(M, {
   __index = function(_, key)
     if options == nil then
-      return vim.deepcopy(defaults)[key]
+      M.setup()
     end
     return options[key]
   end,
