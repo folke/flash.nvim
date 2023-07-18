@@ -394,6 +394,9 @@ function M:step(opts)
 
   -- exit if no results
   if #self.results == 0 and not self.pattern:empty() then
+    if self.opts.search.incremental then
+      vim.api.nvim_input(c)
+    end
     return
   end
 

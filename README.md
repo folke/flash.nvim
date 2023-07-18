@@ -135,7 +135,7 @@ Install the plugin with your preferred package manager:
     -- max pattern length. If the pattern length is equal to this
     -- labels will no longer be skipped. When it exceeds this length
     -- it will either end in a jump or terminate the search
-    max_length = nil, ---@type number?
+    max_length = false, ---@type number|false
   },
   jump = {
     -- save location in the jumplist
