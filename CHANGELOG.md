@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.17.2](https://github.com/folke/flash.nvim/compare/v1.17.1...v1.17.2) (2023-07-18)
+
+
+### Bug Fixes
+
+* **char:** only use c for first search (of count) when current=true ([c92ecbf](https://github.com/folke/flash.nvim/commit/c92ecbff98fdc8770c283aa3934349e6889195dd))
+* **config:** run `setup` when using flash and it wasn't run yet. Fixes [#162](https://github.com/folke/flash.nvim/issues/162) ([c81e0d1](https://github.com/folke/flash.nvim/commit/c81e0d11b9e6e1279321e12a5d87dd3fac593854))
+* **state:** feed char when incremental and no match. Fixes [#57](https://github.com/folke/flash.nvim/issues/57) ([925f733](https://github.com/folke/flash.nvim/commit/925f733a731f8ed351e47d434e3a353995761012))
+
 ## [1.17.1](https://github.com/folke/flash.nvim/compare/v1.17.0...v1.17.1) (2023-07-16)
 
 
