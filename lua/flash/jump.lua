@@ -108,10 +108,19 @@ function M.remote_op(match, state, register)
       vim.api.nvim_win_set_cursor(0, to)
     end
 
+    ---@diagnostic disable-next-line: param-type-mismatch
+    local opmap = vim.fn.maparg(vim.v.operator, "", false, true) --[[@as any]]
+    if not vim.tbl_isempty(opmap) then
+      vim.keymap.del("", vim.v.operator)
+    end
+
     -- re-trigger the operator
     vim.api.nvim_input('"' .. register .. vim.v.operator)
     if state.opts.remote_op.restore then
       vim.schedule(function()
+        if not vim.tbl_isempty(opmap) then
+          vim.fn.mapset(opmap.mode, false, opmap)
+        end
         M.restore_remote(state)
       end)
     end
