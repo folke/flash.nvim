@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.17.3](https://github.com/folke/flash.nvim/compare/v1.17.2...v1.17.3) (2023-07-20)
+
+
+### Bug Fixes
+
+* **jump:** disable operator keymaps when replaying remote. Fixes [#165](https://github.com/folke/flash.nvim/issues/165) ([9f30d48](https://github.com/folke/flash.nvim/commit/9f30d48e2f509723e59c5b0915f343ce297cf386))
+
 ## [1.17.2](https://github.com/folke/flash.nvim/compare/v1.17.1...v1.17.2) (2023-07-18)
 
 
