@@ -363,7 +363,7 @@ function M:step(opts)
     end
     return
   elseif actions[c] then
-    local ret = opts.actions[c](self, c)
+    local ret = actions[c](self, c)
     if ret == nil then
       return true
     end
