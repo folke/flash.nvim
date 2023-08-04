@@ -64,7 +64,7 @@ function M.start()
       forward = vim.fn.getcmdtype() == "/",
       mode = "search",
       incremental = vim.go.incsearch,
-      multi_window = not M.op,
+      multi_window = not M.op and Config.search.multi_window,
     },
   })
 end
