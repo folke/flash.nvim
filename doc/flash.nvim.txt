@@ -1,4 +1,4 @@
-*flash.nvim.txt*         For Neovim >= 0.8.0         Last change: 2023 July 22
+*flash.nvim.txt*        For Neovim >= 0.8.0        Last change: 2023 August 29
 
 ==============================================================================
 Table of Contents                               *flash.nvim-table-of-contents*
@@ -59,7 +59,7 @@ lazy.nvim <https://github.com/folke/lazy.nvim>
       opts = {},
       -- stylua: ignore
       keys = {
-        { "s", mode = { "n", "x", "o" }, function() require("flash").jump() end, desc = "Flash" },
+        { "s", mode = { "n", "o", "x" }, function() require("flash").jump() end, desc = "Flash" },
         { "S", mode = { "n", "o", "x" }, function() require("flash").treesitter() end, desc = "Flash Treesitter" },
         { "r", mode = "o", function() require("flash").remote() end, desc = "Remote Flash" },
         { "R", mode = { "o", "x" }, function() require("flash").treesitter_search() end, desc = "Treesitter Search" },
