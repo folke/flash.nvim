@@ -210,6 +210,12 @@ function M.open_folds(match)
   local cursor = vim.api.nvim_win_get_cursor(match.win)
   local from = math.min(match.pos[1], cursor[1])
   local to = math.max(match.end_pos[1], cursor[1])
+
+  -- Do not mess up with folds if the target position is outside a fold.
+  if vim.fn.foldclosed(to) == -1 then
+    return
+  end
+
   local is_visual = vim.fn.mode(true):find("v")
   local opened = false
   for line = from, to do
