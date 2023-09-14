@@ -86,7 +86,8 @@ function M.matcher(win, state)
   local labels = state:labels()
   local ret = M.get_nodes(win, state.pos)
 
-  for i = 1, #ret do
+  -- skip selected range
+  for i = 2, #ret do
     ret[i].label = table.remove(labels, 1)
   end
   return ret
