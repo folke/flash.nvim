@@ -397,7 +397,6 @@ Install the plugin with your preferred package manager:
 - **VS Code**: some functionality is changed/disabled when running **flash** in **VS Code**:
   - `prompt` is disabled
   - `highlights` are set to different defaults that will actually work in VS Code
-  - `search.multi_window` is disabled, since VS Code has problems with `vim.api.nvim_set_current_win`
 
 ## 📡 API
 

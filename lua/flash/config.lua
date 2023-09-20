@@ -327,7 +327,6 @@ function M.get(...)
 
   if vim.g.vscode then
     ret.prompt.enabled = false
-    ret.search.multi_window = false
   end
   return ret
 end
