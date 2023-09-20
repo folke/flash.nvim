@@ -1,4 +1,4 @@
-*flash.nvim.txt*        For Neovim >= 0.8.0        Last change: 2023 August 29
+*flash.nvim.txt*       For Neovim >= 0.8.0      Last change: 2023 September 20
 
 ==============================================================================
 Table of Contents                               *flash.nvim-table-of-contents*
@@ -34,7 +34,7 @@ FEATURES                                      *flash.nvim-flash.nvim-features*
     of a specific Treesitter node.
 - **Jump Mode**a standalone jumping mode similar to search
 - **Search Modes**`exact`, `search` (regex), and `fuzzy` search modes
-- 🪟 **Multi Window** jumping
+- **Multi Window** jumping
 - **Remote Actions**perform motions in remote locations
 - **dot-repeatable** jumps
 - **highly extensible**check the examples <https://github.com/folke/flash.nvim#-examples>
@@ -94,10 +94,10 @@ Default Settings ~
         wrap = true,
         ---@type Flash.Pattern.Mode
         -- Each mode will take ignorecase and smartcase into account.
-        --  exact: exact match
-        --  search: regular search
-        --  fuzzy: fuzzy search
-        --  fun(str): custom function that returns a pattern
+        -- * exact: exact match
+        -- * search: regular search
+        -- * fuzzy: fuzzy search
+        -- * fun(str): custom function that returns a pattern
         --   For example, to only match at the beginning of a word:
         --   mode = function(str)
         --     return "\\<" .. str
@@ -306,7 +306,7 @@ Default Settings ~
       -- for regular jumps
       prompt = {
         enabled = true,
-        prefix = { { "", "FlashPromptIcon" } },
+        prefix = { { "⚡", "FlashPromptIcon" } },
         win_config = {
           relative = "editor",
           width = 1, -- when <=1 it's a percentage of the editor width
@@ -383,7 +383,6 @@ USAGE                                            *flash.nvim-flash.nvim-usage*
 - **VS Code**some functionality is changed/disabled when running **flash** in **VS Code**
     - `prompt`is disabled
     - `highlights` are set to different defaults that will actually work in VS Code
-    - `search.multi_window` is disabled, since VS Code has problems with `vim.api.nvim_set_current_win`
 
 
 API                                                *flash.nvim-flash.nvim-api*
@@ -511,7 +510,7 @@ Select any word ~
             pattern = pattern:sub(2)
           end
           -- return word pattern and proper skip pattern
-          return ([[\<%s\w\>]]):format(pattern), ([[\<%s]]):format(pattern)
+          return ([[\<%s\w*\>]]):format(pattern), ([[\<%s]]):format(pattern)
         end,
       },
       -- select the range
@@ -624,8 +623,8 @@ HopWord (hop.nvim)
       labeler = function(matches, state)
         local labels = state:labels()
         for m, match in ipairs(matches) do
-          match.label1 = labels[math.floor((m - 1) / labels) + 1]
-          match.label2 = labels[(m - 1) % labels + 1]
+          match.label1 = labels[math.floor((m - 1) / #labels) + 1]
+          match.label2 = labels[(m - 1) % #labels + 1]
           match.label = match.label1
         end
       end,
