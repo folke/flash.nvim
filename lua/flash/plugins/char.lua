@@ -166,8 +166,13 @@ function M.parse(key)
   -- don't repeat when executing a macro
   if M.visible() and vim.fn.reg_executing() == "" and M.motion:lower() == key:lower() then
     ret.actions = M.actions(M.motion)
-    ret.jump = ret.actions[key] or M.next
-    return ret
+    if ret.actions[key] then
+      ret.jump = ret.actions[key]
+      return ret
+    else
+      -- no action defined, so clear the state
+      M.motion = ""
+    end
   end
 
   -- different motion, clear the state
