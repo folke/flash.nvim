@@ -671,12 +671,15 @@ Flash.jump({
 
 ## 🌈 Highlights
 
-| Group           | Default      | Description    |
-| --------------- | ------------ | -------------- |
-| `FlashBackdrop` | `Comment`    | backdrop       |
-| `FlashMatch`    | `Search`     | search matches |
-| `FlashCurrent`  | `IncSearch`  | current match  |
-| `FlashLabel`    | `Substitute` | jump label     |
+| Group             | Default      | Description    |
+| ----------------- | ------------ | -------------- |
+| `FlashBackdrop`   | `Comment`    | backdrop       |
+| `FlashMatch`      | `Search`     | search matches |
+| `FlashCurrent`    | `IncSearch`  | current match  |
+| `FlashLabel`      | `Substitute` | jump label     |
+| `FlashPrompt`     | `MsgArea`    | prompt         |
+| `FlashPromptIcon` | `Special`    | prompt icon    |
+| `FlashCursor`     | `Cursor`     | cursor         |
 
 ## 📦 Alternatives
 
