@@ -1,4 +1,4 @@
-*flash.nvim.txt*       For Neovim >= 0.8.0      Last change: 2023 September 28
+*flash.nvim.txt*        For Neovim >= 0.8.0       Last change: 2023 October 01
 
 ==============================================================================
 Table of Contents                               *flash.nvim-table-of-contents*
@@ -634,12 +634,15 @@ HopWord (hop.nvim)
 
 HIGHLIGHTS                                  *flash.nvim-flash.nvim-highlights*
 
-  Group           Default      Description
-  --------------- ------------ ----------------
-  FlashBackdrop   Comment      backdrop
-  FlashMatch      Search       search matches
-  FlashCurrent    IncSearch    current match
-  FlashLabel      Substitute   jump label
+  Group             Default      Description
+  ----------------- ------------ ----------------
+  FlashBackdrop     Comment      backdrop
+  FlashMatch        Search       search matches
+  FlashCurrent      IncSearch    current match
+  FlashLabel        Substitute   jump label
+  FlashPrompt       MsgArea      prompt
+  FlashPromptIcon   Special      prompt icon
+  FlashCursor       Cursor       cursor
 
 ALTERNATIVES                              *flash.nvim-flash.nvim-alternatives*
 
