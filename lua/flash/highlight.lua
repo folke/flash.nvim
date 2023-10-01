@@ -13,6 +13,7 @@ function M.setup()
       FlashCurrent = { bg = "#ff966c", fg = "#1b1d2b" },
       FlashLabel = { bg = "#ff007c", bold = true, fg = "#c8d3f5" },
       FlashMatch = { bg = "#3e68d7", fg = "#c8d3f5" },
+      FlashCursor = { reverse = true },
     }
     for hl_group, hl in pairs(hls) do
       hl.default = true
@@ -26,6 +27,7 @@ function M.setup()
       FlashLabel = "Substitute",
       FlashPrompt = "MsgArea",
       FlashPromptIcon = "Special",
+      FlashCursor = "Cursor",
     }
     for hl_group, link in pairs(links) do
       vim.api.nvim_set_hl(0, hl_group, { link = link, default = true })
@@ -69,7 +71,7 @@ function M.cursor(state)
     local cursor = vim.api.nvim_win_get_cursor(win)
     local buf = vim.api.nvim_win_get_buf(win)
     vim.api.nvim_buf_set_extmark(buf, state.ns, cursor[1] - 1, cursor[2], {
-      hl_group = "Cursor",
+      hl_group = "FlashCursor",
       end_col = cursor[2] + 1,
       priority = state.opts.highlight.priority + 3,
       strict = false,
