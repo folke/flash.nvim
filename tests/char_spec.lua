@@ -1,5 +1,5 @@
-local assert = require("luassert")
 local Char = require("flash.plugins.char")
+local assert = require("luassert")
 require("flash").setup()
 
 describe("char", function()

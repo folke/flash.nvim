@@ -1,6 +1,6 @@
 local Jump = require("flash.jump")
-local State = require("flash.state")
 local Pos = require("flash.search.pos")
+local State = require("flash.state")
 local assert = require("luassert")
 
 describe("jump", function()

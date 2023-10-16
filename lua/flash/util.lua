@@ -1,5 +1,5 @@
-local require = require("flash.require")
 local Hacks = require("flash.hacks")
+local require = require("flash.require")
 
 local M = {}
 

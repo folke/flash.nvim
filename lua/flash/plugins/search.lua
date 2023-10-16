@@ -1,9 +1,9 @@
 local require = require("flash.require")
 
+local Config = require("flash.config")
 local Jump = require("flash.jump")
 local State = require("flash.state")
 local Util = require("flash.util")
-local Config = require("flash.config")
 
 local M = {}
 

@@ -1,5 +1,5 @@
-local Search = require("flash.search")
 local Labeler = require("flash.labeler")
+local Search = require("flash.search")
 local State = require("flash.state")
 local assert = require("luassert")
 

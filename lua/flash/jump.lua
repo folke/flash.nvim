@@ -1,6 +1,6 @@
+local Hacks = require("flash.hacks")
 local Pos = require("flash.search.pos")
 local Util = require("flash.util")
-local Hacks = require("flash.hacks")
 local M = {}
 
 ---@param match Flash.Match

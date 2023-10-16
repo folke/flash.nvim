@@ -1,9 +1,9 @@
 local require = require("flash.require")
 
-local Util = require("flash.util")
-local Repeat = require("flash.repeat")
 local Config = require("flash.config")
 local Labeler = require("flash.labeler")
+local Repeat = require("flash.repeat")
+local Util = require("flash.util")
 
 local M = {}
 

@@ -1,5 +1,5 @@
-local Pos = require("flash.search.pos")
 local Pattern = require("flash.search.pattern")
+local Pos = require("flash.search.pos")
 local Util = require("flash.util")
 
 ---@class Flash.State.Window
