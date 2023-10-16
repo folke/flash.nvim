@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.18.1](https://github.com/folke/flash.nvim/compare/v1.18.0...v1.18.1) (2023-10-16)
+
+
+### Bug Fixes
+
+* **char:** allow setting autohide=true for char mode. Fixes [#231](https://github.com/folke/flash.nvim/issues/231) ([71040c8](https://github.com/folke/flash.nvim/commit/71040c87bd64d2719727006f51f8679352eb6146))
+* **jump:** send `esc` when cancelling flash. Fixes [#212](https://github.com/folke/flash.nvim/issues/212). Fixes [#233](https://github.com/folke/flash.nvim/issues/233) ([677eb59](https://github.com/folke/flash.nvim/commit/677eb59f0a94ed3b735168d9e6738723fd44796d))
+* **treesitter:** include treesitter injections. Fixes [#242](https://github.com/folke/flash.nvim/issues/242) ([5fe47ba](https://github.com/folke/flash.nvim/commit/5fe47baf1be05ea34abb6912ed89a5a17cbf5661))
+* **treesitter:** keep treesitter sorting when doing ;,. Fixes [#219](https://github.com/folke/flash.nvim/issues/219) ([aae8352](https://github.com/folke/flash.nvim/commit/aae83521091fac904b8584bb2dffe13420b7adc7))
+
 ## [1.18.0](https://github.com/folke/flash.nvim/compare/v1.17.3...v1.18.0) (2023-10-02)
 
 
