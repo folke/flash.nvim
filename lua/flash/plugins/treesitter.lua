@@ -1,7 +1,7 @@
-local Repeat = require("flash.repeat")
-local Util = require("flash.util")
 local Config = require("flash.config")
 local Pos = require("flash.search.pos")
+local Repeat = require("flash.repeat")
+local Util = require("flash.util")
 
 local M = {}
 
@@ -25,7 +25,9 @@ function M.get_nodes(win, pos)
 
   do
     -- get all ranges of the current node and its parents
-    local node = tree:named_node_for_range({ pos[1] - 1, pos[2], pos[1] - 1, pos[2] })
+    local node = tree:named_node_for_range({ pos[1] - 1, pos[2], pos[1] - 1, pos[2] }, {
+      ignore_injections = false,
+    })
 
     while node do
       nodes[#nodes + 1] = node
