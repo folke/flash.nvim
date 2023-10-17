@@ -18,8 +18,16 @@ function M.get_nodes(win, pos)
 
   local nodes = {} ---@type TSNode[]
 
-  local tree = vim.treesitter.get_parser(buf)
-  if not tree then
+  local ok, tree = pcall(vim.treesitter.get_parser, buf)
+  if not ok then
+    vim.notify(
+      "No treesitter parser for this buffer with filetype=" .. vim.bo[buf].filetype,
+      vim.log.levels.WARN,
+      { title = "flash.nvim" }
+    )
+    vim.api.nvim_input("<esc>")
+  end
+  if not (ok and tree) then
     return {}
   end
 
