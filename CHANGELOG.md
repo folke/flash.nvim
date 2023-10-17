@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.18.2](https://github.com/folke/flash.nvim/compare/v1.18.1...v1.18.2) (2023-10-17)
+
+
+### Bug Fixes
+
+* **treesitter:** show warning when treesitter not available. Fixes [#261](https://github.com/folke/flash.nvim/issues/261) ([77c66d8](https://github.com/folke/flash.nvim/commit/77c66d84be3e2a2ef2e6689de668fe156af74498))
+
 ## [1.18.1](https://github.com/folke/flash.nvim/compare/v1.18.0...v1.18.1) (2023-10-16)
 
 
