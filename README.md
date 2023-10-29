@@ -399,7 +399,7 @@ Install the plugin with your preferred package manager:
 - **jump**: `require("flash").jump(opts?)` opens **flash** with the given options
   - type any number of characters before typing a jump label
 - **VS Code**: some functionality is changed/disabled when running **flash** in **VS Code**:
-  - `prompt` is disabled
+  - `prompt` will show in the status bar
   - `highlights` are set to different defaults that will actually work in VS Code
 
 ## 📡 API
