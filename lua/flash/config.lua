@@ -329,9 +329,6 @@ function M.get(...)
     ret.config(ret)
   end
 
-  if vim.g.vscode then
-    ret.prompt.enabled = false
-  end
   return ret
 end
 

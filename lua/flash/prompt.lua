@@ -1,5 +1,35 @@
 local Config = require("flash.config")
 
+if vim.g.vscode then
+  local prompt
+  pcall(function() -- The current extension version may not have this API
+    prompt = require("vscode-neovim").get_status_item("flash.nvim")
+  end)
+
+  return {
+    show = function() end,
+    hide = function()
+      if prompt then
+        prompt.text = ""
+      end
+    end,
+    ---@param pattern string
+    set = function(pattern)
+      if prompt then
+        local text = vim.deepcopy(Config.prompt.prefix)
+        text[#text + 1] = { pattern }
+
+        local str = ""
+        for _, item in ipairs(text) do
+          str = str .. item[1]
+        end
+
+        prompt.text = str
+      end
+    end,
+  }
+end
+
 ---@class Flash.Prompt
 ---@field win window
 ---@field buf buffer
