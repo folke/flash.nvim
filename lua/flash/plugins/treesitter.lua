@@ -41,6 +41,18 @@ function M.get_nodes(win, pos)
       nodes[#nodes + 1] = node
       node = node:parent() ---@type TSNode
     end
+
+    -- if previous nodes come from injections, get all ranges outside the injections, too
+    node = tree:named_node_for_range({ pos[1] - 1, pos[2], pos[1] - 1, pos[2] }, {
+      ignore_injections = true,
+    })
+
+    if node and nodes[1]:id() ~= node:id() then
+      while node do
+        nodes[#nodes + 1] = node
+        node = node:parent() ---@type TSNode
+      end
+    end
   end
 
   -- convert ranges to matches
