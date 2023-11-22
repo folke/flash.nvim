@@ -138,6 +138,7 @@ Default Settings ~
         -- clear highlight after jump
         nohlsearch = false,
         -- automatically jump when there is only one match
+        -- or let require("flash").treesitter() select the smallest node
         autojump = false,
         -- You can force inclusive/exclusive jumps by setting the
         -- `inclusive` option. By default it will be automatically
@@ -287,7 +288,7 @@ Default Settings ~
         -- `require("flash").treesitter()`
         treesitter = {
           labels = "abcdefghijklmnopqrstuvwxyz",
-          jump = { pos = "range" },
+          jump = { pos = "range", autojump = true },
           search = { incremental = false },
           label = { before = true, after = true, style = "inline" },
           highlight = {
