@@ -240,7 +240,7 @@ function M.jump(key)
   jump()
   M.state:update({ force = true })
 
-  if M.jump_labels then
+  if M.jump_labels and (not M.state.opts.modes.char.jump.autojump or #M.state.results ~= 1) then
     parsed.actions[Util.CR] = function()
       return false
     end
