@@ -101,7 +101,11 @@ end
 
 function M.is_search()
   local t = vim.fn.getcmdtype()
-  return t == "/" or t == "?"
+  for _, key in ipairs(Config.get({ mode = "search" }).keys) do
+      if t == key then
+          return true
+      end
+  end
 end
 
 ---@param opts? Flash.State.Config
