@@ -106,6 +106,7 @@ function M.is_search()
           return true
       end
   end
+  return false
 end
 
 ---@param opts? Flash.State.Config
