@@ -23,7 +23,7 @@ function M.toggle_current_search(enabled)
     return M.enabled_in_current_search
   end
 
-    M.enabled_in_current_search = enabled
+  M.enabled_in_current_search = enabled
 
   if State.is_search() then
     if M.enabled_in_current_search then
@@ -44,17 +44,17 @@ end
 ---@param enabled? boolean
 function M.toggle(enabled)
   if enabled == nil then
-    enabled = not M.enabled
+    enabled = not M.get_enabled()
   end
 
-  if M.enabled == enabled then
-    return M.enabled
+  if M.get_enabled() == enabled then
+    return M.get_enabled()
   end
 
   M.set_enabled(enabled)
 
   if State.is_search() then
-    if M.enabled then
+    if M.get_enabled() then
       M.start()
       M.update(false)
     elseif M.state then
@@ -66,13 +66,18 @@ function M.toggle(enabled)
     -- trigger incsearch to update the matches
     vim.api.nvim_feedkeys(" " .. Util.BS, "n", true)
   end
-  return M.enabled
+  return M.get_enabled()
 end
 
 ---@param enabled? boolean
 function M.set_enabled(enabled)
     M.enabled = enabled
+    M.enabled_in_current_search = enabled
+end
+
+function M.get_enabled()
     M.enabled_in_current_search = M.enabled
+    return M.enabled
 end
 
 ---@param check_jump? boolean
@@ -135,7 +140,7 @@ function M.setup()
   vim.api.nvim_create_autocmd("CmdlineEnter", {
     group = group,
     callback = function()
-      if State.is_search() and M.enabled then
+      if State.is_search() and M.get_enabled() then
         M.start()
         M.set_op(vim.fn.mode() == "v")
       end
