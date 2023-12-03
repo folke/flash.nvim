@@ -11,6 +11,35 @@ local M = {}
 M.state = nil
 M.op = false
 M.enabled = true
+M.enabled_in_current_search = true
+
+---@param enabled? boolean
+function M.toggle_current_search(enabled)
+  if enabled == nil then
+    enabled = not M.enabled_in_current_search
+  end
+
+  if M.enabled_in_current_search == enabled then
+    return M.enabled_in_current_search
+  end
+
+    M.enabled_in_current_search = enabled
+
+  if State.is_search() then
+    if M.enabled_in_current_search then
+      M.start()
+      M.update(false)
+    elseif M.state then
+      M.state:hide()
+      M.state = nil
+    end
+    -- redraw to show the change
+    vim.cmd("redraw")
+    -- trigger incsearch to update the matches
+    vim.api.nvim_feedkeys(" " .. Util.BS, "n", true)
+  end
+  return M.enabled_in_current_search
+end
 
 ---@param enabled? boolean
 function M.toggle(enabled)
@@ -22,7 +51,7 @@ function M.toggle(enabled)
     return M.enabled
   end
 
-  M.enabled = enabled
+  M.set_enabled(enabled)
 
   if State.is_search() then
     if M.enabled then
@@ -38,6 +67,12 @@ function M.toggle(enabled)
     vim.api.nvim_feedkeys(" " .. Util.BS, "n", true)
   end
   return M.enabled
+end
+
+---@param enabled? boolean
+function M.set_enabled(enabled)
+    M.enabled = enabled
+    M.enabled_in_current_search = M.enabled
 end
 
 ---@param check_jump? boolean
@@ -73,7 +108,7 @@ end
 
 function M.setup()
   local group = vim.api.nvim_create_augroup("flash", { clear = true })
-  M.enabled = Config.modes.search.enabled or false
+  M.set_enabled(Config.modes.search.enabled or false)
 
   local function wrap(fn)
     return function(...)
