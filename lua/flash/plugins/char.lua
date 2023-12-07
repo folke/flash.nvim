@@ -241,6 +241,10 @@ function M.jump(key)
   M.state:update({ force = true })
 
   if M.jump_labels then
+    if (Config.get("char").jump.autojump and #M.state.results == 1) then
+      M.state:hide()
+      return M.state
+    end
     parsed.actions[Util.CR] = function()
       return false
     end
