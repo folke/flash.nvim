@@ -94,12 +94,36 @@ end
 ---@param state Flash.State
 function M.matcher(win, state)
   local labels = state:labels()
-  local ret = M.get_nodes(win, state.pos)
+  local nodes = M.get_nodes(win, state.pos)
 
-  for i = 1, #ret do
-    ret[i].label = table.remove(labels, 1)
+  local matches = {}
+  local prev_node = {}
+  for i = 1, #nodes do
+    if i > 1 then
+      if state.opts.jump.pos == "start" and
+        prev_node.win == nodes[i].win and
+        prev_node.pos[1] == nodes[i].pos[1] and
+        prev_node.pos[2] == nodes[i].pos[2] then
+
+        goto continue
+      elseif state.opts.jump.pos == "end" and
+        prev_node.win == nodes[i].win and
+        prev_node.end_pos[1] == nodes[i].end_pos[1] and
+        prev_node.end_pos[2] == nodes[i].end_pos[2] then
+
+        goto continue
+      end
+    end
+
+    prev_node = nodes[i]
+    table.insert(matches, nodes[i])
+    ::continue::
   end
-  return ret
+
+  for i = 1, #matches do
+    matches[i].label = table.remove(labels, 1)
+  end
+  return matches
 end
 
 ---@param opts? Flash.Config
