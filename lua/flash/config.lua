@@ -9,6 +9,9 @@ local M = {}
 local defaults = {
   -- labels = "abcdefghijklmnopqrstuvwxyz",
   labels = "asdfghjklqwertyuiopzxcvbnm",
+  -- hit a upper label of above labels to select a visual by line in range jumps,
+  -- if label is upper, do nothing.
+  use_upper_select_visual_line = false,
   search = {
     -- search/jump in all windows
     multi_window = true,
@@ -211,9 +214,6 @@ local defaults = {
     -- `require("flash").treesitter()`
     treesitter = {
       labels = "abcdefghijklmnopqrstuvwxyz",
-      -- hit a upper label of above labels to selected with visual line
-      -- if label is upper, do nothing
-      use_upper_select_visual_line = false,
       jump = { pos = "range" },
       search = { incremental = false },
       label = { before = true, after = true, style = "inline" },
