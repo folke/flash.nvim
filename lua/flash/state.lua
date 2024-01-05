@@ -147,7 +147,6 @@ function M:jump(target)
   local match ---@type Flash.Match?
   if type(target) == "string" then
     match = self:find({ label = target })
-        vim.print(self.opts)
     if not match and
       self.opts.jump.pos == "range" and
       self.opts.use_upper_select_visual_line then
