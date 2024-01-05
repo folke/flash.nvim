@@ -100,13 +100,7 @@ function M:labels()
 end
 
 function M.is_search()
-  local t = vim.fn.getcmdtype()
-  for _, key in ipairs(Config.get({ mode = "search" }).keys) do
-      if t == key then
-          return true
-      end
-  end
-  return false
+  return vim.tbl_contains(Config.get({ mode = "search" }).keys, vim.fn.getcmdtype())
 end
 
 ---@param opts? Flash.State.Config
