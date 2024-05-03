@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.18.3](https://github.com/folke/flash.nvim/compare/v1.18.2...v1.18.3) (2024-05-03)
+
+
+### Bug Fixes
+
+* **hacks:** use `vim.api.nvim__redraw` to fix the cursor instead of ffi. Fixes [#333](https://github.com/folke/flash.nvim/issues/333) ([1b128ff](https://github.com/folke/flash.nvim/commit/1b128ff527c3938460ef83fe6403ce6ce3f53b53))
+
 ## [1.18.2](https://github.com/folke/flash.nvim/compare/v1.18.1...v1.18.2) (2023-10-17)
 
 
