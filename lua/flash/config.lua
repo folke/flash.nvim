@@ -147,6 +147,8 @@ local defaults = {
       -- when `true`, flash will be activated during regular search by default.
       -- You can always toggle when searching with `require("flash").toggle()`
       enabled = true,
+      -- only support `/` and `?`
+      keys = { "/", "?" },
       highlight = { backdrop = false },
       jump = { history = true, register = true, nohlsearch = true },
       search = {
