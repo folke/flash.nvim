@@ -233,7 +233,7 @@ Install the plugin with your preferred package manager:
     search = {
       -- when `true`, flash will be activated during regular search by default.
       -- You can always toggle when searching with `require("flash").toggle()`
-      enabled = true,
+      enabled = false,
       highlight = { backdrop = false },
       jump = { history = true, register = true, nohlsearch = true },
       search = {
@@ -353,7 +353,8 @@ Install the plugin with your preferred package manager:
 
 - **Treesitter**: `require("flash").treesitter(opts?)` opens **flash** in **Treesitter** mode
   - use a jump label, or use `;` and `,` to increase/decrease the selection
-- **regular search**: search as you normally do, but enhanced with jump labels
+- **regular search**: search as you normally do, but enhanced with jump labels.
+  You need to set `opts.modes.search.enabled = true`, or toggle it with `require("flash").toggle()`
 - `f`, `t`, `F`, `T` motions:
   - After typing `f{char}` or `F{char},` you can repeat the motion with `f`
     or go to the previous match with `F` to undo a jump.
@@ -371,7 +372,9 @@ Install the plugin with your preferred package manager:
   - arround your matches, all the surrounding Treesitter nodes will be labeled.
   - select a label to perform the operator on the new selection
 - **remote**: `require("flash").remote(opts?)` opens **flash** in **remote** mode
+
   - equivalent to:
+
     ```lua
     require("flash").jump({
       remote_op = {
@@ -380,6 +383,7 @@ Install the plugin with your preferred package manager:
       },
     })
     ```
+
   - this is only useful in operator pending mode.
   - For example, press `yr` to start yanking and open flash
     - select a label to set the cursor position
@@ -388,6 +392,7 @@ Install the plugin with your preferred package manager:
     - you'll be back in the original window / position
   - You can also configure the `remote_op` options by default, so that `ys`,
     behaves like `yr` for remote operations
+
     ```lua
     require("flash").jump({
       remote_op = {
@@ -396,6 +401,7 @@ Install the plugin with your preferred package manager:
       },
     })
     ```
+
 - **jump**: `require("flash").jump(opts?)` opens **flash** with the given options
   - type any number of characters before typing a jump label
 - **VS Code**: some functionality is changed/disabled when running **flash** in **VS Code**:
