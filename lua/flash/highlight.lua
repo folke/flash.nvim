@@ -68,14 +68,18 @@ end
 ---@param state Flash.State
 function M.cursor(state)
   for _, win in ipairs(state.wins) do
-    local cursor = vim.api.nvim_win_get_cursor(win)
-    local buf = vim.api.nvim_win_get_buf(win)
-    vim.api.nvim_buf_set_extmark(buf, state.ns, cursor[1] - 1, cursor[2], {
-      hl_group = "FlashCursor",
-      end_col = cursor[2] + 1,
-      priority = state.opts.highlight.priority + 3,
-      strict = false,
-    })
+    if vim.api.nvim__redraw then
+      vim.api.nvim__redraw({ cursor = true, win = win })
+    else
+      local cursor = vim.api.nvim_win_get_cursor(win)
+      local buf = vim.api.nvim_win_get_buf(win)
+      vim.api.nvim_buf_set_extmark(buf, state.ns, cursor[1] - 1, cursor[2], {
+        hl_group = "FlashCursor",
+        end_col = cursor[2] + 1,
+        priority = state.opts.highlight.priority + 3,
+        strict = false,
+      })
+    end
   end
 end
 
