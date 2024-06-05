@@ -33,4 +33,11 @@ function M.toggle(enabled)
   return Search.toggle(enabled)
 end
 
+---@param enabled? boolean
+function M.toggle_current_search(enabled)
+  local Search = require("flash.plugins.search")
+  return Search.toggle_current_search(enabled)
+end
+
+
 return M

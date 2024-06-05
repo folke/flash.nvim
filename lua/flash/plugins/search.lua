@@ -11,21 +11,22 @@ local M = {}
 M.state = nil
 M.op = false
 M.enabled = true
+M.enabled_in_current_search = true
 
 ---@param enabled? boolean
-function M.toggle(enabled)
+function M.toggle_current_search(enabled)
   if enabled == nil then
-    enabled = not M.enabled
+    enabled = not M.enabled_in_current_search
   end
 
-  if M.enabled == enabled then
-    return M.enabled
+  if M.enabled_in_current_search == enabled then
+    return M.enabled_in_current_search
   end
 
-  M.enabled = enabled
+  M.enabled_in_current_search = enabled
 
   if State.is_search() then
-    if M.enabled then
+    if M.enabled_in_current_search then
       M.start()
       M.update(false)
     elseif M.state then
@@ -37,7 +38,46 @@ function M.toggle(enabled)
     -- trigger incsearch to update the matches
     vim.api.nvim_feedkeys(" " .. Util.BS, "n", true)
   end
-  return M.enabled
+  return M.enabled_in_current_search
+end
+
+---@param enabled? boolean
+function M.toggle(enabled)
+  if enabled == nil then
+    enabled = not M.get_enabled()
+  end
+
+  if M.get_enabled() == enabled then
+    return M.get_enabled()
+  end
+
+  M.set_enabled(enabled)
+
+  if State.is_search() then
+    if M.get_enabled() then
+      M.start()
+      M.update(false)
+    elseif M.state then
+      M.state:hide()
+      M.state = nil
+    end
+    -- redraw to show the change
+    vim.cmd("redraw")
+    -- trigger incsearch to update the matches
+    vim.api.nvim_feedkeys(" " .. Util.BS, "n", true)
+  end
+  return M.get_enabled()
+end
+
+---@param enabled? boolean
+function M.set_enabled(enabled)
+    M.enabled = enabled
+    M.enabled_in_current_search = enabled
+end
+
+function M.get_enabled()
+    M.enabled_in_current_search = M.enabled
+    return M.enabled
 end
 
 ---@param check_jump? boolean
@@ -73,7 +113,7 @@ end
 
 function M.setup()
   local group = vim.api.nvim_create_augroup("flash", { clear = true })
-  M.enabled = Config.modes.search.enabled or false
+  M.set_enabled(Config.modes.search.enabled or false)
 
   local function wrap(fn)
     return function(...)
@@ -100,7 +140,7 @@ function M.setup()
   vim.api.nvim_create_autocmd("CmdlineEnter", {
     group = group,
     callback = function()
-      if State.is_search() and M.enabled then
+      if State.is_search() and M.get_enabled() then
         M.start()
         M.set_op(vim.fn.mode() == "v")
       end
