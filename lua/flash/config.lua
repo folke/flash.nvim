@@ -9,6 +9,9 @@ local M = {}
 local defaults = {
   -- labels = "abcdefghijklmnopqrstuvwxyz",
   labels = "asdfghjklqwertyuiopzxcvbnm",
+  -- hit a upper label of above labels to select a visual by line in range jumps,
+  -- if label is upper, do nothing.
+  use_upper_select_visual_line = false,
   search = {
     -- search/jump in all windows
     multi_window = true,
