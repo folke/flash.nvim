@@ -121,7 +121,9 @@ function M.jump(opts)
       current = m
     end
   end
-  current = state:jump(current)
+  if state.opts.jump.autojump then
+    current = state:jump(current)
+  end
 
   state:loop({
     abort = function()
