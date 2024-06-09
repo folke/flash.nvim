@@ -33,4 +33,9 @@ function M.toggle(enabled)
   return Search.toggle(enabled)
 end
 
+---@return string
+function M.prompt()
+  return require("flash.prompt").prompt or ""
+end
+
 return M
