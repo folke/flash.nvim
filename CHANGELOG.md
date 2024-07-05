@@ -1,5 +1,23 @@
 # Changelog
 
+## [2.0.0](https://github.com/folke/flash.nvim/compare/v1.18.3...v2.0.0) (2024-07-05)
+
+
+### ⚠ BREAKING CHANGES
+
+* **search:** flash is now no longer enabled by default during search. Enable it in your config, or use toggle.
+
+### Features
+
+* **char:** add auto-jump/auto-motion option when using labels, closes [#183](https://github.com/folke/flash.nvim/issues/183) ([#281](https://github.com/folke/flash.nvim/issues/281)) ([b14120a](https://github.com/folke/flash.nvim/commit/b14120a4b55c34a83baf40650b8612b411c81ef4))
+* **search:** flash is now no longer enabled by default during search. Enable it in your config, or use toggle. ([2411de6](https://github.com/folke/flash.nvim/commit/2411de6fd773ab5b902cf04f2dccfe3baadff229))
+
+
+### Bug Fixes
+
+* Don't exit in regular search mode when there is no result ([#277](https://github.com/folke/flash.nvim/issues/277)) ([518c047](https://github.com/folke/flash.nvim/commit/518c047031e3dee0b22fad2b23d75deb7ecd826e))
+* use real cursors on Neovim &gt;= 0.10. See [#345](https://github.com/folke/flash.nvim/issues/345) ([7ba2298](https://github.com/folke/flash.nvim/commit/7ba2298eb196826442ce68cc6ec0cae2d7d4dbe1))
+
 ## [1.18.3](https://github.com/folke/flash.nvim/compare/v1.18.2...v1.18.3) (2024-05-03)
 
 
