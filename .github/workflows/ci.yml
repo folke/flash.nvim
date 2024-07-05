@@ -12,3 +12,4 @@ jobs:
     with:
       plugin: flash.nvim
       repo: folke/flash.nvim
+      tests: true

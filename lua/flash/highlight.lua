@@ -124,12 +124,7 @@ function M.update(state)
     -- dont show the label if the cursor is on the same position
     -- in the same window
     -- and the label is not a range
-    if
-      cursor[1] == row + 1
-      and cursor[2] == col
-      and match.win == state.win
-      and state.opts.jump.pos ~= "range"
-    then
+    if cursor[1] == row + 1 and cursor[2] == col and match.win == state.win and state.opts.jump.pos ~= "range" then
       return
     end
     if match.fold then

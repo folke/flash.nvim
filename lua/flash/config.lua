@@ -313,10 +313,7 @@ function M.get(...)
       o.label = vim.tbl_deep_extend("force", o.label or {}, o.highlight.label)
       ---@diagnostic disable-next-line: no-unknown
       o.highlight.label = nil
-      vim.notify_once(
-        "flash: `opts.highlight.label` is deprecated, use `opts.label` instead",
-        vim.log.levels.WARN
-      )
+      vim.notify_once("flash: `opts.highlight.label` is deprecated, use `opts.label` instead", vim.log.levels.WARN)
     end
     for _, field in ipairs({ "autohide", "jump_labels" }) do
       if type(o[field]) == "function" then

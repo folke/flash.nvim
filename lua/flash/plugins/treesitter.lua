@@ -63,14 +63,12 @@ function M.get_nodes(win, pos)
     -- then move it to the last character of the last line.
     if match.end_pos[1] > line_count then
       match.end_pos[1] = line_count
-      match.end_pos[2] =
-        #vim.api.nvim_buf_get_lines(buf, match.end_pos[1] - 1, match.end_pos[1], false)[1]
+      match.end_pos[2] = #vim.api.nvim_buf_get_lines(buf, match.end_pos[1] - 1, match.end_pos[1], false)[1]
     elseif match.end_pos[2] == -1 then
       -- If the end points to the start of the next line, move it to the
       -- end of the previous line.
       -- Otherwise operations include the first character of the next line
-      local line =
-        vim.api.nvim_buf_get_lines(buf, match.end_pos[1] - 2, match.end_pos[1] - 1, false)[1]
+      local line = vim.api.nvim_buf_get_lines(buf, match.end_pos[1] - 2, match.end_pos[1] - 1, false)[1]
       match.end_pos[1] = match.end_pos[1] - 1
       match.end_pos[2] = #line
     end

@@ -46,8 +46,7 @@ function M.new()
   }, M.motions[M.motion])
 
   -- never show the current match label
-  opts.highlight.groups.current = M.motion:lower() == "f" and opts.highlight.groups.label
-    or opts.highlight.groups.match
+  opts.highlight.groups.current = M.motion:lower() == "f" and opts.highlight.groups.label or opts.highlight.groups.match
 
   -- exclude the motion labels so we can use them for next/prev
   opts.labels = opts.labels:gsub(M.motion:lower(), "")
@@ -241,7 +240,7 @@ function M.jump(key)
   M.state:update({ force = true })
 
   if M.jump_labels then
-    if (Config.get("char").jump.autojump and #M.state.results == 1) then
+    if Config.get("char").jump.autojump and #M.state.results == 1 then
       M.state:hide()
       return M.state
     end

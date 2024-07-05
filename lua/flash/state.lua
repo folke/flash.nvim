@@ -56,11 +56,7 @@ function M.setup()
           local ok, err = pcall(state.update, state)
           if not ok then
             vim.schedule(function()
-              vim.notify(
-                "Flash error during redraw:\n" .. err,
-                vim.log.levels.ERROR,
-                { title = "flash.nvim" }
-              )
+              vim.notify("Flash error during redraw:\n" .. err, vim.log.levels.ERROR, { title = "flash.nvim" })
             end)
           end
         end
@@ -217,9 +213,7 @@ function M:check_jump(pattern)
     return
   end
   local chars = vim.fn.strchars(pattern)
-  if
-    pattern:find(self.pattern(), 1, true) == 1 and chars == vim.fn.strchars(self.pattern()) + 1
-  then
+  if pattern:find(self.pattern(), 1, true) == 1 and chars == vim.fn.strchars(self.pattern()) + 1 then
     local label = vim.fn.strcharpart(pattern, chars - 1, 1)
     if self:jump(label) then
       return true
@@ -394,7 +388,7 @@ function M:step(opts)
   end
 
   -- exit if no results and not in regular search mode
-  if #self.results == 0 and not self.pattern:empty() and self.pattern.mode ~= 'search' then
+  if #self.results == 0 and not self.pattern:empty() and self.pattern.mode ~= "search" then
     if self.opts.search.incremental then
       vim.api.nvim_input(c)
     end
