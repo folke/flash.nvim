@@ -292,7 +292,12 @@ Install the plugin with your preferred package manager:
       end,
       search = { wrap = false },
       highlight = { backdrop = true },
-      jump = { register = false },
+      jump = {
+        register = false,
+        -- when using jump labels, set to 'true' to automatically jump
+        -- or execute a motion when there is only one match
+        autojump = false,
+      },
     },
     -- options used for treesitter selections
     -- `require("flash").treesitter()`
