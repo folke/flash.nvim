@@ -130,7 +130,7 @@ function M.jump(opts)
 
   state:loop({
     abort = function()
-      vim.cmd([[normal! v]])
+      Util.exit()
     end,
     actions = {
       [";"] = function()
@@ -179,7 +179,11 @@ function M.search(opts)
   end)
 
   local state = Repeat.get_state("treesitter-search", opts)
-  state:loop()
+  state:loop({
+    abort = function()
+      Util.exit()
+    end,
+  })
   return state
 end
 
