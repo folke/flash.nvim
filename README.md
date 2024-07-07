@@ -303,7 +303,7 @@ Install the plugin with your preferred package manager:
     -- `require("flash").treesitter()`
     treesitter = {
       labels = "abcdefghijklmnopqrstuvwxyz",
-      jump = { pos = "range" },
+      jump = { pos = "range", autojump = true },
       search = { incremental = false },
       label = { before = true, after = true, style = "inline" },
       highlight = {
