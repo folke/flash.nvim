@@ -1,8 +1,9 @@
 local Config = require("flash.config")
 
 ---@class Flash.Prompt
----@field win window
----@field buf buffer
+---@field win number
+---@field buf number
+---@field prompt string
 local M = {}
 
 local ns = vim.api.nvim_create_namespace("flash_prompt")
@@ -47,6 +48,8 @@ function M.show()
 end
 
 function M.hide()
+  M.prompt = ""
+
   if M.win and vim.api.nvim_win_is_valid(M.win) then
     vim.api.nvim_win_close(M.win, true)
     M.win = nil
@@ -58,8 +61,8 @@ function M.hide()
 end
 
 ---@param pattern string
-function M.set(pattern)
-  M.show()
+---@param show boolean
+function M.set(pattern, show)
   local text = vim.deepcopy(Config.prompt.prefix)
   text[#text + 1] = { pattern }
 
@@ -67,6 +70,15 @@ function M.set(pattern)
   for _, item in ipairs(text) do
     str = str .. item[1]
   end
+
+  M.prompt = str
+
+  if not show then
+    return
+  end
+
+  M.show()
+
   vim.api.nvim_buf_set_lines(M.buf, 0, -1, false, { str })
   vim.api.nvim_buf_clear_namespace(M.buf, ns, 0, -1)
   local col = 0

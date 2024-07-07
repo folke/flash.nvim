@@ -343,8 +343,8 @@ end
 ---@param opts? Flash.Step.Options
 function M:step(opts)
   opts = opts or {}
-  if self.opts.prompt.enabled and not M.is_search() then
-    Prompt.set(self.pattern())
+  if not M.is_search() then
+    Prompt.set(self.pattern(), self.opts.prompt.enabled)
   end
   local actions = opts.actions or self.opts.actions or {}
   local c = self:get_char()
