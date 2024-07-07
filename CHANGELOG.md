@@ -1,5 +1,19 @@
 # Changelog
 
+## [2.1.0](https://github.com/folke/flash.nvim/compare/v2.0.0...v2.1.0) (2024-07-07)
+
+
+### Features
+
+* **prompt:** add `flash.prompt()` to get the prompt text ([#347](https://github.com/folke/flash.nvim/issues/347)) ([f226e02](https://github.com/folke/flash.nvim/commit/f226e02306e6968604aaffe4d3d5c106ce460a4f))
+* **treesitter:** opt-out selection of the smallest node with flash.treesitter() by specifying autojump = false ([#276](https://github.com/folke/flash.nvim/issues/276)) ([daa06cd](https://github.com/folke/flash.nvim/commit/daa06cda13bea0f04a1a120d5f8e7ec32752be19))
+
+
+### Bug Fixes
+
+* **state:** abort to use Util.exit() ([#324](https://github.com/folke/flash.nvim/issues/324)) ([e7ab1e4](https://github.com/folke/flash.nvim/commit/e7ab1e4003aec864a8fc87f19a4032a2a453479e))
+* **treesitter:** process all trees. Closes [#275](https://github.com/folke/flash.nvim/issues/275) ([51f3ee1](https://github.com/folke/flash.nvim/commit/51f3ee13d2c031bb04b78fb324b8ad33e33fdc1f))
+
 ## [2.0.0](https://github.com/folke/flash.nvim/compare/v1.18.3...v2.0.0) (2024-07-05)
 
 
