@@ -1,8 +1,8 @@
 local Config = require("flash.config")
 
 ---@class Flash.Prompt
----@field win window
----@field buf buffer
+---@field win number
+---@field buf number
 ---@field prompt string
 local M = {}
 
@@ -61,8 +61,8 @@ function M.hide()
 end
 
 ---@param pattern string
----@param enable_floating_window boolean
-function M.set(pattern, enable_floating_window)
+---@param show boolean
+function M.set(pattern, show)
   local text = vim.deepcopy(Config.prompt.prefix)
   text[#text + 1] = { pattern }
 
@@ -73,7 +73,7 @@ function M.set(pattern, enable_floating_window)
 
   M.prompt = str
 
-  if not enable_floating_window then
+  if not show then
     return
   end
 

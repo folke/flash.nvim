@@ -237,6 +237,7 @@ local defaults = {
   },
   -- options for the floating window that shows the prompt,
   -- for regular jumps
+  -- `require("flash").prompt()` is always available to get the prompt text
   prompt = {
     enabled = true,
     prefix = { { "⚡", "FlashPromptIcon" } },
