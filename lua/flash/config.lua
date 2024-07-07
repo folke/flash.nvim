@@ -146,7 +146,7 @@ local defaults = {
     search = {
       -- when `true`, flash will be activated during regular search by default.
       -- You can always toggle when searching with `require("flash").toggle()`
-      enabled = true,
+      enabled = false,
       highlight = { backdrop = false },
       jump = { history = true, register = true, nohlsearch = true },
       search = {
@@ -205,7 +205,12 @@ local defaults = {
       end,
       search = { wrap = false },
       highlight = { backdrop = true },
-      jump = { register = false },
+      jump = {
+        register = false,
+        -- when using jump labels, set to 'true' to automatically jump
+        -- or execute a motion when there is only one match
+        autojump = false,
+      },
     },
     -- options used for treesitter selections
     -- `require("flash").treesitter()`
@@ -308,10 +313,7 @@ function M.get(...)
       o.label = vim.tbl_deep_extend("force", o.label or {}, o.highlight.label)
       ---@diagnostic disable-next-line: no-unknown
       o.highlight.label = nil
-      vim.notify_once(
-        "flash: `opts.highlight.label` is deprecated, use `opts.label` instead",
-        vim.log.levels.WARN
-      )
+      vim.notify_once("flash: `opts.highlight.label` is deprecated, use `opts.label` instead", vim.log.levels.WARN)
     end
     for _, field in ipairs({ "autohide", "jump_labels" }) do
       if type(o[field]) == "function" then

@@ -9,7 +9,7 @@ local M = {}
 ---@field node TSNode
 ---@field depth? number
 
----@param win window
+---@param win number
 ---@param pos? Pos
 function M.get_nodes(win, pos)
   local buf = vim.api.nvim_win_get_buf(win)
@@ -18,7 +18,7 @@ function M.get_nodes(win, pos)
 
   local nodes = {} ---@type TSNode[]
 
-  local ok, tree = pcall(vim.treesitter.get_parser, buf)
+  local ok, parser = pcall(vim.treesitter.get_parser, buf)
   if not ok then
     vim.notify(
       "No treesitter parser for this buffer with filetype=" .. vim.bo[buf].filetype,
@@ -27,20 +27,25 @@ function M.get_nodes(win, pos)
     )
     vim.api.nvim_input("<esc>")
   end
-  if not (ok and tree) then
+  if not (ok and parser) then
     return {}
   end
 
   do
-    -- get all ranges of the current node and its parents
-    local node = tree:named_node_for_range({ pos[1] - 1, pos[2], pos[1] - 1, pos[2] }, {
-      ignore_injections = false,
-    })
+    parser:for_each_tree(function(tstree, tree)
+      if not tstree then
+        return
+      end
+      -- get all ranges of the current node and its parents
+      local node = tree:named_node_for_range({ pos[1] - 1, pos[2], pos[1] - 1, pos[2] }, {
+        ignore_injections = true,
+      })
 
-    while node do
-      nodes[#nodes + 1] = node
-      node = node:parent() ---@type TSNode
-    end
+      while node do
+        nodes[#nodes + 1] = node
+        node = node:parent() ---@type TSNode
+      end
+    end)
   end
 
   -- convert ranges to matches
@@ -63,14 +68,12 @@ function M.get_nodes(win, pos)
     -- then move it to the last character of the last line.
     if match.end_pos[1] > line_count then
       match.end_pos[1] = line_count
-      match.end_pos[2] =
-        #vim.api.nvim_buf_get_lines(buf, match.end_pos[1] - 1, match.end_pos[1], false)[1]
+      match.end_pos[2] = #vim.api.nvim_buf_get_lines(buf, match.end_pos[1] - 1, match.end_pos[1], false)[1]
     elseif match.end_pos[2] == -1 then
       -- If the end points to the start of the next line, move it to the
       -- end of the previous line.
       -- Otherwise operations include the first character of the next line
-      local line =
-        vim.api.nvim_buf_get_lines(buf, match.end_pos[1] - 2, match.end_pos[1] - 1, false)[1]
+      local line = vim.api.nvim_buf_get_lines(buf, match.end_pos[1] - 2, match.end_pos[1] - 1, false)[1]
       match.end_pos[1] = match.end_pos[1] - 1
       match.end_pos[2] = #line
     end

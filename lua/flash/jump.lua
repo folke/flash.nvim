@@ -80,10 +80,7 @@ function M.remote_op(match, state, register)
         vim.cmd("normal! v")
         vim.api.nvim_win_set_cursor(match.win, match.end_pos)
       else
-        vim.api.nvim_win_set_cursor(
-          match.win,
-          state.opts.jump.pos == "start" and match.pos or match.end_pos
-        )
+        vim.api.nvim_win_set_cursor(match.win, state.opts.jump.pos == "start" and match.pos or match.end_pos)
       end
 
     -- otherwise, use the remote window's cursor position
@@ -196,9 +193,7 @@ function M._jump(match, state, opts)
       offset = 1
     end
 
-    pos = Pos(
-      require("flash.util").offset_pos(vim.api.nvim_win_get_buf(match.win), pos, { 0, offset or 0 })
-    )
+    pos = Pos(require("flash.util").offset_pos(vim.api.nvim_win_get_buf(match.win), pos, { 0, offset or 0 }))
     pos[2] = math.max(0, pos[2])
 
     vim.api.nvim_win_set_cursor(match.win, pos)

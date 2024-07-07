@@ -1,4 +1,4 @@
-*flash.nvim.txt*        For Neovim >= 0.8.0       Last change: 2023 October 17
+*flash.nvim.txt*              For Neovim             Last change: 2024 July 07
 
 ==============================================================================
 Table of Contents                               *flash.nvim-table-of-contents*
@@ -223,7 +223,7 @@ Default Settings ~
         search = {
           -- when `true`, flash will be activated during regular search by default.
           -- You can always toggle when searching with `require("flash").toggle()`
-          enabled = true,
+          enabled = false,
           highlight = { backdrop = false },
           jump = { history = true, register = true, nohlsearch = true },
           search = {
@@ -282,7 +282,12 @@ Default Settings ~
           end,
           search = { wrap = false },
           highlight = { backdrop = true },
-          jump = { register = false },
+          jump = {
+            register = false,
+            -- when using jump labels, set to 'true' to automatically jump
+            -- or execute a motion when there is only one match
+            autojump = false,
+          },
         },
         -- options used for treesitter selections
         -- `require("flash").treesitter()`
@@ -338,9 +343,12 @@ Default Settings ~
 
 USAGE                                            *flash.nvim-flash.nvim-usage*
 
-- **Treesitter**`require("flash").treesitter(opts?)` opens **flash** in **Treesitter** mode
+- **Treesitter**`require("flash").treesitter(opts?)` opens **flash** in
+    **Treesitter** mode
     - use a jump label, or use `;` and `,` to increase/decrease the selection
-- **regular search**search as you normally do, but enhanced with jump labels
+- **regular search**search as you normally do, but enhanced with jump labels. You
+    need to set `opts.modes.search.enabled = true`, or toggle it with
+    `require("flash").toggle()`
 - `f`, `t`, `F`, `T` motions:
     - After typing `f{char}` or `F{char},` you can repeat the motion with `f`
         or go to the previous match with `F` to undo a jump.
@@ -351,7 +359,8 @@ USAGE                                            *flash.nvim-flash.nvim-usage*
         or pressing `<esc>`.
 - **toggle Search**`require("flash").toggle(boolean?)`
     - toggles **flash** on or off while using regular search
-- **Treesitter Search**`require("flash").treesitter_search(opts?)` opens **flash** in **Treesitter Search** mode
+- **Treesitter Search**`require("flash").treesitter_search(opts?)` opens
+    **flash** in **Treesitter Search** mode
     - combination of **Treesitter** and **Search** modes
     - do something like `yR`
     - you can now start typing a search pattern.
@@ -385,7 +394,8 @@ USAGE                                            *flash.nvim-flash.nvim-usage*
         <
 - **jump**`require("flash").jump(opts?)` opens **flash** with the given options
     - type any number of characters before typing a jump label
-- **VS Code**some functionality is changed/disabled when running **flash** in **VS Code**
+- **VS Code**some functionality is changed/disabled when running **flash** in
+    **VS Code**
     - `prompt`is disabled
     - `highlights` are set to different defaults that will actually work in VS Code
 

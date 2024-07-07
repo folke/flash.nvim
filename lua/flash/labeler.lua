@@ -50,10 +50,7 @@ function M:reset()
       skip[l] = true
     end
   end
-  if
-    not self.state.opts.search.max_length
-    or #self.state.pattern() < self.state.opts.search.max_length
-  then
+  if not self.state.opts.search.max_length or #self.state.pattern() < self.state.opts.search.max_length then
     for _, win in pairs(self.state.wins) do
       self.labels = self:skip(win, self.labels)
     end

@@ -48,11 +48,15 @@ function M.mappings_enabled()
 end
 
 function M.setcursor(force)
-  if force == nil then
-    force = false
+  if vim.api.nvim__redraw then
+    vim.api.nvim__redraw({ cursor = true })
+  else
+    if force == nil then
+      force = false
+    end
+    _ffi()
+    return C.setcursor_mayforce(force)
   end
-  _ffi()
-  return C.setcursor_mayforce(force)
 end
 
 function M.restore_incsearch_state()
