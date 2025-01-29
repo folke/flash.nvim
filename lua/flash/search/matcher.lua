@@ -1,7 +1,7 @@
 local Pos = require("flash.search.pos")
 
 ---@class Flash.Match
----@field win window
+---@field win number
 ---@field pos Pos -- (1,0) indexed
 ---@field end_pos Pos -- (1,0) indexed
 ---@field label? string|false -- set to false to disable label
@@ -11,7 +11,7 @@ local Pos = require("flash.search.pos")
 ---@alias Flash.Match.Find {forward?:boolean, wrap?:boolean, count?:number, pos?: Pos, match?:Flash.Match, current?:boolean}
 
 ---@class Flash.Matcher
----@field win window
+---@field win number
 ---@field get fun(self, opts?: {from?:Pos, to?:Pos}): Flash.Match[]
 ---@field find fun(self, opts?: Flash.Match.Find): Flash.Match
 ---@field labels fun(self, labels: string[]): string[]
@@ -29,9 +29,9 @@ function M.new(win)
   return self
 end
 
----@param fn fun(win: window, state:Flash.State, opts: {from:Pos, to:Pos}): Flash.Match[]
+---@param fn fun(win: number, state:Flash.State, opts: {from:Pos, to:Pos}): Flash.Match[]
 function M.from(fn)
-  ---@param win window
+  ---@param win number
   ---@param state Flash.State
   return function(win, state)
     local ret = M.new(win)

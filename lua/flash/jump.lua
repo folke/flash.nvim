@@ -58,7 +58,6 @@ end
 ---@return Flash.Match?
 function M.remote_op(match, state, register)
   Util.exit()
-
   -- schedule this so that the  active operator is properly cancelled
   vim.schedule(function()
     local motion = state.opts.remote_op.motion
@@ -86,7 +85,7 @@ function M.remote_op(match, state, register)
     -- otherwise, use the remote window's cursor position
     else
       local from = vim.api.nvim_win_get_cursor(match.win)
-      M._jump(match, state, { op = true })
+      m._jump(match, state, { op = true })
       local to = vim.api.nvim_win_get_cursor(match.win)
 
       -- if a range was selected, use that instead

@@ -619,6 +619,51 @@ and `<c-s>` in insert mode, to jump to a label in Telescope results.
 
 </details>
 
+<details><summary>Snacks Picker integration</summary>
+
+This will allow you to use `s` in normal mode
+and `<a-s>` in insert mode, to jump to a label in the picker results.
+
+```lua
+{
+    "folke/snacks.nvim",
+    opts = {
+      picker = {
+        win = {
+          input = {
+            keys = {
+              ["<a-s>"] = { "flash_jump", mode = { "n", "i" } },
+              ["s"] = { "flash_jump" },
+            },
+          },
+        },
+        actions = {
+          flash_jump = function(picker)
+            require("flash").jump({
+              pattern = "^",
+              label = { after = { 0, 0 } },
+              search = {
+                mode = "search",
+                exclude = {
+                  function(win)
+                    return vim.bo[vim.api.nvim_win_get_buf(win)].filetype ~= "snacks_picker_list"
+                  end,
+                },
+              },
+              action = function(match)
+                local idx = picker.list:row2idx(match.pos[1])
+                picker.list:move(idx, true)
+              end,
+            })
+          end,
+        },
+      },
+    },
+  }
+```
+
+</details>
+
 <details><summary>Continue last search</summary>
 
 ```lua
