@@ -632,13 +632,13 @@ and `<a-s>` in insert mode, to jump to a label in the picker results.
         win = {
           input = {
             keys = {
-              ["<a-s>"] = { "flash_jump", mode = { "n", "i" } },
-              ["s"] = { "flash_jump" },
+              ["<a-s>"] = { "flash", mode = { "n", "i" } },
+              ["s"] = { "flash" },
             },
           },
         },
         actions = {
-          flash_jump = function(picker)
+          flash = function(picker)
             require("flash").jump({
               pattern = "^",
               label = { after = { 0, 0 } },
