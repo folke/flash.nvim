@@ -70,13 +70,17 @@ function M.remote_op(match, state, register)
     -- use a new motion to select the text-object to act on,
     -- unless we're jumping to a range
     if motion then
-      if vim.fn.mode() == "v" then
-        vim.cmd("normal! v")
+      if vim.tbl_contains({"v", "V"}, vim.fn.mode()) then
+        vim.cmd("normal! " .. vim.fn.mode()) -- end the selection
       end
 
       if state.opts.jump.pos == "range" then
         vim.api.nvim_win_set_cursor(match.win, match.pos)
-        vim.cmd("normal! v")
+        if match.visual_line then
+          vim.cmd("normal! V")
+        else
+          vim.cmd("normal! v")
+        end
         vim.api.nvim_win_set_cursor(match.win, match.end_pos)
       else
         vim.api.nvim_win_set_cursor(match.win, state.opts.jump.pos == "start" and match.pos or match.end_pos)
@@ -89,8 +93,8 @@ function M.remote_op(match, state, register)
       local to = vim.api.nvim_win_get_cursor(match.win)
 
       -- if a range was selected, use that instead
-      if vim.fn.mode() == "v" then
-        vim.cmd("normal! v") -- end the selection
+      if vim.tbl_contains({"v", "V"}, vim.fn.mode()) then
+        vim.cmd("normal! " .. vim.fn.mode()) -- end the selection
         from = vim.api.nvim_buf_get_mark(0, "<")
         to = vim.api.nvim_buf_get_mark(0, ">")
       end
@@ -100,7 +104,11 @@ function M.remote_op(match, state, register)
 
       -- select the range for the operator
       vim.api.nvim_win_set_cursor(0, from)
-      vim.cmd("normal! v")
+      if match.visual_line then
+        vim.cmd("normal! V")
+      else
+        vim.cmd("normal! v")
+      end
       vim.api.nvim_win_set_cursor(0, to)
     end
 
@@ -169,11 +177,15 @@ function M._jump(match, state, opts)
   M.open_folds(match)
   -- select range
   if state.opts.jump.pos == "range" then
-    if vim.fn.mode() == "v" then
-      vim.cmd("normal! v")
+    if vim.tbl_contains({"v", "V"}, vim.fn.mode()) then
+      vim.cmd("normal! " .. vim.fn.mode()) -- end the selection
     end
     vim.api.nvim_win_set_cursor(match.win, match.pos)
-    vim.cmd("normal! v")
+    if match.visual_line then
+      vim.cmd("normal! V")
+    else
+      vim.cmd("normal! v")
+    end
     vim.api.nvim_win_set_cursor(match.win, match.end_pos)
   else
     local pos = state.opts.jump.pos == "start" and match.pos or match.end_pos
