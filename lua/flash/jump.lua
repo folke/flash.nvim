@@ -85,7 +85,7 @@ function M.remote_op(match, state, register)
     -- otherwise, use the remote window's cursor position
     else
       local from = vim.api.nvim_win_get_cursor(match.win)
-      m._jump(match, state, { op = true })
+      M._jump(match, state, { op = true })
       local to = vim.api.nvim_win_get_cursor(match.win)
 
       -- if a range was selected, use that instead
