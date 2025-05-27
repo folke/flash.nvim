@@ -139,7 +139,8 @@ Install the plugin with your preferred package manager:
     max_length = false, ---@type number|false
   },
   jump = {
-    -- whether or not to do the first jump automatically
+    -- Whether or not to do the first jump automatically
+    -- This options will only affect char mode
     do_first_jump = true,
     -- save location in the jumplist
     jumplist = true,
