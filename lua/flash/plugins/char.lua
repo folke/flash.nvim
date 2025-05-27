@@ -121,7 +121,6 @@ function M.setup()
         if Repeat.is_repeat then
           M.jump_labels = false -- never show jump labels when repeating
           M.state:jump({ count = vim.v.count1 })
-          M.state:show()
         else
           M.jump(key)
         end
