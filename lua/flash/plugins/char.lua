@@ -233,10 +233,7 @@ function M.jump(key)
     M.state:update({ pattern = M.char })
   end
 
-  local jump = parsed.jump
-
   M.jump_labels = Config.get("char").jump_labels
-  jump()
   M.state:update({ force = true })
 
   if M.jump_labels then
