@@ -234,6 +234,9 @@ function M.jump(key)
   end
 
   M.jump_labels = Config.get("char").jump_labels
+  if Config.get("char").jump.do_first_jump then
+    parsed.jump()
+  end
   M.state:update({ force = true })
 
   if M.jump_labels then

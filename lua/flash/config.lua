@@ -52,6 +52,9 @@ local defaults = {
     max_length = false, ---@type number|false
   },
   jump = {
+    -- Whether or not to do the first jump automatically,
+    -- This options will only affect char mode
+    do_first_jump = true,
     -- save location in the jumplist
     jumplist = true,
     -- jump position
