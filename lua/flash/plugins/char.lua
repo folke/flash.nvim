@@ -239,7 +239,17 @@ function M.jump(key)
   M.state:update({ force = true })
 
   if M.jump_labels then
-    if Config.get("char").jump.autojump and #M.state.results == 1 or #M.state.results == 0 then
+    if Config.get("char").jump.autojump and #M.state.results == 1 then
+      if not Config.get("char").jump.do_first_jump then
+        -- jump here to be consistent with the autojump configuration
+        parsed.jump()
+      end
+      M.state:hide()
+      return M.state
+    elseif #M.state.results == 0 then
+      M.state:hide()
+      return M.state
+    elseif #M.state.results == 1 and M.state.results[1].pos == M.state.pos then
       M.state:hide()
       return M.state
     end
