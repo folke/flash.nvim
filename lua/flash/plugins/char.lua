@@ -239,7 +239,7 @@ function M.jump(key)
   M.state:update({ force = true })
 
   if M.jump_labels then
-    if Config.get("char").jump.autojump and #M.state.results == 1 then
+    if Config.get("char").jump.autojump and #M.state.results == 1 or #M.state.results == 0 then
       M.state:hide()
       return M.state
     end
