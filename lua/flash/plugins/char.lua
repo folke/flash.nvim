@@ -232,24 +232,28 @@ function M.jump(key)
     M.state:update({ pattern = M.char })
   end
 
+  local do_first_jump = Config.get("char").jump.do_first_jump
   M.jump_labels = Config.get("char").jump_labels
-  if Config.get("char").jump.do_first_jump then
+  if do_first_jump then
     parsed.jump()
   end
   M.state:update({ force = true })
 
   if M.jump_labels then
-    if Config.get("char").jump.autojump and #M.state.results == 1 then
-      if not Config.get("char").jump.do_first_jump then
+    local autojump = Config.get("char").jump.autojump
+    if
+      autojump and #M.state.results == 1
+      or autojump
+        and #M.state.results == 2
+        and (M.state.results[1].pos == M.state.pos or M.state.results[2].pos == M.state.pos)
+    then
+      if not do_first_jump then
         -- jump here to be consistent with the autojump configuration
         parsed.jump()
       end
       M.state:hide()
       return M.state
-    elseif #M.state.results == 0 then
-      M.state:hide()
-      return M.state
-    elseif #M.state.results == 1 and M.state.results[1].pos == M.state.pos then
+    elseif #M.state.results == 0 or #M.state.results == 1 and M.state.results[1].pos == M.state.pos then
       M.state:hide()
       return M.state
     end
