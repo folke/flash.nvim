@@ -111,7 +111,19 @@ function M.remote_op(match, state, register)
     end
 
     -- re-trigger the operator
-    vim.api.nvim_input('"' .. register .. vim.v.operator)
+    local hasSpecificRegister = true
+    if vim.o.clipboard == "unnamed" and register == "*" then
+      hasSpecificRegister = false
+    elseif vim.o.clipboard == "unnamedplus" and register == "+" then
+      hasSpecificRegister = false
+    end
+
+    if hasSpecificRegister then
+      vim.api.nvim_input('"' .. register .. vim.v.operator)
+    else
+      vim.api.nvim_input(vim.v.operator)
+    end
+
     if state.opts.remote_op.restore then
       vim.schedule(function()
         if not vim.tbl_isempty(opmap) then
