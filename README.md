@@ -378,7 +378,6 @@ Install the plugin with your preferred package manager:
   - arround your matches, all the surrounding Treesitter nodes will be labeled.
   - select a label to perform the operator on the new selection
 - **remote**: `require("flash").remote(opts?)` opens **flash** in **remote** mode
-
   - equivalent to:
 
     ```lua
@@ -575,6 +574,24 @@ Use the options below:
     }
   }
 }
+```
+
+</details>
+
+<details><summary>Treesitter incremental selection</summary>
+
+The [nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter/tree/main) **main** rewrite no
+longer includes incremental selection. You can use **flash.nvim** instead.
+
+```lua
+vim.keymap.set({"n", "x", "o"}, "<c-space>", function()
+  require("flash").treesitter({
+    actions = {
+      ["<c-space>"] = "next",
+      ["<BS>"] = "prev"
+    }
+  })
+end, { desc = "Treesitter incremental selection" })
 ```
 
 </details>
