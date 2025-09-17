@@ -17,7 +17,7 @@ local Util = require("flash.util")
 ---@field filter? fun(matches:Flash.Match[], state:Flash.State): Flash.Match[]
 ---@field pattern? string
 ---@field labeler? fun(matches:Flash.Match[], state:Flash.State)
----@field actions? table<string, fun(state:Flash.State, char:string):boolean?>
+---@field actions? table<string, string|false|fun(state:Flash.State, char:string):boolean?>
 
 ---@class Flash.State
 ---@field win window
@@ -335,7 +335,7 @@ function M:update_target()
 end
 
 ---@class Flash.Step.Options
----@field actions? table<string, fun(state:Flash.State, char:string):boolean?>
+---@field actions? table<string, string|false|fun(state:Flash.State, char:string):boolean?>
 ---@field restore? boolean
 ---@field abort? fun()
 ---@field jump_on_max_length? boolean
@@ -346,7 +346,30 @@ function M:step(opts)
   if not M.is_search() then
     Prompt.set(self.pattern(), self.opts.prompt.enabled)
   end
-  local actions = opts.actions or self.opts.actions or {}
+  local keys = vim.tbl_keys(opts.actions or {}) ---@type string[]
+  vim.list_extend(keys, vim.tbl_keys(self.opts.actions or {}))
+
+  local function get_action(k)
+    local action = (opts.actions or {})[k]
+    action = action == nil and (self.opts.actions or {})[k] or action
+    return action
+  end
+
+  local actions = {} ---@type table<string, fun(state:Flash.State, char:string):boolean?>
+
+  for _, k in ipairs(keys) do
+    local action = get_action(k)
+    if action then
+      action = type(action) == "string" and get_action(action) or action
+      if type(action) ~= "function" then
+        vim.notify(("Invalid action for key '%s'"):format(k), vim.log.levels.ERROR, { title = "flash.nvim" })
+        return
+      end
+      actions[k] = action
+      actions[Util.t(k)] = action
+    end
+  end
+
   local c = self:get_char()
   if c == nil then
     vim.api.nvim_input("<esc>")

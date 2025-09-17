@@ -133,10 +133,12 @@ function M.jump(opts)
       Util.exit()
     end,
     actions = {
-      [";"] = function()
+      [";"] = "next",
+      [","] = "prev",
+      ["next"] = function()
         current = state:jump({ match = current, forward = false })
       end,
-      [","] = function()
+      ["prev"] = function()
         current = state:jump({ forward = true, match = current })
       end,
       [Util.CR] = function()
