@@ -1,4 +1,4 @@
-*flash.nvim.txt*            For Neovim           Last change: 2025 February 14
+*flash.nvim.txt*           For Neovim           Last change: 2025 September 17
 
 ==============================================================================
 Table of Contents                               *flash.nvim-table-of-contents*
@@ -343,12 +343,10 @@ Default Settings ~
 
 USAGE                                            *flash.nvim-flash.nvim-usage*
 
-- **Treesitter**`require("flash").treesitter(opts?)` opens **flash** in
-    **Treesitter** mode
+- **Treesitter**`require("flash").treesitter(opts?)` opens **flash** in **Treesitter** mode
     - use a jump label, or use `;` and `,` to increase/decrease the selection
-- **regular search**search as you normally do, but enhanced with jump labels. You
-    need to set `opts.modes.search.enabled = true`, or toggle it with
-    `require("flash").toggle()`
+- **regular search**search as you normally do, but enhanced with jump labels.
+    You need to set `opts.modes.search.enabled = true`, or toggle it with `require("flash").toggle()`
 - `f`, `t`, `F`, `T` motions:
     - After typing `f{char}` or `F{char},` you can repeat the motion with `f`
         or go to the previous match with `F` to undo a jump.
@@ -359,8 +357,7 @@ USAGE                                            *flash.nvim-flash.nvim-usage*
         or pressing `<esc>`.
 - **toggle Search**`require("flash").toggle(boolean?)`
     - toggles **flash** on or off while using regular search
-- **Treesitter Search**`require("flash").treesitter_search(opts?)` opens
-    **flash** in **Treesitter Search** mode
+- **Treesitter Search**`require("flash").treesitter_search(opts?)` opens **flash** in **Treesitter Search** mode
     - combination of **Treesitter** and **Search** modes
     - do something like `yR`
     - you can now start typing a search pattern.
@@ -394,8 +391,7 @@ USAGE                                            *flash.nvim-flash.nvim-usage*
         <
 - **jump**`require("flash").jump(opts?)` opens **flash** with the given options
     - type any number of characters before typing a jump label
-- **VS Code**some functionality is changed/disabled when running **flash** in
-    **VS Code**
+- **VS Code**some functionality is changed/disabled when running **flash** in **VS Code**
     - `prompt`is disabled. You can use `require("flash").prompt()` to get the
         prompt text and integrate it into the statusline.
     - `highlights` are set to different defaults that will actually work in VS Code
@@ -546,6 +542,23 @@ Use the options below:
         }
       }
     }
+<
+
+Treesitter incremental selection ~
+
+The nvim-treesitter
+<https://github.com/nvim-treesitter/nvim-treesitter/tree/main> **main** rewrite
+no longer includes incremental selection. You can use **flash.nvim** instead.
+
+>lua
+    vim.keymap.set({"n", "x", "o"}, "<c-space>", function()
+      require("flash").treesitter({
+        actions = {
+          ["<c-space>"] = "next",
+          ["<BS>"] = "prev"
+        }
+      })
+    end, { desc = "Treesitter incremental selection" })
 <
 
 Telescope integration ~
