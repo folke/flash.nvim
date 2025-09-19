@@ -144,10 +144,18 @@ function M:filter()
       local db = b.pos[1] * vim.go.columns + b.pos[2]
       return math.abs(dfrom - da) < math.abs(dfrom - db)
     end
+    ---@type boolean
+    local ahead
     if a.pos[1] ~= b.pos[1] then
-      return a.pos[1] < b.pos[1]
+      ahead = a.pos[1] < b.pos[1]
+    else
+      ahead = a.pos[2] < b.pos[2]
     end
-    return a.pos[2] < b.pos[2]
+    if self.state.opts.search.forward then
+      return ahead
+    else
+      return not ahead
+    end
   end)
   return ret
 end
