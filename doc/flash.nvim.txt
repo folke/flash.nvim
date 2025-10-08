@@ -1,4 +1,4 @@
-*flash.nvim.txt*           For Neovim           Last change: 2025 September 17
+*flash.nvim.txt*            For Neovim            Last change: 2025 October 08
 
 ==============================================================================
 Table of Contents                               *flash.nvim-table-of-contents*
@@ -23,21 +23,21 @@ motions, and Treesitter integration.
 Search IntegrationStandalone Jumpf, t, F, TTreesitter
 FEATURES                                      *flash.nvim-flash.nvim-features*
 
-- **Search Integration**integrate **flash.nvim** with your regular
+- **Search Integration**: integrate **flash.nvim** with your regular
     search using `/` or `?`. Labels appear next to the matches,
     allowing you to quickly jump to any location. Labels are
     guaranteed not to exist as a continuation of the search pattern.
 - **type as many characters as you want** before using a jump label.
 - **Enhanced f, t, F, T motions**
-- **Treesitter Integration**all parents of the Treesitter node
+- **Treesitter Integration**: all parents of the Treesitter node
     under your cursor are highlighted with a label for quick selection
     of a specific Treesitter node.
-- **Jump Mode**a standalone jumping mode similar to search
-- **Search Modes**`exact`, `search` (regex), and `fuzzy` search modes
+- **Jump Mode**: a standalone jumping mode similar to search
+- **Search Modes**: `exact`, `search` (regex), and `fuzzy` search modes
 - **Multi Window** jumping
-- **Remote Actions**perform motions in remote locations
+- **Remote Actions**: perform motions in remote locations
 - **dot-repeatable** jumps
-- **highly extensible**check the examples <https://github.com/folke/flash.nvim#-examples>
+- **highly extensible**: check the examples <https://github.com/folke/flash.nvim#-examples>
 
 
 REQUIREMENTS                              *flash.nvim-flash.nvim-requirements*
@@ -49,7 +49,7 @@ INSTALLATION                              *flash.nvim-flash.nvim-installation*
 
 Install the plugin with your preferred package manager:
 
-lazy.nvim <https://github.com/folke/lazy.nvim>
+lazy.nvim <https://github.com/folke/lazy.nvim>:
 
 >lua
     {
@@ -343,9 +343,9 @@ Default Settings ~
 
 USAGE                                            *flash.nvim-flash.nvim-usage*
 
-- **Treesitter**`require("flash").treesitter(opts?)` opens **flash** in **Treesitter** mode
+- **Treesitter**: `require("flash").treesitter(opts?)` opens **flash** in **Treesitter** mode
     - use a jump label, or use `;` and `,` to increase/decrease the selection
-- **regular search**search as you normally do, but enhanced with jump labels.
+- **regular search**: search as you normally do, but enhanced with jump labels.
     You need to set `opts.modes.search.enabled = true`, or toggle it with `require("flash").toggle()`
 - `f`, `t`, `F`, `T` motions:
     - After typing `f{char}` or `F{char},` you can repeat the motion with `f`
@@ -355,15 +355,15 @@ USAGE                                            *flash.nvim-flash.nvim-usage*
     - You can also go to the next match with `;` or previous match with `,`
     - Any highlights clear automatically when moving, changing buffers,
         or pressing `<esc>`.
-- **toggle Search**`require("flash").toggle(boolean?)`
+- **toggle Search**: `require("flash").toggle(boolean?)`
     - toggles **flash** on or off while using regular search
-- **Treesitter Search**`require("flash").treesitter_search(opts?)` opens **flash** in **Treesitter Search** mode
+- **Treesitter Search**: `require("flash").treesitter_search(opts?)` opens **flash** in **Treesitter Search** mode
     - combination of **Treesitter** and **Search** modes
     - do something like `yR`
     - you can now start typing a search pattern.
     - arround your matches, all the surrounding Treesitter nodes will be labeled.
     - select a label to perform the operator on the new selection
-- **remote**`require("flash").remote(opts?)` opens **flash** in **remote** mode
+- **remote**: `require("flash").remote(opts?)` opens **flash** in **remote** mode
     - equivalent to:
         >lua
             require("flash").jump({
@@ -389,10 +389,10 @@ USAGE                                            *flash.nvim-flash.nvim-usage*
               },
             })
         <
-- **jump**`require("flash").jump(opts?)` opens **flash** with the given options
+- **jump**: `require("flash").jump(opts?)` opens **flash** with the given options
     - type any number of characters before typing a jump label
-- **VS Code**some functionality is changed/disabled when running **flash** in **VS Code**
-    - `prompt`is disabled. You can use `require("flash").prompt()` to get the
+- **VS Code**: some functionality is changed/disabled when running **flash** in **VS Code**:
+    - `prompt` is disabled. You can use `require("flash").prompt()` to get the
         prompt text and integrate it into the statusline.
     - `highlights` are set to different defaults that will actually work in VS Code
 
@@ -402,8 +402,8 @@ API                                                *flash.nvim-flash.nvim-api*
 The options for `require("flash").jump(opts?)`, are the same as those in the
 config section, but can additionally have the following fields:
 
-- `matcher`a custom function that generates matches for a given window
-- `labeler`a custom function to label matches
+- `matcher`: a custom function that generates matches for a given window
+- `labeler`: a custom function to label matches
 
 You can also add labels in the `matcher` function and then set `labeler` to an
 empty function `labeler = function() end`
