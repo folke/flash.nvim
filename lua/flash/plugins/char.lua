@@ -39,6 +39,7 @@ function M.new()
       multi_window = false,
       mode = M.mode(M.motion),
       max_length = 1,
+      incremental = false,
     },
     prompt = {
       enabled = false,
