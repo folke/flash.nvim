@@ -133,6 +133,7 @@ function M.setup()
         end)
       end, {
         silent = true,
+        desc = "Flash built-in",
       })
     end
   end
