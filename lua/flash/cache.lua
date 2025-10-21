@@ -48,6 +48,7 @@ function M:update()
   end
 
   self:_update_wins()
+  self:_update_ns()
 
   for _, w in ipairs(self.state.wins) do
     if self:_dirty(w) then
@@ -122,6 +123,19 @@ function M:_update_wins()
     end, vim.api.nvim_tabpage_list_wins(0))
     if keep_current then
       table.insert(self.state.wins, 1, self.state.win)
+    end
+  end
+end
+
+function M:_update_ns()
+  for _, win in ipairs(self.state.wins) do
+    if not self.state.ns[win] then
+      self.state.ns[win] = vim.api.nvim_create_namespace(string.format("%s.%d", (self.state.opts.ns or "flash"), win))
+      if vim.api.nvim__ns_set then
+        vim.api.nvim__ns_set(self.state.ns[win], { wins = { win } } )
+      elseif vim.api.nvim__win_add_ns then
+        vim.api.nvim__win_add_ns(win, self.state.ns[win])
+      end
     end
   end
 end
