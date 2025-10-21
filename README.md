@@ -66,7 +66,6 @@ Install the plugin with your preferred package manager:
   event = "VeryLazy",
   ---@type Flash.Config
   opts = {},
-  -- stylua: ignore
   keys = {
     { "s", mode = { "n", "x", "o" }, function() require("flash").jump() end, desc = "Flash" },
     { "S", mode = { "n", "x", "o" }, function() require("flash").treesitter() end, desc = "Flash Treesitter" },
@@ -330,6 +329,7 @@ Install the plugin with your preferred package manager:
     prefix = { { "⚡", "FlashPromptIcon" } },
     win_config = {
       relative = "editor",
+      border = "none",
       width = 1, -- when <=1 it's a percentage of the editor width
       height = 1,
       row = -1, -- when negative it's an offset from the bottom
