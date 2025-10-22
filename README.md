@@ -122,6 +122,7 @@ Install the plugin with your preferred package manager:
       "cmp_menu",
       "noice",
       "flash_prompt",
+      "blink-cmp-menu",
       function(win)
         -- exclude non-focusable windows
         return not vim.api.nvim_win_get_config(win).focusable
@@ -137,6 +138,9 @@ Install the plugin with your preferred package manager:
     max_length = false, ---@type number|false
   },
   jump = {
+    -- Whether or not to do the first jump automatically
+    -- This options will only affect char mode
+    do_first_jump = true,
     -- save location in the jumplist
     jumplist = true,
     -- jump position
