@@ -1,5 +1,19 @@
 # Changelog
 
+## [2.2.0](https://github.com/folke/flash.nvim/compare/v2.1.0...v2.2.0) (2025-10-28)
+
+
+### Features
+
+* **actions:** allow more customization for jump actions ([1da8f8a](https://github.com/folke/flash.nvim/commit/1da8f8a4c75bf550674735ee32c921a2cf513830))
+
+
+### Bug Fixes
+
+* **jump:** typo m =&gt; M. Closes [#407](https://github.com/folke/flash.nvim/issues/407) ([54b70a9](https://github.com/folke/flash.nvim/commit/54b70a91b1d116fffe974d69dae05a32c74b0ab0))
+* **treesitter:** deprecated tbl_flatten. Closes [#455](https://github.com/folke/flash.nvim/issues/455) ([3be9bf7](https://github.com/folke/flash.nvim/commit/3be9bf7e85550045ec576379a0c45aac144d0438))
+* **window:** set floating window border to none ([#456](https://github.com/folke/flash.nvim/issues/456)) ([bbf222d](https://github.com/folke/flash.nvim/commit/bbf222ddf5a720af736853c6c9b1800c998676e3))
+
 ## [2.1.0](https://github.com/folke/flash.nvim/compare/v2.0.0...v2.1.0) (2024-07-07)
 
 
