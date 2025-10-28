@@ -66,6 +66,35 @@ function M.backdrop(state)
 end
 
 ---@param state Flash.State
+function M.single_line_backdrop(state)
+  local buf = vim.api.nvim_win_get_buf(0)
+
+  local from_col = 0
+  local to_col = 0
+  local end_row = state.pos.row
+
+  if not state.opts.search.wrap then
+    if state.opts.search.forward then
+      from_col = state.pos.col + 1
+    else
+      to_col = state.pos.col
+      end_row = end_row - 1
+    end
+  end
+
+  -- using pcall because when forward search is performed
+  -- it raises an error on empty lines
+  pcall(function()
+    vim.api.nvim_buf_set_extmark(buf, state.ns, state.pos.row - 1, from_col, {
+      hl_group = state.opts.highlight.groups.backdrop,
+      end_row = end_row,
+      end_col = to_col,
+      priority = state.opts.highlight.priority,
+    })
+  end)
+end
+
+---@param state Flash.State
 function M.cursor(state)
   for _, win in ipairs(state.wins) do
     if vim.api.nvim__redraw then
@@ -88,7 +117,11 @@ function M.update(state)
   M.clear(state.ns)
 
   if state.opts.highlight.backdrop then
-    M.backdrop(state)
+    if state.opts.mode == "char" and not state.opts.modes.char.multi_line then
+      M.single_line_backdrop(state)
+    else
+      M.backdrop(state)
+    end
   end
 
   local style = state.opts.label.style
