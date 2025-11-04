@@ -121,7 +121,6 @@ function M.setup()
         if Repeat.is_repeat then
           M.jump_labels = false -- never show jump labels when repeating
           M.state:jump({ count = vim.v.count1 })
-          M.state:show()
         else
           M.jump(key)
         end
@@ -233,14 +232,28 @@ function M.jump(key)
     M.state:update({ pattern = M.char })
   end
 
-  local jump = parsed.jump
-
+  local do_first_jump = Config.get("char").jump.do_first_jump
   M.jump_labels = Config.get("char").jump_labels
-  jump()
+  if do_first_jump then
+    parsed.jump()
+  end
   M.state:update({ force = true })
 
   if M.jump_labels then
-    if Config.get("char").jump.autojump and #M.state.results == 1 then
+    local autojump = Config.get("char").jump.autojump
+    if
+      autojump and #M.state.results == 1
+      or autojump
+        and #M.state.results == 2
+        and (M.state.results[1].pos == M.state.pos or M.state.results[2].pos == M.state.pos)
+    then
+      if not do_first_jump then
+        -- jump here to be consistent with the autojump configuration
+        parsed.jump()
+      end
+      M.state:hide()
+      return M.state
+    elseif #M.state.results == 0 or #M.state.results == 1 and M.state.results[1].pos == M.state.pos then
       M.state:hide()
       return M.state
     end
