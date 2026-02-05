@@ -186,6 +186,12 @@ Install the plugin with your preferred package manager:
       enabled = false,
       -- number between 1 and 9
       shade = 5,
+      -- map of color name to highlight group
+      -- when provided and the group exists, it will be used instead
+      hl_overrides = {
+        -- example
+        red = "MyRainbowRed"
+      },
     },
     -- With `format`, you can change how the label is rendered.
     -- Should return a list of `[text, highlight]` tuples.
