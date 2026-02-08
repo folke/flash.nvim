@@ -75,6 +75,12 @@ local defaults = {
   label = {
     -- allow uppercase labels
     uppercase = true,
+    -- When set, pressing the uppercase version of a label key
+    -- will jump to this position instead of `jump.pos`.
+    -- This disables `label.uppercase` (uppercase letters are
+    -- no longer used as separate labels).
+    ---@type "start" | "end" | "range" | false
+    uppercase_pos = false,
     -- add any labels with the correct case here, that you want to exclude
     exclude = "",
     -- add a label for the first match in the current window.

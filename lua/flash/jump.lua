@@ -5,8 +5,10 @@ local M = {}
 
 ---@param match Flash.Match
 ---@param state Flash.State
+---@param opts? {jump_pos?: string}
 ---@return Flash.Match?
-function M.jump(match, state)
+function M.jump(match, state, opts)
+  opts = opts or {}
   local register = vim.v.register
   -- add to jump list
   if state.opts.jump.jumplist then
@@ -19,7 +21,7 @@ function M.jump(match, state)
 
   if is_op and (state.opts.remote_op.motion or match.win ~= vim.api.nvim_get_current_win()) then
     -- use our special logic for remote operator pending mode
-    return M.remote_op(match, state, register)
+    return M.remote_op(match, state, register, opts)
   end
 
   -- change window if needed
@@ -39,7 +41,7 @@ function M.jump(match, state)
     end
   end
 
-  M._jump(match, state, { op = is_op })
+  M._jump(match, state, { op = is_op, jump_pos = opts.jump_pos })
 end
 
 function M.fix_selection()
@@ -55,8 +57,9 @@ end
 ---@param match Flash.Match
 ---@param state Flash.State
 ---@param register string
+---@param opts? {jump_pos?: string}
 ---@return Flash.Match?
-function M.remote_op(match, state, register)
+function M.remote_op(match, state, register, opts)
   Util.exit()
   -- schedule this so that the  active operator is properly cancelled
   vim.schedule(function()
@@ -67,6 +70,8 @@ function M.remote_op(match, state, register)
 
     vim.api.nvim_set_current_win(match.win)
 
+    local jump_pos = (opts and opts.jump_pos) or match.jump_pos or state.opts.jump.pos
+
     -- use a new motion to select the text-object to act on,
     -- unless we're jumping to a range
     if motion then
@@ -74,18 +79,18 @@ function M.remote_op(match, state, register)
         vim.cmd("normal! v")
       end
 
-      if state.opts.jump.pos == "range" then
+      if jump_pos == "range" then
         vim.api.nvim_win_set_cursor(match.win, match.pos)
         vim.cmd("normal! v")
         vim.api.nvim_win_set_cursor(match.win, match.end_pos)
       else
-        vim.api.nvim_win_set_cursor(match.win, state.opts.jump.pos == "start" and match.pos or match.end_pos)
+        vim.api.nvim_win_set_cursor(match.win, jump_pos == "start" and match.pos or match.end_pos)
       end
 
     -- otherwise, use the remote window's cursor position
     else
       local from = vim.api.nvim_win_get_cursor(match.win)
-      M._jump(match, state, { op = true })
+      M._jump(match, state, { op = true, jump_pos = opts and opts.jump_pos })
       local to = vim.api.nvim_win_get_cursor(match.win)
 
       -- if a range was selected, use that instead
@@ -161,14 +166,15 @@ end
 -- taking operator-pending mode into account.
 ---@param match Flash.Match
 ---@param state Flash.State
----@param opts? {op:boolean}
+---@param opts? {op:boolean, jump_pos?: string}
 ---@return Flash.Match?
 function M._jump(match, state, opts)
   opts = opts or {}
+  local jump_pos = opts.jump_pos or match.jump_pos or state.opts.jump.pos
   M.fix_selection()
   M.open_folds(match)
   -- select range
-  if state.opts.jump.pos == "range" then
+  if jump_pos == "range" then
     if vim.fn.mode() == "v" then
       vim.cmd("normal! v")
     end
@@ -176,7 +182,7 @@ function M._jump(match, state, opts)
     vim.cmd("normal! v")
     vim.api.nvim_win_set_cursor(match.win, match.end_pos)
   else
-    local pos = state.opts.jump.pos == "start" and match.pos or match.end_pos
+    local pos = jump_pos == "start" and match.pos or match.end_pos
 
     if opts.op then
       -- fix inclusive/exclusive
@@ -188,7 +194,7 @@ function M._jump(match, state, opts)
     local current = Pos(match.win)
     local offset = state.opts.jump.offset
 
-    if not offset and state.opts.jump.pos == "end" and pos < current then
+    if not offset and jump_pos == "end" and pos < current then
       offset = 1
     end
 

@@ -77,7 +77,7 @@ end
 
 function M:labels()
   local labels = self.opts.labels
-  if self.opts.label.uppercase then
+  if self.opts.label.uppercase and not self.opts.label.uppercase_pos then
     labels = labels .. self.opts.labels:upper()
   end
   local list = vim.fn.split(labels, "\\zs")
@@ -141,8 +141,23 @@ end
 ---@return Flash.Match?
 function M:jump(target)
   local match ---@type Flash.Match?
+  local jump_pos_override = nil
   if type(target) == "string" then
     match = self:find({ label = target })
+    -- uppercase label → alternate jump position
+    -- Use vim.fn.tolower for proper Unicode case folding (Lua :lower() is ASCII-only).
+    -- Skip "range" override in search/cmdline mode (visual selection mid-cmdline is invalid).
+    if
+      not match
+      and self.opts.label.uppercase_pos
+      and target ~= vim.fn.tolower(target)
+      and not (M.is_search() and self.opts.label.uppercase_pos == "range")
+    then
+      match = self:find({ label = vim.fn.tolower(target) })
+      if match then
+        jump_pos_override = self.opts.label.uppercase_pos
+      end
+    end
   elseif target and target.end_pos then
     match = target
   elseif target then
@@ -151,10 +166,13 @@ function M:jump(target)
     match = self.target
   end
   if match then
+    if jump_pos_override then
+      match.jump_pos = jump_pos_override
+    end
     if self.opts.action then
       self.opts.action(match, self)
     else
-      Jump.jump(match, self)
+      Jump.jump(match, self, { jump_pos = jump_pos_override })
       Jump.on_jump(self)
     end
     return match
