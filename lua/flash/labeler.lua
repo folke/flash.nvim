@@ -184,7 +184,9 @@ function M:skip(win, labels)
         label_group = label_group:lower()
       end
 
-      local p = "\\%(" .. pattern .. "\\)\\m\\zs[" .. label_group .. "]"
+      -- Escape special regex characters in label_group before using it in a character class
+      local label_group_escaped = label_group:gsub("([%]%[\\^%-])", "\\%1")
+      local p = "\\%(" .. pattern .. "\\)\\m\\zs[" .. label_group_escaped .. "]"
       local pos
       ok, pos = pcall(vim.fn.searchpos, p, "cnw")
 
