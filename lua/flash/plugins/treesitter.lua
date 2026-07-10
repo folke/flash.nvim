@@ -31,15 +31,14 @@ function M.get_nodes(win, pos)
     return {}
   end
 
+  parser:parse(true)
   do
     parser:for_each_tree(function(tstree, tree)
       if not tstree then
         return
       end
       -- get all ranges of the current node and its parents
-      local node = tree:named_node_for_range({ pos[1] - 1, pos[2], pos[1] - 1, pos[2] }, {
-        ignore_injections = true,
-      })
+      local node = tree:named_node_for_range({ pos[1] - 1, pos[2], pos[1] - 1, pos[2] })
 
       while node do
         nodes[#nodes + 1] = node
