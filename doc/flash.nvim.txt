@@ -1,4 +1,5 @@
 *flash.nvim.txt*                                               flash.nvim docs
+                                       For Neovim    Last change: 2026 July 10
 
 ==============================================================================
 Table of Contents                               *flash.nvim-table-of-contents*
@@ -373,14 +374,15 @@ USAGE                                            *flash.nvim-flash.nvim-usage*
     - select a label to perform the operator on the new selection
 - **remote**: `require("flash").remote(opts?)` opens **flash** in **remote** mode
     - equivalent to:
-        >lua
+
+>lua
             require("flash").jump({
               remote_op = {
                 restore = true,
                 motion = true,
               },
             })
-        <
+<
     - this is only useful in operator pending mode.
     - For example, press `yr` to start yanking and open flash
         - select a label to set the cursor position
@@ -389,14 +391,15 @@ USAGE                                            *flash.nvim-flash.nvim-usage*
         - you’ll be back in the original window / position
     - You can also configure the `remote_op` options by default, so that `ys`,
         behaves like `yr` for remote operations
-        >lua
+
+>lua
             require("flash").jump({
               remote_op = {
                 restore = true,
                 motion = nil,
               },
             })
-        <
+<
 - **jump**: `require("flash").jump(opts?)` opens **flash** with the given options
     - type any number of characters before typing a jump label
 - **VS Code**: some functionality is changed/disabled when running **flash** in **VS Code**:
