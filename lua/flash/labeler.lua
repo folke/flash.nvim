@@ -158,6 +158,7 @@ end
 ---@return string[] returns labels to skip or `nil` when all labels should be skipped
 function M:skip(win, labels)
   local pattern = self.state.pattern.skip
+  local ignorecase = self.state.pattern:ignorecase()
 
   -- skip all labels if the pattern is empty
   if pattern == "" then
@@ -180,7 +181,7 @@ function M:skip(win, labels)
     while #labels > 0 do
       -- this is needed, since an uppercase label would trigger smartcase
       local label_group = table.concat(labels, "")
-      if vim.go.ignorecase then
+      if ignorecase then
         label_group = label_group:lower()
       end
 
@@ -203,9 +204,9 @@ function M:skip(win, labels)
 
       local label_count = #labels
       labels = vim.tbl_filter(function(c)
-        -- when ignorecase is set, we need to skip
+        -- when the pattern ignores case, we need to skip
         -- both the upper and lower case labels
-        if vim.go.ignorecase then
+        if ignorecase then
           return c:lower() ~= char:lower()
         end
         return c ~= char

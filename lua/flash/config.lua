@@ -17,7 +17,6 @@ local defaults = {
     -- when `false`, find only matches in the given direction
     wrap = true,
     ---@type Flash.Pattern.Mode
-    -- Each mode will take ignorecase and smartcase into account.
     -- * exact: exact match
     -- * search: regular search
     -- * fuzzy: fuzzy search
@@ -27,6 +26,17 @@ local defaults = {
     --     return "\\<" .. str
     --   end,
     mode = "exact",
+    ---@type Flash.Pattern.Case
+    -- Case sensitivity of the search. Can be set per mode, for example
+    -- to make `f`, `F`, `t` and `T` behave like in vanilla Neovim:
+    --   modes = { char = { search = { case = "sensitive" } } }
+    -- * auto: follow the `ignorecase` and `smartcase` options
+    -- * smart: ignore case, unless the pattern contains an uppercase
+    --   character. Unlike `auto`, this doesn't need `ignorecase`
+    --   and `smartcase` to be set
+    -- * ignore: always ignore case
+    -- * sensitive: always match case
+    case = "auto",
     -- behave like `incsearch`
     incremental = false,
     -- Excluded filetypes and custom window filters
