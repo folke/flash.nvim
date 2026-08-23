@@ -54,6 +54,15 @@ function M.update(check_jump)
     pattern = vim.fn.getreg("/") .. pattern:sub(2)
   end
   M.state:update({ pattern = pattern, check_jump = check_jump })
+
+  -- Since Neovim 0.12 the incsearch redraw fires before CmdlineChanged
+  -- No redraw is triggered until the next key input, leaving outdated labels
+  -- This forces a redraw to realign the labels
+  if vim.api.nvim__redraw then
+    vim.api.nvim__redraw({ flush = true })
+  else
+    vim.cmd("redraw")
+  end
 end
 
 function M.start()
