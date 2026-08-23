@@ -24,6 +24,10 @@ function M.jump(match, state)
 
   -- change window if needed
   if match.win ~= vim.api.nvim_get_current_win() then
+    -- bail if the match's window was closed before the jump fired
+    if not vim.api.nvim_win_is_valid(match.win) then
+      return
+    end
     if is_visual then
       -- cancel visual mode in the current window,
       -- to avoid issues with the remote window
@@ -60,6 +64,9 @@ function M.remote_op(match, state, register)
   Util.exit()
   -- schedule this so that the  active operator is properly cancelled
   vim.schedule(function()
+    if not vim.api.nvim_win_is_valid(match.win) then
+      return
+    end
     local motion = state.opts.remote_op.motion
     if motion == nil then
       motion = match.win ~= vim.api.nvim_get_current_win()

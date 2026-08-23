@@ -39,6 +39,15 @@ function M:update()
   end
 
   local win = vim.api.nvim_get_current_win()
+  -- keep current target when focus shifts to a floating UI (cmdline popup, completion menu)
+  if
+    self.state.win
+    and vim.api.nvim_win_is_valid(self.state.win)
+    and vim.api.nvim_win_get_config(self.state.win).relative == ""
+    and vim.api.nvim_win_get_config(win).relative ~= ""
+  then
+    win = self.state.win
+  end
   if self.state.win ~= win then
     self.state.win = win
     self.state.pos = Pos(win)

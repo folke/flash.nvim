@@ -62,6 +62,25 @@ describe("jump", function()
     assert.same({ 1, 6 }, vim.api.nvim_buf_get_mark(0, ">"))
   end)
 
+  it("does not jump when match.win is invalid", function()
+    local cursor = vim.api.nvim_win_get_cursor(0)
+    local closed = vim.api.nvim_open_win(vim.api.nvim_create_buf(false, true), false, {
+      relative = "editor",
+      row = 0,
+      col = 0,
+      width = 5,
+      height = 1,
+      style = "minimal",
+    })
+    vim.api.nvim_win_close(closed, true)
+
+    local match = { win = closed, pos = Pos({ 1, 6 }), end_pos = Pos({ 1, 8 }) }
+    assert.has_no.errors(function()
+      Jump.jump(match, State.new())
+    end)
+    assert.same(cursor, vim.api.nvim_win_get_cursor(0))
+  end)
+
   -- it("yanks to start", function()
   --   assert.same({ 1, 0 }, vim.api.nvim_win_get_cursor(0))
   --   local match = {
