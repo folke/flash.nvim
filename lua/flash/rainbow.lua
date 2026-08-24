@@ -2,6 +2,7 @@
 ---@field cache table<string, string>
 ---@field count number
 ---@field shade number
+---@field hl_overrides? table<string, string>
 local M = {}
 
 ---@type table<string,true>
@@ -25,6 +26,7 @@ function M.new(state)
   self.cache = {}
   self.count = 0
   self.shade = state.opts.label.rainbow.shade
+  self.hl_overrides = state.opts.label.rainbow.hl_overrides
   return self
 end
 
@@ -38,17 +40,22 @@ function M:get(match)
 
   if not self.cache[id] then
     self.count = self.count + 1
-    self.cache[id] = M.get_color(self.count, self.shade)
+    self.cache[id] = M.get_color(self.count, self.shade, self.hl_overrides)
   end
   return self.cache[id]
 end
 
 ---@param idx number
 ---@param shade number
-function M.get_color(idx, shade)
+---@param overrides? table<string, string>
+function M.get_color(idx, shade, overrides)
   M.setup()
   idx = (idx - 1) % #M.rainbow + 1
   local color = M.rainbow[idx]
+  local override = overrides and overrides[color]
+  if type(override) == "string" and override ~= "" and vim.fn.hlexists(override) == 1 then
+    return override
+  end
   shade = (shade or 5) * 100
   local bg = vim.tbl_get(M.colors, color, shade)
   if bg then

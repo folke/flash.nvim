@@ -100,6 +100,9 @@ local defaults = {
       enabled = false,
       -- number between 1 and 9
       shade = 5,
+      -- map of color name to highlight group
+      -- when provided and the group exists, it will be used instead
+      hl_overrides = {},
     },
     -- With `format`, you can change how the label is rendered.
     -- Should return a list of `[text, highlight]` tuples.
