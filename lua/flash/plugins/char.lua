@@ -120,10 +120,26 @@ function M.setup()
         local autohide = Config.get("char").autohide
         if Repeat.is_repeat then
           M.jump_labels = false -- never show jump labels when repeating
+          -- INFO:
+          -- If we use "dta" to delete till "a", then use "fa" to move found "a"
+          -- the dot repeat will use "dfa" instead of "dta". This line will fix
+          -- this
+          M.motion = M.motion_in_op
+          M.state = M.new()
+          M.state:hide()
+          -- INFO:
+          -- If we use "dta" to delete till "a", then use "tb" to move till "b"
+          -- the dot repeat will use "dtb" instead of "dta". This line will fix
+          -- this.
+          M.state:update({ pattern = M.char_in_op })
           M.state:jump({ count = vim.v.count1 })
-          M.state:show()
         else
+          local mode = vim.fn.mode("1")
           M.jump(key)
+          if mode:find("no") then
+            M.motion_in_op = M.motion
+            M.char_in_op = M.char
+          end
         end
         vim.schedule(function()
           M.jumping = false
@@ -163,7 +179,12 @@ function M.parse(key)
   }
   -- repeat last search when hitting the same key
   -- don't repeat when executing a macro
-  if M.visible() and vim.fn.reg_executing() == "" and M.motion:lower() == key:lower() then
+  if
+    M.visible()
+    and vim.fn.reg_executing() == ""
+    and vim.fn.reg_recording() == ""
+    and M.motion:lower() == key:lower()
+  then
     ret.actions = M.actions(M.motion)
     if ret.actions[key] then
       ret.jump = ret.actions[key]
@@ -233,14 +254,32 @@ function M.jump(key)
     M.state:update({ pattern = M.char })
   end
 
-  local jump = parsed.jump
-
+  local do_first_jump = Config.get("char").jump.do_first_jump
   M.jump_labels = Config.get("char").jump_labels
-  jump()
+  if do_first_jump then
+    parsed.jump()
+  end
   M.state:update({ force = true })
 
   if M.jump_labels then
-    if Config.get("char").jump.autojump and #M.state.results == 1 then
+    local autojump = Config.get("char").jump.autojump
+    if
+      autojump and #M.state.results == 1
+      or autojump
+        and #M.state.results == 2
+        and M.motion:lower() == "f"
+        and (M.state.results[1].pos == M.state.pos or M.state.results[2].pos == M.state.pos)
+    then
+      if not do_first_jump then
+        -- jump here to be consistent with the autojump configuration
+        parsed.jump()
+      end
+      M.state:hide()
+      return M.state
+    elseif
+      #M.state.results == 0
+      or #M.state.results == 1 and M.motion:lower() == "f" and M.state.results[1].pos == M.state.pos
+    then
       M.state:hide()
       return M.state
     end
@@ -255,6 +294,8 @@ function M.jump(key)
       jump_on_max_length = false,
       actions = parsed.actions,
     })
+  else
+    M.state:hide()
   end
 
   return M.state

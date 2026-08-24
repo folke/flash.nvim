@@ -122,6 +122,7 @@ Install the plugin with your preferred package manager:
       "cmp_menu",
       "noice",
       "flash_prompt",
+      "blink-cmp-menu",
       function(win)
         -- exclude non-focusable windows
         return not vim.api.nvim_win_get_config(win).focusable
@@ -137,6 +138,9 @@ Install the plugin with your preferred package manager:
     max_length = false, ---@type number|false
   },
   jump = {
+    -- Whether or not to do the first jump automatically
+    -- This options will only affect char mode
+    do_first_jump = true,
     -- save location in the jumplist
     jumplist = true,
     -- jump position
@@ -253,6 +257,20 @@ Install the plugin with your preferred package manager:
         -- disable jump labels when not enabled, when using a count,
         -- or when recording/executing registers
         opts.jump_labels = opts.jump_labels
+          and vim.v.count == 0
+          and vim.fn.reg_executing() == ""
+          and vim.fn.reg_recording() == ""
+
+        -- always do first jump when not using a count,
+        -- or when recording/executing registers
+        opts.jump.do_first_jump = opts.jump.do_first_jump
+          or vim.v.count ~= 0
+          or vim.fn.reg_executing() ~= ""
+          or vim.fn.reg_recording() ~= ""
+
+        -- disable backdrop when not enabled, when using a count,
+        -- or when recording/executing registers
+        opts.highlight.backdrop = opts.highlight.backdrop
           and vim.v.count == 0
           and vim.fn.reg_executing() == ""
           and vim.fn.reg_recording() == ""
