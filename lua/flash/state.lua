@@ -13,6 +13,7 @@ local Search = require("flash.search")
 local Util = require("flash.util")
 
 ---@class Flash.State.Config: Flash.Config
+---@field exit_on_no_match? boolean
 ---@field matcher? fun(win: window, state:Flash.State, pos: {from:Pos, to:Pos}): Flash.Match[]
 ---@field filter? fun(matches:Flash.Match[], state:Flash.State): Flash.Match[]
 ---@field pattern? string
@@ -411,7 +412,12 @@ function M:step(opts)
   end
 
   -- exit if no results and not in regular search mode
-  if #self.results == 0 and not self.pattern:empty() and self.pattern.mode ~= "search" then
+  if
+    self.opts.exit_on_no_match == true
+    and #self.results == 0
+    and not self.pattern:empty()
+    and self.pattern.mode ~= "search"
+  then
     if self.opts.search.incremental then
       vim.api.nvim_input(c)
     end

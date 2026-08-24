@@ -135,6 +135,8 @@ local defaults = {
   pattern = "",
   -- When `true`, flash will try to continue the last search
   continue = false,
+  -- When `true`, flash will exit if there are no matches
+  exit_on_no_match = true,
   -- Set config to a function to dynamically change the config
   config = nil, ---@type fun(opts:Flash.Config)|nil
   -- You can override the default options for a specific mode.
