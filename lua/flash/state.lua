@@ -123,7 +123,7 @@ function M.new(opts)
   elseif self.matcher == nil then
     self.matcher = Search.new
   end
-  self.pattern = Pattern.new(self.opts.pattern, self.opts.search.mode, self.opts.search.trigger)
+  self.pattern = Pattern.new(self.opts.pattern, self.opts.search.mode, self.opts.search.trigger, self.opts.search.case)
   self.visible = true
   self.cache = Cache.new(self)
   self.labeler = self.opts.labeler or require("flash.labeler").new(self):labeler()
