@@ -1,5 +1,5 @@
 *flash.nvim.txt*                                               flash.nvim docs
-                                       For Neovim    Last change: 2026 July 10
+                                     For Neovim    Last change: 2026 August 22
 
 ==============================================================================
 Table of Contents                               *flash.nvim-table-of-contents*
