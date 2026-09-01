@@ -229,7 +229,7 @@ function M.jump(key)
   M.current = M.motion:lower() == "t" and parsed.getchar
 
   -- update the state when needed
-  if M.state.pattern:empty() then
+  if parsed.getchar or M.state.pattern:empty() then
     M.state:update({ pattern = M.char })
   end
 
