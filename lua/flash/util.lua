@@ -1,5 +1,6 @@
 local Hacks = require("flash.hacks")
 local require = require("flash.require")
+local uv = vim.uv or vim.loop
 
 local M = {}
 
@@ -88,7 +89,7 @@ end
 ---@param done fun():boolean
 ---@param on_done fun()
 function M.on_done(done, on_done)
-  local check = assert(vim.loop.new_check())
+  local check = assert(uv.new_check())
   local fn = function()
     if check:is_closing() then
       return
