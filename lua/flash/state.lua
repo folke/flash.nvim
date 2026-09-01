@@ -285,11 +285,29 @@ function M:_update()
   end
   self.matchers = matchers
 
+  ---@type table<window, Flash.Match[]|false>
+  local fold_matches = {}
   for _, match in ipairs(self.results) do
-    vim.api.nvim_win_call(match.win, function()
-      local fold = vim.fn.foldclosed(match.pos[1])
-      match.fold = fold ~= -1 and fold or nil
-    end)
+    local matches = fold_matches[match.win]
+    if matches == nil then
+      matches = vim.wo[match.win].foldenable and {} or false
+      fold_matches[match.win] = matches
+    end
+    if matches then
+      table.insert(matches, match)
+    else
+      match.fold = nil
+    end
+  end
+  for win, matches in pairs(fold_matches) do
+    if matches then
+      vim.api.nvim_win_call(win, function()
+        for _, match in ipairs(matches) do
+          local fold = vim.fn.foldclosed(match.pos[1])
+          match.fold = fold ~= -1 and fold or nil
+        end
+      end)
+    end
   end
 
   self:update_target()
