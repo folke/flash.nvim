@@ -170,7 +170,6 @@ function M.search(opts)
       end
       return matches
     end,
-    jump = { pos = "range" },
   })
 
   opts.search.exclude = vim.deepcopy(opts.search.exclude)
