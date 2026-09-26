@@ -23,6 +23,9 @@ function M.jump(match, state)
   end
 
   -- change window if needed
+  if not vim.api.nvim_win_is_valid(match.win) then
+    match.win = vim.api.nvim_get_current_win()
+  end
   if match.win ~= vim.api.nvim_get_current_win() then
     if is_visual then
       -- cancel visual mode in the current window,
