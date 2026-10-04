@@ -35,7 +35,7 @@ local Util = require("flash.util")
 ---@field matchers Flash.Matcher[]
 ---@field restore_windows? fun()
 ---@field rainbow? Flash.Rainbow
----@field ns number
+---@field ns table<window, number>
 ---@field langmap table<string, string>
 local M = {}
 M.__index = M
@@ -127,7 +127,7 @@ function M.new(opts)
   self.visible = true
   self.cache = Cache.new(self)
   self.labeler = self.opts.labeler or require("flash.labeler").new(self):labeler()
-  self.ns = vim.api.nvim_create_namespace(self.opts.ns or "flash")
+  self.ns = {}
   M._states[self] = true
   if self.opts.label.rainbow.enabled then
     self.rainbow = Rainbow.new(self)
@@ -246,7 +246,7 @@ end
 function M:hide()
   if self.visible then
     self.visible = false
-    Highlight.clear(self.ns)
+    Highlight.clear(self)
   end
 end
 
@@ -278,7 +278,10 @@ function M:_update()
     for _, m in ipairs(state and state.matches or {}) do
       local id = m.pos:id(buf) .. m.end_pos:id(buf)
       if not done[id] then
-        done[id] = true
+        -- Skip the same position for global-scoped namespace.
+        -- The matches can be correctly displayed when the window-scoped
+        -- namespace is supported.
+        done[id] = vim.fn.has("nvim-0.10.0") == 0
         table.insert(self.results, m)
       end
     end

@@ -1,8 +1,13 @@
 local M = {}
 
-function M.clear(ns)
-  for _, buf in ipairs(vim.api.nvim_list_bufs()) do
-    vim.api.nvim_buf_clear_namespace(buf, ns, 0, -1)
+---@param state Flash.State
+function M.clear(state)
+  if state.wins then
+    for _, win in ipairs(state.wins) do
+      if vim.api.nvim_win_is_valid(win) then
+        vim.api.nvim_buf_clear_namespace(vim.api.nvim_win_get_buf(win), state.ns[win], 0, -1)
+      end
+    end
   end
 end
 
@@ -53,7 +58,7 @@ function M.backdrop(state)
     -- we need to create a backdrop for each line because of the way
     -- extmarks priority rendering works
     for line = from[1], to[1] do
-      vim.api.nvim_buf_set_extmark(buf, state.ns, line - 1, line == from[1] and from[2] or 0, {
+      M.set_extmark(buf, state.ns[win], line - 1, line == from[1] and from[2] or 0, {
         hl_group = state.opts.highlight.groups.backdrop,
         end_row = line == to[1] and line - 1 or line,
         hl_eol = line ~= to[1],
@@ -73,7 +78,7 @@ function M.cursor(state)
     else
       local cursor = vim.api.nvim_win_get_cursor(win)
       local buf = vim.api.nvim_win_get_buf(win)
-      vim.api.nvim_buf_set_extmark(buf, state.ns, cursor[1] - 1, cursor[2], {
+      M.set_extmark(buf, state.ns[win], cursor[1] - 1, cursor[2], {
         hl_group = "FlashCursor",
         end_col = cursor[2] + 1,
         priority = state.opts.highlight.priority + 3,
@@ -85,7 +90,7 @@ end
 
 ---@param state Flash.State
 function M.update(state)
-  M.clear(state.ns)
+  M.clear(state)
 
   if state.opts.highlight.backdrop then
     M.backdrop(state)
@@ -109,7 +114,7 @@ function M.update(state)
 
   local target = state.target
 
-  ---@type table<string, {buf: number, row: number, col: number, text:string[][]}>
+  ---@type table<string, {win: number, row: number, col: number, text:string[][]}>
   local extmarks = {}
 
   ---@param match Flash.Match
@@ -148,7 +153,7 @@ function M.update(state)
     end
     if match.label == "" then
       -- when empty label, highlight the position
-      vim.api.nvim_buf_set_extmark(buf, state.ns, row, col, {
+      M.set_extmark(buf, state.ns[match.win], row, col, {
         hl_group = hl_group,
         end_row = row,
         end_col = col + 1,
@@ -157,8 +162,8 @@ function M.update(state)
       })
     else
       -- else highlight the label
-      local key = buf .. ":" .. row .. ":" .. col
-      extmarks[key] = extmarks[key] or { buf = buf, row = row, col = col, text = {} }
+      local key = match.win .. ":" .. row .. ":" .. col
+      extmarks[key] = extmarks[key] or { win = match.win, row = row, col = col, text = {} }
       local text = state.opts.label.format({
         state = state,
         match = match,
@@ -180,7 +185,7 @@ function M.update(state)
     end
 
     if highlight then
-      vim.api.nvim_buf_set_extmark(buf, state.ns, match.pos[1] - 1, match.pos[2], {
+      M.set_extmark(buf, state.ns[match.win], match.pos[1] - 1, match.pos[2], {
         end_row = match.end_pos[1] - 1,
         end_col = match.end_pos[2] + 1,
         hl_group = target and match.pos == target.pos and state.opts.highlight.groups.current
@@ -201,7 +206,7 @@ function M.update(state)
   end
 
   for _, extmark in pairs(extmarks) do
-    vim.api.nvim_buf_set_extmark(extmark.buf, state.ns, extmark.row, extmark.col, {
+    M.set_extmark(vim.api.nvim_win_get_buf(extmark.win), state.ns[extmark.win], extmark.row, extmark.col, {
       virt_text = extmark.text,
       virt_text_pos = style,
       strict = false,
@@ -210,6 +215,20 @@ function M.update(state)
   end
 
   M.cursor(state)
+end
+
+-- Wrapper of vim.api.nvim_buf_set_extmark to set scoped namespace
+---@param buffer integer Buffer id, or 0 for current buffer
+---@param ns_id integer Namespace id from `nvim_create_namespace()`
+---@param line integer Line where to place the mark, 0-based. `api-indexing`
+---@param col integer Column where to place the mark, 0-based. `api-indexing`
+---@param opts vim.api.keyset.set_extmark Optional parameters.
+---@return integer # Id of the created/updated extmark
+function M.set_extmark(buffer, ns_id, line, col, opts)
+  if vim.fn.has("nvim-0.10.0") == 1 then
+    opts.scoped = true
+  end
+  return vim.api.nvim_buf_set_extmark(buffer, ns_id, line, col, opts)
 end
 
 return M
