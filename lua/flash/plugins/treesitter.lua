@@ -63,18 +63,25 @@ function M.get_nodes(win, pos)
       first = first,
     }
     first = false
+    -- Nodes can start past the last line (e.g. the root of an empty buffer)
+    if match.pos[1] > line_count then
+      match.pos = { line_count, 0 }
+    end
     -- If the match is at the end of the buffer,
     -- then move it to the last character of the last line.
     if match.end_pos[1] > line_count then
       match.end_pos[1] = line_count
       match.end_pos[2] = #vim.api.nvim_buf_get_lines(buf, match.end_pos[1] - 1, match.end_pos[1], false)[1]
-    elseif match.end_pos[2] == -1 then
+    elseif match.end_pos[2] == -1 and match.end_pos[1] > 1 then
       -- If the end points to the start of the next line, move it to the
       -- end of the previous line.
       -- Otherwise operations include the first character of the next line
       local line = vim.api.nvim_buf_get_lines(buf, match.end_pos[1] - 2, match.end_pos[1] - 1, false)[1]
       match.end_pos[1] = match.end_pos[1] - 1
       match.end_pos[2] = #line
+    elseif match.end_pos[2] == -1 then
+      -- empty node at the start of the buffer (e.g. empty buffer with 'noeol')
+      match.end_pos[2] = 0
     end
     local id = table.concat({ match.pos[1], match.pos[2], match.end_pos[1], match.end_pos[2] }, ":")
     if not done[id] then
